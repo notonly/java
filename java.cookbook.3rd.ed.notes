@@ -1,0 +1,39 @@
+BattleShip (the classic naval combat game) <-- by MB (Milton Bradley ..
+
+1.4 using CLASSPATH  effectively
+
+
+java -classpath ~/example1/ex1.jar Example1
+
+1) java interpreter looks dirs defined in CLASSPATH;
+
+2) os tracing tool (trace, strace, truss, ktrace),  can see Java opens (or, stat, or access) the class file.
+
+3) jdk class files,  in system props  (sun.boot.class.path)
+
+4) jar file, unlike the single class file (using directory in classpath);  JAR file, needs to be in CLASSPATH defn
+
+5) Web applications may NOT use bootpath or CLASSPATH;  those web apps having own ClassLoader, and set web app classpath to include WEB-INF/classes  (and the JAR files in WEB-INF/lib)
+
+6) Create class files into CLASSPATH directories
+
+   javac -d $HOME/classes Example1.java
+	 java  -cp $HOME/classes/ pkg.Example1   (note, this command can be run from anywhere)
+
+
+7) managing CLASSPATH in own env,
+
+   set a base/main directory in $CLASSPATH
+	 then make OPT_JARS including other JAR files or class-dirs;  and then adding them to $CLASSPATH
+
+
+8)
+
+
+1.5 Code Examples
+
+   GitHub (https://github.com/IanDarwin/javasrcee)  
+
+	    javasrc
+			darwinsys-api  (
+
