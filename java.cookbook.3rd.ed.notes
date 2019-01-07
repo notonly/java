@@ -34,6 +34,34 @@ java -classpath ~/example1/ex1.jar Example1
 
    GitHub (https://github.com/IanDarwin/javasrcee)  
 
+	 https://github.com/notonly/javasrc
+
 	    javasrc
 			darwinsys-api  (
+
+
+
+1.9 Dealing with Deprecation Warnings
+
+   javac -deprecation Example1.java
+
+	 1) @Deprecated on method or class
+	 2) @deprecated on javadoc
+
+	 *) Rule of thumb:  if method/class is deprecated; NEW CODE should avoid using it.
+
+
+1.10  check if we us  "System.properties"  for Runtime Debug (most likely NOT,  because, turn it on for RunTime requires rebooting the JVM.   We have re-load;  also some JMX stuff ... for updating the Log4J log level etc) ...
+
+    if (System.getProperty("debug.fetch") != null) {
+		    System.err.println("runtime debugging turned on");
+		}
+
+  java Example1   // will not see the debug
+
+	java -Ddebug.fetch Example1   // will see the debugging, because the Runtime System.properties turned on, and code/class got the value
+
+
+1.11  Correctness with Assertions
+
 
