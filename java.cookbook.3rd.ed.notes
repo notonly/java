@@ -81,6 +81,123 @@ Chapter 9: Functional Programming
 My own notes:  how does Java implement (Java Compiler) handle closure -->  in the hood, still make closure to inner-class, and then some dynamic link (for groovy) type logic (vaguely remembered the Brian Goetz's presention ...
 
 
+9.2 Using Predefined Interfaces, instead of own 
 
+1) java.util.function package
+
+
+interface Predicate<T> {
+    boolean test(T t);
+}
+
+
+public List<Clazz> search(Predicate p);
+
+
+
+9.3 simplifying processing with streams
+
+
+1) production methods
+
+2) passing methods (intermediate)  -- distinct, filter, limit, map, peek, sorted, unsorted
+
+3) terminating methods -- count, findFirst, max, min, reduce, sum, collect ...
+
+
+
+9.4 improving throughput with parallel streams and collections
+
+<== no example from the book, just four bulletin-points
+
+
+9.5 creating own functional interfaces
+
+1) make sure just 1 non-default (or non-optional) method in that Interface; or
+
+2) use @FunctionalInterface annotation 
+
+   a.  define own functional interface
+
+	      public interface MyFuncIntfc {
+				    int computer(int x);
+				}
+
+
+				OR
+
+				@FunctionalInterface
+				public interface MyFuncIntfc {
+				    int computer(int x);
+				}
+
+	 b.  apply it
+
+	      public class ProcessInts {
+				    static int[] ins = {0, 1, 2, 3};
+						
+						// THIS IS REALLY WHAT I NEED MORE USAGE ON THESE PATTERNS; (I more familiar with small closure usage) ...
+						// Passing in the functions ... ;  and inside apply it
+						static int doMath(int n, Function<Integer, Integer> func) {
+						    return func.apply(n);
+						}
+
+			      public void static main(String[] args) {
+							...
+						}
+				}
+
+
+
+
+9.6 Using Existing Code as Functional with Method References   (Functional METHODS)  -->  MyClass::myFunc  ...
+
+   If already have existing code matching a functional interface, and want to use it without renaming methods to match the interface name.
+
+
+   Arrays.sort(names, String::compareToIgnoreCase);  // names array of {"a", "b", "d", "c"};
+
+   Arrays.sort(names, String.CASE_INSENSITVIE_ORDER);  // the existing comparator
+
+
+9.7 Java Mixins: Mixing in Methods 
+
+1) what is mixin ? 
+
+2) using "static import" feature to implement mixin 
+
+     (cons:  static method, not instance method) 
+
+
+3) pull method from Multiple Interfaces ....
+
+   interface Bar {
+	    default String filter(String s) {
+				return "Filtered " + s;
+	  }
+
+		interface Foo {
+			  default String convolve(String s) {
+				  return "Convolved " + s;
+		}
+
+
+
+   public class MixinsDemo implements Foo, Bar {
+	   ...
+
+		 private String process(String s) {
+		 	 return filter(convolve(s));  // methods mixed in
+		 }
+	 }
+
+
+
+
+Alas,  this book finished Functional Programming in such a short chapter ....
+
+
+
+	  
 
 
