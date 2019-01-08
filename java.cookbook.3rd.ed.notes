@@ -65,3 +65,22 @@ java -classpath ~/example1/ex1.jar Example1
 1.11  Correctness with Assertions
 
 
+... Fast Forwarding ...
+
+Chapter 9: Functional Programming
+
+1) pure function, no side-effects, results depend only on their inputs and not on mutable state elsewhere in program
+2) first-class function
+3) Immutable data
+4) extensive use of recusion and Lazy Evaluation
+
+
+9.1 Using lambdas/closures in place of inner classes
+
+
+My own notes:  how does Java implement (Java Compiler) handle closure -->  in the hood, still make closure to inner-class, and then some dynamic link (for groovy) type logic (vaguely remembered the Brian Goetz's presention ...
+
+
+
+
+
