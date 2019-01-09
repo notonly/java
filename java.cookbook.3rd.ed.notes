@@ -198,6 +198,48 @@ Alas,  this book finished Functional Programming in such a short chapter ....
 
 
 
+Chapter 19 Processing JSON Data
+
+19.1 creating JSON string, using StringBuilder
+
+
+19.2 Parsing and Writing JSON with Jackson
+
+  ObjectMapper 
+
+	  mapper.writeValue(System.out, new Person("name", 33));
+
+
+	  mapper.readValue(jsonInputStream,  Person.class);
+
+
+19.3 Parsing and Writing JSON with org.json
+
+  ? mid-size, widely used JSON API   -- This is also used in Android app
+
+
+	// READ 
+
+   JSONObject obj = new JSONObject(new JSONTokener(jsonInputStream));  // InputStream can come from file
+
+	 System.out.println("name : " + obj.getString("name"));
+
+
+	// WRITE
+	JSONObject obj = new JSONObject();
+	obj.put("name", "Ray");
+	   .put("age", 33);
+
+	System.out.println(obj.toString());
+
+
+
+Chapter 10 Input and Output
+
+10.1 Reading standard input
+
+
+
 	  
 
 
