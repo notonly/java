@@ -236,10 +236,121 @@ Chapter 19 Processing JSON Data
 
 Chapter 10 Input and Output
 
+
+Java two sets of classes for reading/writing.
+
+***) "Stream" section of package java.io for BYTES (reading/writing)
+
+old language may assume that a byte (8-bits) is same as "character" (letter, digit)  <== the author was talking about ASCII (256 chars in total 2^7) encoding here     
+
+***) Java for Internationalization,  UTF-8 (2^15 ? two-bytes, 16-bits)
+     Unicode
+
+		 Java and XML allows Unicode, so that we can read and write human languages.
+
+		 Use "Writer/Reader", not "Stream", for textual data;
+
+
+     converting Unicode strings to external files
+
+     using "Reader/Writer", instead of "InputStream/OutputStream",  <== 
+
+
+
+
 10.1 Reading standard input
 
 
+a) read 1 byte from system input
+  
+	 int b = System.in.read();
+
+b) To read a value of a known type, from standard input, using Scanner class
+
+   Scanner sc = Scanner.create(System.in);
+
+	 int i = sc.nextInt();
+
+
+c) use Reader class to get Multiple-Encodings
+
+   read lines of characters, using BufferedReader
+
+***)  Writer
+
+   BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	 String line;
+
+	 while( (line = br.readLine()) != null) {
+	   System.out.println(line);
+	 }
+
+
+
+10.2  Reading from Console or Controlling Terminal --  reading passwords without echoing
+
+  System.console()    // can return NULL
+
+	String name = System.console().readLine("name?");
+
+	// Read passwords without echoing;  using Console class
+	char[] pwd = null;
+	Console cl = System.console();
+
+  if (cl != null) {
+	  try {
+	    pwd = cl.readPassword("Password:");
+
+			// can send the pwd to downstream for security check
+			System.out.println("pwd is: " + new String(pwd));
+
+    } finally {
+
+		  // clear the memory for security reason
+			if (pwd != null) {
+			  java.util.Arrays.fill(pwd, ' ');
+			}
+		}
+
 
 	  
+10.3  Writing standard output or standard error
+
+1) System.out is PrintStream connected to "standard out"
+2) System.err is PrintStream connected to "standard error"
+
+3) PrintWriter has similar methods as PrintStream
+ 
+   PrintWriter pw = new PrintWriter(System.out);
+	 pw.println("answer: ");
+
+
+10.5 StreamTokenizer
+
+  StringTokenizer st = new StringTokenizer("john@gmail.com", "@", true);
+
+  String user = (String) st.nextElement();		// alas, need to cast
+	String host = (String) st.nextElement();
+
+
+10.6  Scanning input with Scanner Class
+
+
+  Scanner, modeling C's scanf(),  but also has functionality of StreamTokenizer,
+	  yet still need to be aware of the type of token, hence hasNextByte() and nextByte() etc methods.
+
+
+		String dt = "25 Dec 2019";
+
+		try(Scanner sdt = new Scanner(dt)) {
+		  int d = sdt.nextInt();
+			String m = sdt.next();
+			int y = sdt.nextInt();
+		}
+
+
+
+
+
 
 
