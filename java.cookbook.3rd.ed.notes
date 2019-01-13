@@ -708,10 +708,137 @@ while (ports.hasMoreElements()) {
 
 
 
+Chapter 23 Reflection -- gathering information from JVM
+
+  java.lang.Class
+	java.lang.reflect 
+
+
+	1) load classes on the fly
+	2) find methods and fields of a class
+	3) construct a class from scratch (from an array of bytes) dynamically.
+
+
+	***) JVM a large program, written in C/C++, implementing the Abstraction 
+
+	***) "dyanmic loading" -- walk-up the tree of class hierarchy 
+
+	    java -verbose MyClass    (which shows the dynamic loading)
 
 
 
+23.1 Getting Class Description
+
+  if type name is known at compile time, can get class instance using compiler keyword .class (also works for the either primitive types)
+
+	Otherwise, java.lang.Object.getClass() will return Class object for the objet's class
+
+
+	System.out.println("String class: " + String.class);
+
+	System.out.println("Calendar.getInstance().getClass());
+
+
+23.2 Finding and using Methods and Fields
+
+  ***) java.lang.reflect
+
+
+
+ JShell snippet :  
+
+
+import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.List;
+
+    try {
+        Class<?> c = Class.forName("java.lang.String");
+
+        List<Constructor<?>> ctors = Arrays.asList(c.getConstructors());
+        ctors.forEach(e -> System.out.println(e.toString()));
+
+        System.out.println("\n__________________________________\n");
+
+        List<Method> mtds = Arrays.asList(c.getMethods());
+        mtds.forEach(e -> System.out.println(e.toString()));
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+
+
+
+        // Cannot reflection FINAL fields ?
+        // java.lang.IllegalArgumentException: Can not set final [B field java.lang.String.value to java.lang.Class
+        // ^^^ https://stackoverflow.com/questions/3301635/change-private-static-final-field-using-java-reflection
+        try {
+            String sf = new String("checking reflection Fields");
+            Class<?> cs = sf.getClass();
+
+            List<Field> flds = Arrays.asList(cs.getDeclaredFields());
+
+            flds.forEach(f -> {
+                try {
+                    Field modifiersField = Field.class.getDeclaredField("modifiers");
+                    modifiersField.setAccessible(true);
+                    modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+                    f.setAccessible(true);
+                    System.out.println(f + " : " + f.get(sf));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            });
+
+
+
+
+
+
+BUT following works : 
+
+
+class Test1 {
+    private final String value;
+    private final int hash;
+
+    public Test1(String v, int h) {
+        value = v;
+        hash = h;
+    }
 }
+
+        final Test1 t = new Test1("John", 33);
+        Class<?> cs1 = t.getClass();
+        List<Field> flds1 = Arrays.asList(cs1.getDeclaredFields());
+        flds1.forEach(f -> {
+            try {
+                f.setAccessible(true);
+//                System.out.println(f + " : " + f.get(cs));
+                System.out.println(f.toGenericString() + " : " +  f.get(t));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+
+
+RESULT : 
+
+private final java.lang.String REPL.$JShell$30$Test1.value : John
+private final int REPL.$JShell$30$Test1.hash : 33
+
+
+
+
+
+
+
+
+
+
+
 
 
 
