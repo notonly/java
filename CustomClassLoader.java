@@ -39,9 +39,17 @@ public class CustomClassLoader extends ClassLoader {
 	public static void main(String[] argvs) throws Exception {
 		CustomClassLoader ccl = new CustomClassLoader();
 
-		Class<?> c = ccl.findClass("ReflectionNewInstance");
+		Class<ReflectionNewInstance> c = (Class<ReflectionNewInstance>) ccl.findClass("ReflectionNewInstance");
 
 		System.out.println("ReflectionNewInstance obj : " + c);
+
+		System.out.println("c.newInstance() = " + c.newInstance());
+
+		ReflectionNewInstance rni = c.newInstance();
+		rni.setValue("custom class loader");
+
+		System.out.println("after customClassLoader, and newInstance called on that class "
+				+ "we got instance and value : " + rni.getValue());
 	}
 
 }

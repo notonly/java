@@ -2,6 +2,17 @@ import java.lang.reflect.*;
 
 public class ReflectionNewInstance {
 
+	// Adding field and method for CustomClassLoader to load this class and initiate value
+	private String value;
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String v) {
+		value = v;
+	}
+
 	public static void main(String[] argvs) throws Exception  {
 
 		Class<String> cz = (Class<String>) Class.forName("java.lang.String");
@@ -22,6 +33,7 @@ public class ReflectionNewInstance {
 		fv.setAccessible(false);
 
     System.out.println("^^^^^^^^^^^ newInstance() created : " + s);
+
 	}
 
 }
