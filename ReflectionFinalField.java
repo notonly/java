@@ -15,6 +15,7 @@ public class ReflectionFinalField {
 
 		flds.forEach(f -> {
 			try {
+				// do not honor "private"
 				f.setAccessible(true);
 
 				Field mf = Field.class.getDeclaredField("modifiers");
@@ -30,6 +31,10 @@ public class ReflectionFinalField {
 					f.set(s, "*!after changes!*");
 					System.out.println("####################### after changes; string --> " + s);
 				}
+
+				// re-honor "private"
+				f.setAccessible(false);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -38,18 +43,27 @@ public class ReflectionFinalField {
 		// Change the string
 		try {
 			Field fv = cs.getDeclaredField("value");
+			// not-honor "private"
 			fv.setAccessible(true);
 			Field mf = Field.class.getDeclaredField("modifiers");
+			// also need to not-honor "private" for such "modifiers" field
 			mf.setAccessible(true);
+
+			// Remove "FINAL" modifier
 			mf.setInt(fv, fv.getModifiers() & ~Modifier.FINAL);
 
 			fv.set(s, "_After changes_".getBytes());
+
+			// Restore "FINAL" modifier
+			mf.setInt(fv, fv.getModifiers() | Modifier.FINAL);
+
+			// restore "private" 
+			fv.setAccessible(false);
 
 			System.out.println("#### after changes,  now the string is : " + s);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 
 	}
 }
