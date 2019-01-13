@@ -349,8 +349,343 @@ c) use Reader class to get Multiple-Encodings
 		}
 
 
+10.7 Scanning input with Grammatical Structure
+
+  1) StreamStokenizer and Scanner have limited number of tokens processed; but 
+
+	2) "Parser generators" can do more; like C's yacc (Yet Another Compiler Compiler) and lex releases around 1970s.
+
+	    "ANTLER"
+			JavaCC (open source java.net)
+			JParsec write parser in straight Java, all built at compile time. It's on GitHub now
+			JFlex and CUP work together like yacc and lex.
+			Parboiled uses "Parsing Expression Grammar" (PEG) to build parser at compile time, on GitHub
+			Rats! parser generator is part of eXTensible Compiler Project at New York Univ
+			Other compiler compiler, maintained at Java Source.
+
+	Those "compiler geneartors" can be used to write "grammars" for a wide range of programs, from simple calculators, to HTML, full Java, C/C++ compilers.
+
+	
+	In simple application, "recursive descent parser" may be sufficient.
+
+
+
+10.8  Opening a file by name
+
+
+BufferedReader br = new BufferedReader(new FileReader("file.txt"));
+BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("bytes.exe"));
+
+InputStream is = new FileInputStream("input.txt");
+OutputStream os = new FileOutputStream("output.txt");
+
+byte[] bts = new byte[500];
+int i;
+
+while ((i = is.read(b)) != -1) {
+ os.write(b, 0, i);
+}
+
+is.close();
+os.close();
+
+
+10.10 Reading a File into a String
+
+
+10.11 Reassigning the standard streams
+
+  System.in, System.out, System.err
+
+
+***) sent standard errors to log file
+
+	String logfile = "error.log";
+
+	System.setErr(new PrintStream(new FileOutputStream(logfile)));
+
+	// now create err stuff
+	int a = new int[5];
+	a[10] = 0;  // ArrayIndexOutOfBoundsException err which is written to error.log
+
+
+***) send standard errors to standard out
+
+  System.setErr(System.out);
+
+
+
+10.12 Duplicating a Stream as it is written 
+
+
+
+10.13 Reading/Writing a different character set
+
+  InputStreamReader and OutputStreamWriters are used to convert text to/from Unicode
+
+	BufferedReader fromJp = new BufferedReader(new InputStreamReader(new FileInputStream("jp.txt", "EUC_JP")));
+
+	PrintWriter toSwedish = new PrintWriter(new OutputStreamWriter(new FileOutputStream("swedish.txt", "Cp278)));
+
+
+
+10.14 handle pesky end-of-line characters
+
+  \r , \n, or combined
+
+	networking code ...
+
+
+
+10.15 Platform-dependent file code
+
+  
+
+10.16 Reading "Continued" lines
+
+  
+
+10.17 Reading/Writing Binary Data
+
+  ***)  DataInputStream or DataOutputStream
+
+
+	String filenm = "input.txt";
+	DataOutputStream os = new DataOutputstream(new FileOutputStream(filenm));
+
+	int i = 3;
+	double d = 0.5;
+
+	os.writeInt(i);
+	os.writeDouble(d);
+	os.close();
+
+
+10.18 Seeking to a position within a File
+
+  ***) RandomAccessFile
+
+
+  ReadRandom rr = new ReadRandom("input.txt");
+
+	System.out.println("offset : " + r.readOffset());
+
+
+
+	RandomAccessFile seeker = new RandomAccessFile("input.txt", "r");
+	seeker.seek(0);    // move to the beginning
+	seeker.readInt();  // read the offset
+
+	seeker.seek(readOffset());
+	seeker.readLine();
+
+
+
+10.19 Writing data streams from C language
+
+
+10.20 Saving and Restoring Java Objects
+
+  ***) using ObjectInputStream and ObjectOutputStream
+
+
+	  writeObject(), readObject() 
+
+
+		public class MData implements Serializable {
+		  private static final long serialVersionUID = 1L;
+
+			private String name;
+
+			private int age;
+
+			.
+
+			,
+			,
+
+		}
+
+		
+		ObjectOutputStream os = new ObjectOutputStream(new BuggeredOutputStream(
+																											new FileOutputStream("out.txt)));
+
+		os.writeObject(new MData("John", 33));
+
+		os.close();
+
+
+10.21 Serialization, prvent ClassCastExceptions with SerialVersionUID
+
+  -->  CalssCastExceptions can be raised, if the Class (MData above) got updated and re-compiled, and then, not compatible ...
+
+	
+	when objects used in RMI (remote method invocation), or Servlets,  ...
+
+
+
+   ***)  JDK tool  "serialver"  can check the UID for a class file.   (it's only meaningful to apply it on classes implementing Serializable interface)
+
+
+
+10.22 Reading/Writing JAR or ZIP arhcives
+
+
+  java.util.zip.ZipFile
+
+	ZipEntry has getName(),  getInputStream(),  
+
+
+	ZipFile zf = new ZipFile("input.zip");
+	Enumeration all = zf.entries();
+	while (all.hasMoreElements()) {
+	  ZipEntry e = (ZipEntry) all.nextElement();
+
+		if (e.isDirectory()) {
+		  System.out.println("Directory: " + e.getName());
+		} else {
+		  System.out.println("File: " + e.getName());
+		}
+
+		.
+		.
+		.
+
+	}
+
+
+10.23 Finding files in a Filesystem-Neutral way with getResource() and getResourceAsStream()
+
+
+   getClass(), getClassLoader(), getResource(), getResourceAsStream()
+
+
+	 "Class", "ClassLoader" classes
+
+
+	 public InputStream getResourceAsStream(String);
+
+	 public URL getResource(String);
+
+	 public Enumeration<URL> getResources(String) throws IOException;
+
+
+	 --> locate "resource" or file on "classpath" ...
+
+
+	 ^^ Need to check null value
+
+
+10.24 Reading/Writing Compressed files
+
+  GNU gzip/gunzip 
+
+	// Java IO uses a lot of Decorator Design Pattern
+	FileInputStream fis = new FileInputStream("input.txt");
+	GZIPInputStream gzis = new GZIPInputStream(fis);
+	InputStreamReader isr = new InputStreamReader(gzis);
+	BufferedReader br = new BufferedReader(isr);
+
+	String line;
+	while ((line = br.readLine())) {
+	  System.out.println("line: " + line);
+	}
+
+
+
+10.25 Communications API for Serial and Parallel Ports
+
+  Peripheral devices, serial ports (RS232/434, COM, tty),  parallel (printer, LPT) ports
+
+	USB (Universal Serial Bus)
+
+	JSR-80 (Java Standards Request - 80) -- API accessing USB 
+
+	java.comm API, 
+
+
+	Communication API in NutShell 
+
+	1) Abstract class - CommPort
+	2) two subclasses - SerialPort and ParallelPort
+	3) static factory CommPortIdentifier.getPortIdentifiers() -- list of ports, 
+	4) CommPortIdentifier's open() method to receive CommPort object 
+
+
+@SuppressWarnings("unchecked")
+Enumeration<CommPortIdentifier> ports = CommPortIdentifier.getPortIdentifiers();
+
+CommPortIdentifier cpi;
+boolean atLeastOneSerialPresent = false;
+
+while (ports.hasMoreElements()) {
+  CommPortIdentifier pi = ports.nextElement();
+
+	if (pi.getPortType() != CommportIdentifier.PORT_SERIAL) {
+	  System.out.println("Not serial port: " + pi.getName());
+		continue;
+	}
+
+	.
+	.
+	.
+
+	// if found serial port
+	CommPort cp = pi.open("something", time-out-numbers);
+	SerialPort sp = (SerialPort) cp;
+	sp.setSerialPortPamas(baud-rate_19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, 
+																				 SerialPort.PARITY_NONE);
+
+	// Once we get the Serial Port, we can open the inputstream from it
+	InputStream is = new BufferedReader(new InputStreamReader(sp.getInputStream()));
+	OutputStream os = new PrintStream(sp.getOutputStream(), true);
+
+
+	// communication
+	os.println("HELLO");
+	String rspn = is.readLine();
+
+	System.out.println("sent: HELLO" + ", got response: " + rspn);
+
+	if (is != null) {
+	  is.close();
+	}
+	if (os != null) {
+	  os.close();
+	}
+}
+
+
+***)  javacomm/CommPortOpen.java
+
+      ParallelPrint
+			CommPortModem
+			CommPortDial
+			TModem
+			SerialLogger
+			CommPortThreaded
+
+
+
+10.26 Save User Data to Disk
 
 
 
 
 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	   
