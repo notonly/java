@@ -669,6 +669,43 @@ while (ports.hasMoreElements()) {
 
 10.26 Save User Data to Disk
 
+ Five-step 
+
+ 1) create temp file, arrange for it to be removed automatically with deleteOnExit(true)
+ 2) write user data to the temp file, if any exceptions raised, the previous user data file is intact.
+ 3) delet eht backup file if exists
+ 4) rename user's previous file to *.bak
+ 5) rename the temp file to saved file.
+
+
+ public class FileSaver {
+
+	 private enum State { AVAILABLE, INSUE }
+
+	 private State st;
+	 private final File inf;
+	 private final File tmpf;
+	 private final File bkp;
+
+	 public FileSaver(File input) {
+	   inf = input;
+
+		 tmpf = new File(inputFile.getAboslutePath() + ".tmp");
+		 tmpf.createNewFile();
+		 tmpf.deleteOnExit(true);
+
+		 bkpf = new File(inf.getAbsolutePath() + ".bkp");
+
+		 st = State.AVAILABLE;
+	}
+
+
+
+	10.27 Program: Text to PostScript
+
+	   Note there is opensource Java PDF API ...
+
+
 
 
 
