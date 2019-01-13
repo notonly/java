@@ -841,6 +841,42 @@ String s = sClazz.newInstance();
 
 
 
+23.5 Constructing a Class from Scratch with a ClassLoader
+
+***) JVM has a built-in class loader
+***) examine the URLClassLoader, to loadd class via internet
+***) create own classloader, and use it
+
+
+1) when write a class loader, loadClass() method needs to get the "class file" into a byte array (read the class file into byte array), 
+2) convert the byte array into a Class object, and return the result
+
+
+<=== book does not give example; 
+
+// https://www.baeldung.com/java-classloaders
+
+1) Bootstrap class loader
+   parent of all other classloaders
+2) Extension Class Loader
+   to load exntensions of the standard core Java classes
+3) System Class Loader
+   loads files found in CLASSPATH 
+
+
+***) NoClassDefFoundError 
+***) ClassNotFoundException
+
+if classloader not able to find the class;  but what is the difference?
+
+
+// will follow-up this post :  https://www.baeldung.com/java-classloaders
+
+
+
+
+
+
 
 
 
