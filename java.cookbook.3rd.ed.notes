@@ -831,6 +831,15 @@ private final int REPL.$JShell$30$Test1.hash : 33
 
 
 
+23.4 Loading and Instantiating a class dynamically
+
+
+*** using class.forName("class-name") and class's newInstance() method
+
+Class<String> sClazz = (Class<String>) Class.forName("java.lang.String");
+String s = sClazz.newInstance();
+
+
 
 
 
