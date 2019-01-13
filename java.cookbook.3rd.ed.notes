@@ -873,6 +873,51 @@ if classloader not able to find the class;  but what is the difference?
 // will follow-up this post :  https://www.baeldung.com/java-classloaders
 
 
+23.6 Performance Timing
+
+System.currentTimeMillis()
+
+JavaOne 2003 paper "Garbage Collection in the Java HotSpot Virtual Machine"
+
+JavaOne 2007 talk by the same GC Development team "Garbage-Collection-Friendly Programming"
+
+JavaOne 2010 "The Garbage Collection MythBusters"
+
+
+23.7 Printing Class Information
+
+  getFields() and getMethods() ...
+
+
+
+23.8 Listing Classes in package
+
+final Enumeration<URL> urls = Thread.currentThread()
+																		.getContextClassLoader()
+																		.getResources(pageName.replace(".", "/"));
+
+
+23.9 Using and Defining Annotations (this is how JUnit was built)
+
+***) apply annotations in code use @AnnotationName before class/method/field 
+
+***) define annotations with @interface at the same level as class, interface etc.
+
+
+1) public @interface IExpressAnnotation { } 
+
+2) javac IExpressAnnotation
+
+3) javap IExpressAnnotation  
+
+   will display the following :
+
+	 public interface IExpressAnnotation extends java.lang.annotation.Annotation {
+}
+
+
+
+
 
 
 
