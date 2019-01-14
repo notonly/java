@@ -855,13 +855,24 @@ String s = sClazz.newInstance();
 <=== book does not give example; 
 
 // https://www.baeldung.com/java-classloaders
+// This 5-blogs also helped get more information:  https://analyzejava.wordpress.com/2014/09/25/java-classloader-what-is-a-classloader/
 
-1) Bootstrap class loader
+1) Bootstrap class loader              <== implemented in C/C++
    parent of all other classloaders
+
+	 can load java.lang.System, java.lang.Integer, etc
+
 2) Extension Class Loader
    to load exntensions of the standard core Java classes
+
+	 load classes from $JAVA_HOME/lib/ext
+
 3) System Class Loader
+
    loads files found in CLASSPATH 
+
+
+***) 
 
 
 ***) NoClassDefFoundError 

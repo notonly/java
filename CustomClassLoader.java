@@ -33,23 +33,40 @@ public class CustomClassLoader extends ClassLoader {
 			e.printStackTrace();
 		}
 
+		try {
+			if (is != null) {
+				is.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return bos.toByteArray();
 	}
 
 	public static void main(String[] argvs) throws Exception {
 		CustomClassLoader ccl = new CustomClassLoader();
 
-		Class<ReflectionNewInstance> c = (Class<ReflectionNewInstance>) ccl.findClass("ReflectionNewInstance");
+		Class<ReflectionNewInstance> clazz = (Class<ReflectionNewInstance>) ccl.findClass("ReflectionNewInstance");
 
-		System.out.println("ReflectionNewInstance obj : " + c);
+		System.out.println("\nReflectionNewInstance obj : " + clazz);
 
-		System.out.println("c.newInstance() = " + c.newInstance());
+		System.out.println("\nclazz.newInstance() = " + clazz.newInstance());
 
-		ReflectionNewInstance rni = c.newInstance();
-		rni.setValue("custom class loader");
+		Object rni = clazz.newInstance();
 
-		System.out.println("after customClassLoader, and newInstance called on that class "
-				+ "we got instance and value : " + rni.getValue());
+
+		// Notice invoking on both setValue and getValue methods;  and setValue has one parameter
+		// https://analyzejava.wordpress.com/2014/09/25/java-classloader-write-your-own-classloader/
+		// and 
+		// http://tutorials.jenkov.com/java-reflection/methods.html
+		System.out.println("\nTo invoke CustomClassLoader's getMethod and then invoke on the method\n");
+		clazz.getMethod("setValue", String.class)
+			   .invoke(rni, "^^^ ****   invoking  from Dynamically created instance");
+
+		System.out.println("\nafter customClassLoader, and newInstance called on that class "
+				+ "we got instance and value : " 
+				+ clazz.getMethod("getValue").invoke(rni) + "\n\n");
 	}
 
 }
