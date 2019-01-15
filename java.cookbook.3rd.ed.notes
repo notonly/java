@@ -928,6 +928,57 @@ final Enumeration<URL> urls = Thread.currentThread()
 
 
 
+***)  using javap to check Java Annotation class
+
+javap java.lang.annotation.Annotation
+
+javap java.lang.annotation.Annotation
+Compiled from "Annotation.java"
+public interface java.lang.annotation.Annotation {
+  public abstract boolean equals(java.lang.Object);
+  public abstract int hashCode();
+  public abstract java.lang.String toString();
+  public abstract java.lang.Class<? extends java.lang.annotation.Annotation> annotationType();
+}
+
+
+
+***) Annotation can be configured that compiler will only allow it in certain points in the code.
+
+
+// Define annotation
+
+@Target(ElementType.TYPE)              // only applies MyAnnotation to class/interface type
+@Retention(RetentionPolicy.RUNTIME)    // MyAnnotation is preserved at Runtime 
+public @interface MyAnnotation {
+  public boolean fancy() default false;
+	public int order() default 20;
+}
+
+
+// Using custom annotation
+@MyAnnotation(fancy = true, order = 11)
+@Resource(name = "Somestuff")
+public class FancyOrderedStuff {
+  Class<?> c = FancyOrderedStuff.class;
+
+	System.out.println("Class " + c.getName() + " has following annotations: ");
+
+	for (Annotation a : c.getAnnotations()) {
+	  if (a instanceof MyAnnotation) {
+		  MyAnnotation ma = (MyAnnotation) a;
+			System.out.println("\t" + a + " with fancy=" + ma.fance() 
+			                            + "and order=" + ma.order());
+		} else {
+		  System.out.println("\tdifferent annotation than MyAnnotation: " + a);
+		}
+	}
+}
+
+
+
+
+
 
 
 
