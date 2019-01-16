@@ -989,6 +989,54 @@ public class FancyOrderedStuff {
 
 
 
+Chapter 5 -- Numbers
+
+int    -- 32-bits
+long   -- 64-bits
+
+float  -- 32-bits
+double -- 64-bits
+
+char   -- 16-bits
+
+
+BigInteger -- unlimited-size  (Arbitrary-size immutable integer value)  <-- I did Not used much 
+
+BigDecimal -- precision, used a lot (Arbitrary-siz-and-precision immutable floating-point value)
+
+
+5.1 
+
+   Double.parseDouble("1.2");
+
+
+5.2 
+   
+	 Casting and downcast  
+
+
+5.3 Generating Random Numbers
+
+java.lang.Math.random()
+
+seed
+
+.nextInt()
+
+.nextDouble()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
