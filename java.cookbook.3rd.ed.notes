@@ -1029,6 +1029,54 @@ seed
 
 
 
+Chapter 6 -- Dates and Times 
+
+1) Stephen Colbourne -- Joda-Time, and JSR-310
+
+2) "ISO 8601" --  2019-01-15T10:23:05
+
+3) operations -- adding/subtracting dates/time
+
+4) almost all objects are immutable, thread-safe (cost?  in not-requiring thread-safe env)
+
+5) "no" setters,  also "getters" not making sense,  New Java Date Time API provides new methods to replace setter/getter ...
+
+   at -- combines with another object
+	 format
+	 from -- Factory: converting input parameters to instance of target
+	 get -- Retrieve one field from the instance
+	 is  -- examine the state of a given obj
+	 minus --
+	 of -- Factory: create new method by parsing inputs
+	 parse -- Factory: parse a single input to produce instance of target
+	 plus --
+	 to -- convert this object to another type
+	 with -- return a copy with the given field changed, replaces "setters"
+
+
+6) Y2k 
+
+7) Y2038 -- avoided by applying 64-bit time value in milliseconds since 1970 will not overflow to August 17,292,278.994 CE 
+
+
+8) New Date/Time API (packages)
+
+java.time           -- dates, times, instants, and durations
+java.time.chrono    -- API for non-ISO calendar systems
+java.time.format    -- formatting classes
+java.time.temporal  -- date and time access using fields, units, adjusters
+java.time.zone      -- zone and the rules
+
+
+9) basis:
+
+Instant -- a point in time since 1/1/1970, expressed in nanoseconds
+Duration -- length of time, expressed in nonoseconds
+
+
+
+
+
 
 
 
