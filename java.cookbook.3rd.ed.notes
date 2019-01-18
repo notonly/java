@@ -1074,6 +1074,66 @@ Instant -- a point in time since 1/1/1970, expressed in nanoseconds
 Duration -- length of time, expressed in nonoseconds
 
 
+10) Human time
+
+Calendrical  -- connects to low-level api
+DateTimeFields -- stores a map of field-value pairs
+DayOfWeek -- 
+LocalDate
+LocalDateTime
+MonthDay
+OffsetDateTime
+OffsetDateTime
+Period
+ZonedDateTime
+Year
+YearMonth
+
+
+11) Utils
+
+ZoneOffset
+ZoneId
+
+
+
+// 5 hours ago
+LocalTime time = LocalTime.now().minusHours(5);
+
+
+// current time 
+
+LocalDate d = LocalDate.now();
+
+LocalTime t = LocalTime.now();
+
+LocalDateTime dt = LocalDateTime.now();
+
+
+// Format date and time
+
+java.time.format.DateTimeFormatter
+
+
+// Converting among dates/times, YMDHMS, and Epoch seconds
+
+//   convert number of seconds since the Epoch, to a local date/time
+Instant epochSec = Instant.ofEpochSecond(1000_000L);
+
+ZoneId zid = ZoneId.systemDefault();
+
+ZonedDateTime dt = ZoneDateTime.ofInstant(epocSec, zid);
+
+
+//   convert date/time to epoch seconds
+long epochsec = ZonedDateTime.now().toInstant().getEpochSecond();
+
+LocalDateTime now = LocalDateTime.now();
+ZonedDateTime zdt = now.atZone(ZoneId.of("Cananda/Pacific"));
+
+
+//
+LocalDateTime ldt = LocalDateTime.parse("2019-01-18T10:01");
 
 
 
