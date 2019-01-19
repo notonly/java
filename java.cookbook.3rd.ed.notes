@@ -1137,6 +1137,48 @@ LocalDateTime ldt = LocalDateTime.parse("2019-01-18T10:01");
 
 
 
+6.5 difference between two dates
+
+using Period.between() 
+
+LocalDate endofcentuary = LocalDate.of(2000, 12, 31);
+LocalDate mnow = LocalDate.now();
+
+Period diff = Period.between(endofcentuary, mnow);
+
+
+6.6 Adding/subtracting date or calendar
+
+LocalDate now = LocalDate.now();
+Period p = Period.ofDays(100);
+LocalDate then = now.plus(p);
+
+
+6.7 Interfacing with legacy date and calendar classes.
+
+  
+Legacy             to-legacy                to-new
+
+util.Date         date.from(Instant)        Date.toInstant()
+util.Calendar     calendar.toInstant()      -
+GregorianCalendar  .from(ZonedDateTime)     calendar.toZonedDateTime()
+util.Timezone     -                         timeZone.toZoneId()
+DateTimeFormatter -                         dateTimeFormater.toFormat()
+
+
+
+
+Date dt = new Date();
+LocalDatetime new = LocalDateTime.ofInstant(dt.toInstant(), ZoneId.systemDefault());
+
+
+Calendar c = Calendar.getInstance();
+LocalDateTime nc = LocalDateTime.ofInstant(c.toInstant(), ZoneId.systemDefault());
+
+
+
+
+
 
 
 
