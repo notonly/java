@@ -1583,6 +1583,504 @@ java.util's singletonList(), singletonMap(), singletonSet()
 
 
 
+8.10 Create own Exceptions
+
+
+8.11 Using Dependency Injection
+
+
+
+
+Chapter 3 -- String
+
+
+3.2 breaking string into words
+
+  StringTokenizer st = new StringTokenizer("Hello world from Java");
+
+	while (st.hasMoreTokens()) {
+	  System.out.println("Token: " + st.nextToken());
+	}
+
+
+3.3 StringBuilder
+
+
+
+
+3.4 processing a string one character at a time
+
+for (char c : "Hello world".toCharArray()) {
+ ...
+}
+
+
+
+
+3.6 Converting between Unicode characters and Strings
+
+
+StringBuilder sb = new StringBuilder();
+
+sb.append('\u00a5');  // Japanese Yen symbol
+
+
+
+3.7 Reversing a string by word or by character
+
+// reverse by character
+StringBuilder.reverse() ...
+
+// reverse by word
+   a. StringTokenizer
+	 b. using Stack to push and pop
+
+
+  ^^ but, why not looping from the last element, and backward ...
+
+
+
+Chapter 4 -- Pattern matching with Regular Expression  (RegEx)
+
+
+subexpression           matches                          notes
+\^                      starting of line/string 
+
+$                       end of line/string
+
+\b                      word boundary
+\B                      NOT a word boundary
+
+\A                      Begining of entire string
+
+
+
+\z                      end of entire string
+\Z                      end of entire string (except allowable final line teminator)
+
+
+[...]                   "Character class", any one character from those listed
+[\^...]                 Any one character NOT from those listed
+
+
+alternation and grouping
+
+(...)                   grouping (capture groups)
+|                       alternation
+(?:_re_)                noncapturing parenthsis
+
+\G                      end of previous match
+\n                      back-reference to capture group number "n"
+
+
+Normal (greedy) quantifiers
+
+{m,n}                   Quantifier fro "from m to n repetitions"
+{m, }                   Quantifier for "m or more repetitions"
+{m}   								  Quantifier for "exactly" m repetitions
+{ ,n }                  Quantifier for 0 upto n repetitions
+\*                      short for {0, }
++                       short for {1,}
+?                       short for 0 or 1 repetition
+
+
+Reluctant (non-greedy) quantifiers
+
+{m,n}?                  Reluctant quantifier for "from m to n repetitions"
+{m,}?                   Reluctant quantifier for "m or more repetitions"
+{,n}?                   Reluctant quantifier for "upto n repetitions"
+\*?                     Reluctant quantifier for 0, or more
++?                      Reluctant quantifier for 1, or more
+??                      Reluctant quantifier for 0 or 1 time
+
+
+Possessive (very greedy) quantifiers
+{m,n}+                  Possessive quantifier for "from m to n repetitions"
+{m, }+                  Possessive quantifier for "m or more repetitions"
+{,n }+                  Possessive quantifier for "upto n repetitions"
+\*+                     Possessive quantifier for 0 or more
+\++                     Possessive quantifier for 1 or more
+?+                      Possessive quantifier for 0 or 1
+
+
+Escapes and shorthands
+\
+
+\Q											Escape (quote) all characters up to \E
+\E 											ends quoting begun with \Q
+
+\t
+\r
+\n
+\f                      (form feed) <-- still need to check when it's used?
+
+\w   										character in  a word
+\W											a NON-Word character
+
+\d											Numeric digit
+\D											NON-digit characr
+
+\s											Whitespace
+\S											a NON-whitespace character
+
+
+Unicode blocks (representative samples)
+
+\p{InGreek}   					a character in Greek block
+\P{InGreek}  						a NON-Greek-block character
+
+\p{Lu}									an uppercase letter
+\p{Sc}									A currency symbol
+
+
+POSIX-style character classes
+(defined only for US-ASCII)
+
+\p{Alnum}								Alphanumeric character   [A-Za-z0-9]
+\p{Alpha}								Alphabetic characters
+\p{ASCII}								Any ASCII character			 [\x00-\x7F]
+\p{Blank}								space and tab
+\p{Space}								space character
+\p{Cntrl}								Control character
+\p{Digit}								Numeric digit characters
+\p{Graph}								Printable and visible characters (not space or control characters)
+
+\p{Print}								Printable characters
+
+\p{Punct}								Punctuation char
+
+\p{Lower} 							Lowercase chars [a-z]
+\p{Upper}
+
+\p{XDigit}							Hexadecimal digits characters
+
+
+
+*** UNIX regex only has greedy matching
+
+*** Java regex has "Unicode characters" covered,  some languages may not have such function
+
+*** RegEx compiles strings which are also compiled by "javac";  usually we need 2 levels of escaping for any special characters, including backslash, double quotest ...
+
+    a. for example, RegEx  :  
+					"You said it\."
+		b. has to type in code as
+		      "\"You said it\\.\""
+
+
+    c. so, RegEx  \d+  writting in Java code needs to be \\d+
+
+
+
+
+4.2 RegEx : Test for a pattern
+
+java.util.regex
+
+
+String pattern = "^Q[^u]\\d+\\.";
+
+Pattern p = Pattern.compile(pattern);
+
+String[] input = {
+  "QA777. is the next flight. It is on time.",
+	"Quak, Quack, Quack!"
+}
+
+for (String s : input) {
+  boolean found = p.matcher(s).lookingAt();
+
+	...
+}
+
+
+
+4.3 Finding matches
+
+String patt = "Q[^u]\\d+\\.";
+
+Pattern r = Pattern.compile(patt);
+
+String line = "Order QT300. Now!";
+
+Matcher m = r.matcher(line);
+
+if (m.find()) {
+  System.out.println(m.group(0));
+} else {
+  System.out.println("no match");
+}
+
+
+
+String input = "Adams, John Quincy";
+Pattern r = Pattern.compile("(.*), (.*)");
+Matcher m = r.matcher(input);
+System.out.println(m.group(2) + " " + m.group(1));
+
+
+
+4.4 Replacing matched text
+
+replaceAll(newString)
+
+appendReplacement(StringBuffer, newString)
+
+appendTail(StringBuffer)
+
+
+String patt = "\\bfavor\\b";
+String input = "Do me a favor? Fetch my favorite";
+//
+Pattern r = Pattern.compile(patt);
+Matcher m = r.matcher(input);
+System.out.println("ReplaceAll : " + m.replaceAll("favour"));   // the result is ==>  ReplaceAll : Do me a favour? Fetch my favorite
+
+
+
+m.reset();
+StringBuffer sb = new StringBuffer();
+while(m.find()) {
+	m.appendReplacement(sb, "favour");
+}
+m.appendTail(sb);   // copy remainder
+System.out.println(sb.toString());
+
+// result ==>  Do me a favour? Fetch my favorite.
+
+
+
+4.5 Print all occurrences of a pattern
+
+Pattern patt = Pattern.compile("[A-Za-z][a-z]+");
+BufferedReader r = new BufferedReader(new FileReader(args[0]));
+String line;
+
+while ((line = r.readLine()) != null) {
+  Matcher m = patt.matcher(line);
+
+	while (m.find()) {
+
+	  // simplest method
+		// System.out.println(m.group(0));
+
+		// Get starting position of the txt
+	  int start = m.start(0);
+		int end   = m.end(0);
+
+		System.out.println(line.substring(start, end));
+  }
+}
+
+
+
+
+/**
+ *    NIO version
+ */
+
+// pattern string in 1st arg
+Pattern p = Pattern.compile(args[0]);
+
+// File name in 2nd arg
+FileChannel fc = new FileInputStream(args[1]).getChannel();
+
+// map the file content
+ByteBuffer buf = fc.map(FiuleChannel.MapMode.READ_ONLY, 0, fc.size());
+
+// Decode ByteBuffer into CharBuffer
+CharBuffer cb = Charset.forName("ISO-8859-1").newDecoder().decode(buf);
+
+Matcher m = p.matcher(cb);
+while (m.find()) {
+  System.out.println(m.group(0));
+}
+
+
+
+4.6 Printing lines containing a pattern
+
+
+  grep-like program
+
+
+
+4.7 Controlling case in regular expression
+
+*** using flags  Pattern.CASE_INSENSITIVE to indicate that matching should be case-independent 
+
+Pattern p = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+
+p.matches(inputString);
+
+
+
+*** Pattern.CANNON_EQ (cannonical equivalence), chars matched by their base character, so that chars followed by the "combining char mark" (like the accent) can be matched either by the composite char or the letter followed by character mark for the accent
+           .CASE_INSENSITIVE
+					 .COMMENTS   (cause whitespace and comments to be ignored in pattern)
+					 .DOTALL     (allows dot to match any regular char or newline)
+
+
+
+4.8 Matching "Accented" or Composite characters
+
+String pStr = "\u00e9gal";  // egal
+String[] input = {
+ "\u00e9gal", // egal -- this one had better match in this example
+ "e\u0301gal", // e + "combing acute accent"
+ "e\u02cagal", // e + "modifier letter acute accent"
+ "e'gal", // e + single quote
+ "e\u--b4gal", // e + Latin-1 "acute"
+};
+
+Pattern p = Pattern.compile(pStr, Pattern.CANNON_EQ);
+Arrays.stream(input).forEach(
+  s -> {
+	  if (p.matcher(s).matches()) {
+			System.out.println(pStr + " matches input " + s);
+		} else {
+			System.out.println(pStr + " NOT match input " + s);
+		}
+	});
+
+
+
+4.9 Matching Newlines in Text
+
+
+\n or 
+\r
+
+and
+
+***  Pattern.MULTILINE
+
+String input = "I dream of engines\nmore engines, all day long";
+
+String[] pStrs  = {
+ "engines.more engines",
+ "ines\nmore",
+ "engines$"
+};
+
+Arrays.stream(pStrs).forEach(
+	pstr -> {
+		Pattern p = Pattern.compile(pstr);
+		boolean found = p.matcher(input).find();
+		System.out.println("DEFAULT match " + found);
+
+		Pattern p2 = Pattern.compile(pstr, Pattern.DOTALL | Pattern.MULTILINE);
+		found = p2.matcher(input).find()
+		System.out.println("Multiline match " + found);
+  });
+
+
+
+4.10 Apache Logfile Paring 
+
+1) Apache log file excerpt
+
+123.45.67.89 - - [27/Jan/2019:09:27:09 -0400] "GET /java/javaResources.html HTTP/1.0" 200 10450 "-" "Mozilla/4.6 [en] (X11; U; OpenBSD 2.8 i386; Nav)"
+
+
+2) StringTokenizer may do the work,
+   RegEx can do good as well
+
+	 \^([\d.]+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4}\] "(.+?)" (\d{3}) (\d+) "([\^"]+)" "([\^"]+)"
+
+
+*** the above NON-greedy quantifier +?  in \"(.+?)\"
+         to match the quoted strings
+
+    cannot just use .+ because that would match TOO much (up to the quote at the end of the line).  
+
+
+
+^^^ the above Pattern-String in Java code (note the Escape to the pattern-string)
+
+String input = "123.45.67.89 - - [27/Jan/2019:09:27:09 -0400] \"GET /java/javaResources.html HTTP/1.0\" 200 10450 \"-\" \"Mozilla/4.6 [en] (X11; U; OpenBSD 2.8 i386; Nav)\"";
+
+String pstr = 
+  "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+-]\\d{4}\\] " 
+	+ "\"(.+?)\" (\\d{3}) (\\d+) \"([^\"]+)\" \"([^\"])\"";
+
+
+Pattern p = Pattern.compile(pstr);
+Matcher m = p.matcher(input);
+
+if (!matcher.matches() 
+    || LogExample.NUM_FIELDS != matcher.grouCount()) {
+		System.err.println("bad log entry (or problem with regex):");
+		return;
+}
+
+System.out.println("IP: " + matcher.group(1));
+System.out.println("UserName: " + matcher.group(2));
+System.out.println("Date/time: " + matcher.group(3));
+System.out.println("Request: " + matcher.group(4));
+System.out.println("Response: " + matcher.group(5));
+System.out.println("Bytes Sent: " + matcher.group(6));
+if (!matcher.group(8).equals("-")) {
+  System.out.println("Referer: " + matcher.group(8));
+}
+System.out.println("User-Agent : " + matcher.group(9));
+
+
+
+
+
+
+4.11 Data Mining
+
+
+public final static String DATA_FILE = "book.sales";
+public final static String GRAPH_FILE = "book.png";
+// Note how this will be called from Java main method
+public final static String PLOTTER_PROG = "/usr/local/bin/gnuplot";
+
+public static void main(String[] args) throws Exception {
+  Properties p = new Properties();
+
+	p.load(new FileInputStream(
+	  args.length == 0 ? "bookrank.properties" : args[1]));
+
+	// get title, publisher, author, url from the above properties
+
+	.
+	.
+	.
+
+
+	// DRAW the Graph, using external plotting program against all historical data
+	// can use gnuplot, R or any other math/graph program
+	// also can use Java Plotting APIs
+	PrintWriter pw = new PrintWriter( new FileWriter(DATA_FILE, true));
+
+	String gnuplot_cmd = 
+		  "set term png\n" 
+		+ "set output \"" + GRAPH_FILE + "\"\n"
+		+ "set xdata time\n"
+		+ "set ylabel \"Biij sakes rabk\"\n"
+		+ "set bmargin 3\n"
+		+ "set logscale y\n"
+		+ "set yrange [1:60000] reverse\n"
+		+ "set timefmt \"%m %d %H %M %S %Y\"\n"
+		+ "plot \"" + DATA_FILE 
+		  + "\" using 1:7 title \"" + title + "\" with lines\n"; 
+
+
+
+  if (!new File(PLOTTER_PROG).exists()) {
+		System.out.println("plotting software not installed");
+		return;
+	}
+
+	Process proc = Runtime.getRuntime().exec(PLOTTER_PROG);
+	PrintWriter gp = new PrintWriter(prc.getOutputStream());
+	gp.print(gnuplot_cmd);
+	gp.close();
+}
+
 
 
 
