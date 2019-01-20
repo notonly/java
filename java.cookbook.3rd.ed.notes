@@ -1178,6 +1178,280 @@ LocalDateTime nc = LocalDateTime.ofInstant(c.toInstant(), ZoneId.systemDefault()
 
 
 
+Chapter 7 -- Java Data Structure
+
+
+7.1 arrays
+
+int[] nbrs = {1, 2, 3};
+String[] words = new String[3]; 
+
+int[][] matrix = new int[10][];
+IntStream.range(0, 10).forEach(i -> matrix[i] = new int[5]);  // create 10x5 matrix
+
+IntStream.rangeClosed(0, 9)....
+
+
+7.2 resizing array
+
+
+7.3 collections
+
+Interface   Resizable-array     Hashed-table        Linked-list    Balanced-tree
+Set                               HashSet                            TreeSet
+List        ArrayList, Vector                        LinkedList
+Map                             HashMap, HashTable
+
+
+
+7.4 ArrayList
+
+add(Object)
+add(int i, Object o)
+clear()
+contains(Object)
+get(int)
+indexOf(Object)
+remove(Object),  remove(int)
+toArray()
+
+
+7.5 Using Generics
+
+List<String> words = new ArrayList<>();
+
+
+7.6 Avoid casting by using generics
+
+// parameterized class
+public class MyStack<T> implements SimpleStack<T> {
+.
+.
+.
+
+}
+
+
+// parameterized methods
+
+
+7.7 Iterate structured data
+
+Iterable.forEach
+foreach
+java.util.Iterator
+Enumeration
+
+
+Iterator<MyData> iterator = myDataList.iterator();
+while(iterator.hasNext()) {
+  System.out.println("print data : " + iterator.next());
+}
+
+
+7.8 rmove duplicates by using Set
+
+
+7.9 Iterator
+
+
+7.10 Structuring data in a Linked List
+
+ListList<String> words ...
+
+words.hasNext();
+words.hasPrevious();
+
+
+
+7.11 Hashtable, HashMap
+
+entrySet()  -->  a set of Map.Entry
+keySet()
+valueSet()
+
+
+
+7.12 Storing Strings in Properties and Preferences
+
+java.util.prefs.Preferences
+java.util.Properties
+
+
+Preferences prefs = Preferences.userNodeForPackage(MyClass.class);
+
+String txt = prefs.get("textFontName", "lucida-bright");
+...
+
+prefs.put("textFontName", "times-roman");
+
+Preferences child = prefs.node("a/b");
+child.putInt("medium", 41);
+child.putDouble("pi", Math.PI);
+
+
+// Dupe the subtree in an XML
+prefs.exportSubtree(System.out);
+
+==> produce the tree in xml
+
+
+**) properties
+
+Properties props = new Properties();
+
+props.put("test", "passed");
+props.put("result", 55);
+
+// Load additional properties
+props.load(System.in);
+
+// list merged properties
+props.list(System.out);
+
+
+
+7.13 Sorting Collection
+
+Arrays.sort()
+Collections.sort()
+
+
+public class SubstrComparator implements Comparator<String> {
+ 
+  @Override
+	public int compare(String s1, String s2) {
+	  return s1.substring(1).compareTo(s2.substring(1));
+	}
+
+}
+
+
+String[] words = {"a", "z", "d", "b"};
+
+Arrays.sort(words, new SubstrComparator());
+
+
+
+***)  Comparable vs Comparator 
+
+
+java.lang.Comparable<T>   provides natural order to objects, written in the class whose objects are being sorted
+
+        int compareTo(T o)
+
+
+java.util.Comparator<T>   providers total control over sorting objects of another class.  
+
+        int compare(T o1, T o2)
+				boolean equals(T clazz2)
+
+
+
+7.14 Avoiding the urge to sort
+
+// TreeSet keeps the order, use a comparator, String.CASE_INSENSITIVE_ORDER for instance
+
+TreeSet<String> ss = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+ss.add("test");
+ss.add("value");
+
+
+// Convert HashMap to TreeMap, hence get sorted
+
+TreeMap sorted = new TreeMap(unsoretedHashMap);
+
+
+
+7.15 Finding an object in a collection
+
+
+Methods                          implementing classes
+binarySearch()                  Arrays, Coolections
+contains()                      ArrayList, HashSet, HashTable, LinkedList, Properties, Vector
+containsKey()                   HashMap, HashTable, Properties, TreeMap
+containsValue()                  same as the ablve
+indexOf()                       ArrayList, LinkedList, List, Stack, Vector
+search()                        Stack
+
+
+
+7.16 Converting collection to an array
+
+// not good example, empty array
+(new ArrayList<String>().toArray();
+
+
+
+7.17 Creating own Iterator
+
+public class ArrayIterator<T> implements Iterable<T>, Iterator<T> {
+  protected T[] data;
+
+	protected int idx = 0;
+
+	public ArrayIterator(final T[] d) {
+	  setData(d);
+	}
+
+
+  // methods of Iterable
+	@Override
+	public Iterator<T> iterator() {
+	  index = 0;
+		return this;
+	}
+
+
+	// methods of Iterator
+
+	@Override
+	public boolean hasNext() {
+	  return (index < data.length);
+	}
+
+
+	@Override
+	public T next() {
+	  if (hasNext()) {
+		  return data[index++];
+		}
+
+		throw new NoSuchElementException("only " + data.length + " elements");
+	}
+
+
+	@Override
+	public void remove() {
+	  .
+		.
+		.
+	}
+
+}
+
+
+
+
+7.18 Stack
+
+
+.
+.
+.
+
+
+7.19 Multidimensional Structures 
+
+.
+.
+.
+
+
+7.20 Timing comparisons
+
+
+
 
 
 
