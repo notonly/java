@@ -174,11 +174,13 @@ public List<Clazz> search(Predicate p);
    interface Bar {
 	    default String filter(String s) {
 				return "Filtered " + s;
+			}
 	  }
 
 		interface Foo {
 			  default String convolve(String s) {
 				  return "Convolved " + s;
+				}
 		}
 
 
@@ -311,6 +313,7 @@ c) use Reader class to get Multiple-Encodings
 			  java.util.Arrays.fill(pwd, ' ');
 			}
 		}
+	}
 
 
 	  
@@ -698,6 +701,7 @@ while (ports.hasMoreElements()) {
 
 		 st = State.AVAILABLE;
 	}
+}
 
 
 
@@ -2080,6 +2084,370 @@ public static void main(String[] args) throws Exception {
 	gp.print(gnuplot_cmd);
 	gp.close();
 }
+
+
+
+
+
+
+
+  if (!new File(PLOTTER_PROG).exists()) {
+		System.out.println("plotting software not installed");
+		return;
+	}
+
+	Process proc = Runtime.getRuntime().exec(PLOTTER_PROG);
+	PrintWriter gp = new PrintWriter(prc.getOutputStream());
+	gp.print(gnuplot_cmd);
+	gp.close();
+}
+
+
+
+
+4.12 Full Grep
+
+^^ the book has code (also on Github),  lot of code to handle options, files checking .... the core RegEx handling not much code needed.
+
+
+
+
+Chapter 15 Internationalization and Localization
+
+15.1 Creating a button with I18N resources
+
+1) get ResourceBundle
+
+ResourceBundle rb = ResourceBundle.getBundle("Menus");
+
+2) Use Resourcebundle to fetch localized version of each control name
+
+try {
+  label = rb.getString("exit.label");
+} catch (MissingResourceException e) {
+  label = "Exit";  // fallback
+}
+
+
+*** what happened at Runtime?
+
+Default locale is platform-dependent
+
+UNIX/POSIX
+   
+	   per user;  LANG env variable
+
+Windows
+
+     control panel -> Regional settings
+
+Mac OS X
+
+     System Pref -> Language & Text
+
+
+
+*** ResouceBundle.getBundle() locates a "file" with the named resource bundle name (Menus, in the above example),  plus an underscore and the locale name (if any locale is set), plus another underscore and the locale variabtion (if any variation is set), plus the .properties suffix.
+
+1) default locale
+
+   Menus.properties
+
+2) French-Canadian 
+
+   Menus_fr_CA.properties
+
+.
+.
+.
+
+
+*** setting the locale 
+
+1) On Unix,  in .profile file,  
+
+   export LANG=es_US
+
+2) or, in test, can set it in System-Properties at Runtime from command-line option -D
+
+   java -Duser.language=es pkg.I18NExample
+
+
+
+15.2 List available Locales
+
+Locale.getAvailableLocales()
+
+
+15.3 Creating a Menu with I18N Resources
+
+
+... similar to the above 15.1 example, the try-catch way with fallback 
+
+
+15.4 Writing Internationalization Convenience Routtines
+
+Menu makeMenu(ResourceBundle rb, String menuNm) {
+  String label;
+
+	try {
+		(label = rb.getString(menuNm + ".label");
+	} catch (Exception e) {
+		label = menuNm;
+	}
+
+	return menu;
+}
+
+
+
+15.5 Creating a Dialog with I18N Resources
+
+similar to the above menu example
+.
+.
+.
+
+
+15.6 Creating a Resource Bundle
+
+1) can create java.util.ResourceBundle "subclass", but, better yet
+2) create textual properties files, and ResourceBundle.getBundle() will pick them up
+
+for example,
+
+# Default Menu properties
+# the file menu
+file.label=File Menu
+file.new.label=New File
+file.new.key=N
+
+
+15.7 Extracting strings from own program
+
+.
+.
+.
+
+
+15.8 Using particular Locale 
+
+***  Locale.getInstance(Locale)
+
+Locale l1 = Locale.FRANCE;
+Locale l2 = new Locale("en", "UK");
+
+DateFormat frDF = DateFormat.getDateInstance(DateFormat.MEDIUM, l1);
+
+...
+
+
+
+15.9 Setting Default Locale
+
+Locale.setDefault();
+
+
+Locale.setDefault.(Locale.FRANCE);
+
+
+
+15.10 Formatting messages with MessageFormat
+
+String s = MessageFormat.format("At {0, time} on {0, date}, {1} {2}", date, 35, "DOB");
+
+
+
+
+
+*******  Server Side Programming  ***********
+
+By the way, this book missed "Threads" part ...
+
+
+16.1 open server socket
+
+ServerSocket sock;
+Socket clientSock;
+
+try {
+	sock = ServerSocket(9999);  // porter number 9999
+
+	while((clientSock = sock.accept()) != null) {
+		process(clickSock);
+	}
+}
+
+
+
+
+
+*** more info
+
+public static final short PORT = 9999;
+
+// network interface
+public static final String INSIDE_HOST = "acmewidgets-inside";
+
+// number of clients allowed to queue
+public static final int BACKLOG = 10;
+
+ServerSocket sock;
+Socket clientSock;
+
+try {
+	sock = new ServerSocket(PORT, BACKLOG, InetAddress.getByName(INSIDE_HOST));
+
+	while ((clientSock = sock.accept()) != null) {
+		process(clientSock);		// close socket when not used
+	}
+
+	... 
+
+}
+
+
+
+
+16.2 Returning a Response (String or Binary)
+
+
+Socket clientSock = sock.accept();  // sock is the server socket
+BufferedReader br = new BufferedReader(new InputStreamReader(clientSock.getInputStream(), "8859_1"));
+
+PrintWriter pw = new PrintWriter(new OutputStreamWriter(clientSock.getOutputStream(), "8859_1"), true);
+
+try {
+	String line;
+	while ((line = br.readLine()) != null) {
+		pw.print(line + "\n");
+		pw.flush();
+	}
+} finally {
+	if (br != null) {
+		br.close();
+	}
+
+	if (pw != null) {
+		pw.close();
+	}
+}
+
+
+// ^^^ improvement for the above, try-resource
+
+
+
+16.3 Returning Object information Across a Network Connection
+
+*** using ObjectOutputStream 
+
+
+sock = new ServerSocket(9999);
+
+Sock clientSock;
+while((clientSock = sock.accept()) != null) {
+	ObjectOutputStream oos = new ObjectOutputStream(clientSock.getOutputStream());
+
+	oos.writeObject(new Date());
+
+	oos.close();
+}
+
+
+
+16.4 Handling Multiple clients
+
+
+ServerSocket sock;
+Socket clientSock;
+
+try {
+	sock = new ServerSocket(9999);
+
+	while (true) {
+		clientSock = sock.accept();
+
+		// create a thread to do communication
+		new HandlerThread(clientSock).start();
+	}
+} catch (IOException e) {
+	System.err.println("count not accept " + e);
+	System.exit(1);
+}
+
+
+Class HandlerThread extends Thread {
+	Socket sock;
+
+	HandlerThread (Socket s) {
+		sock = s;
+	}
+
+	public void run() {
+		try {
+			BufferedRead br = new BufferedReader(new InputStreamReader(sock.getInputStream());
+			PrintStream ps = new PrintStream(sock.getOutputStream(), true);
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				ps.print(line + "\r\n");
+				ps.flush();
+			}
+		} catch (IOException e) {
+			System.out.println()"IO Error on socket " + e);
+			return;
+		}
+	}
+}
+
+
+
+
+=============================
+
+
+Improved version  (check EchoServerThread2 code)
+
+
+
+passing "server socket" to "Thread", where 
+
+class HandlerThread2 extends Thread {
+
+	ServerSocket serverSock;
+	int threadNumber;
+
+	HandlerThread2 (ServerSocket s, int i) {
+		serverSock = s;
+		threadNumber = i;
+	}
+
+  sychronized(serverSocket) {
+		clientSock = serverSocket.accept();
+	}
+
+	BufferedReader br = new bufferedReader(new InputStreamReader(clientSock.getInputStream()));
+
+	PrintStream ps = new PrintStream(clientSock.getoutputStream(), true);
+
+	String line;
+
+	while ((line = br.readLine()) != null) {
+		ps.print(line + "\r\n");
+		ps.flush();
+	}
+
+	clientSock.close();
+
+}
+
+
+
+
+16.5 Serving the HTTP protocol
+
+
 
 
 
