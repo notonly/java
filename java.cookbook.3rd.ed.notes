@@ -2834,3 +2834,55 @@ public class JPASimple {
 18.2 JDBC setup and connection
 
 
+1) Load appropriate Driver class, which has side effect of registering with the DriverManager
+2) Get Connection object, using DriverManager.getConnection()
+ 	    Connection con = DriverManager.getConnection(dbURL, name, passwrd);
+3) Get Statement (using preparedStatement to avoid SQL-Injection)
+
+			PreparedStatement stmt = con.prepareStatement("select * from MyTable where name = ?;");
+			ps.setString(1, "John");
+
+4) Get ResultSet 
+			ResultSet rs = stmt.executeQuery();
+5) Iterate over the ResultSet
+
+			while(rs.next()) {
+				int x = rs.getInt("CustNO");
+			}
+
+6. Close Statement
+7. Close ResultSet
+8. if all done, Close Connection
+
+
+
+18.3 Connecting to a JDBC db
+
+.
+.
+.
+
+
+18.4 Using stored procedure with JDBC
+
+CallableStatement cs = conn.prepareCall("{call ListProgrammers}");
+ResultSet rs = cs.executeQuery();
+
+rs.first();  // get the first result row
+rs.updateString("password", "new-pwd");
+rs.updateRow();
+.
+.
+.
+
+
+18.7 Changing data using ResultSet
+
+refer to the above example
+
+
+18.8 Storing Results in a RowSet
+
+
+
+
