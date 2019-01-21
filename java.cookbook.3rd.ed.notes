@@ -2745,3 +2745,92 @@ check GitHub
 
 
 
+
+Chapter 18 -- Database Access
+
+
+JPA 
+
+1) write, annotate, compile POJO data classes
+2) create an XML file persistence.xml (this name is mandatory), containing the database access information, and listing the entity classes.
+3) obtain an EntityManagerFactory from the Persistence factory class
+4) Obtain an EntityManager from the EntityManagerFactory
+5) to save data, get the transaction, make the objects persistent by calling, eg, EntityManager.save(object), and commit
+6) to load data objects, load them by primary key or use query
+
+
+import javax.persistence.*;
+
+@Entity
+public class Address {
+ private int id;
+
+ private String streetAddr;
+ private String city;
+ private String cntry;
+
+ @Id
+ @GeneratedValue(strategy = GenerationType.AUTO)
+ public int getId() {
+ 	return id;
+ }
+
+}
+
+
+public class JPASimple {
+
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) {
+		
+		EntityManagerFactory nmf = null;
+		EngityManager em = null;
+
+		try {
+			emf = Persistence.createEntityManagerFactory("jpademo");
+			em = emf.createEntityManager();
+
+			EntityTransaction xaction = em.gettransaction();
+			xaction.begin();
+
+			Person p = new Person("Tom", "Hanks");
+			em.persist(p);
+			xaction.commit();
+
+			int id = p.getId();
+
+			xaction = em.getTransaction();
+			xaction.begin();
+
+			Query q = em.createQuery("select p from Person p order by p.lastName");
+
+			List<Person> lst = q.getResultList();
+
+			lst.forEach(p -> System.out.println(p.getFirstName() + ' ' + p.getLastName()));
+
+		} finally {
+
+			if (em != null) {
+				em.close();
+			}
+
+			if (emf != null) {
+				emf.close();
+			}
+		}
+	}
+}
+
+
+
+<persistence ...>
+.
+.
+.
+
+
+
+
+18.2 JDBC setup and connection
+
+
