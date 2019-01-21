@@ -2448,31 +2448,300 @@ class HandlerThread2 extends Thread {
 16.5 Serving the HTTP protocol
 
 
+public class WebServer0 {
+	public static final int HTTP_PORT = 80;
+
+	public static final String CRLF = "\r\n";
+
+	ServerSocket s;
+
+	static final String VIEW_SOURCE_URL = "https://github.com/IanDarwin/javasrc/tree/master/src/main/java/network";
+
+	public static void main(String[] argv) throws Exception {
+		System.out.println("JavaWeb Server starting...");
+
+		WebServer0 w = new WebServer0();
+		w.runServer(HTTP_PORT);
+	}
+
+	protected ServerSocket getServerSocket(int port) throws Exception {
+		return new ServerSocket(port);
+	}
+
+	public void runServer(int port) throws Exception {
+		s = getServerSocket(port);
+
+		while (true) {
+			try {
+				Socket cs = s.accept();
+				handler(cs);
+			} catch (IOException e) {
+				System.err.println(e);
+				return;
+			}
+		}
+	}
+
+
+	public void handle(Socket s) {
+		BufferedReader br;
+		PrintWriter pw;
+		String request;
+
+		try {
+			String from = s.getIntetAddress().toString();
+			br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			request = br.readLine();
+
+			pw = new PrintWriter(s.getOutputStream(), true);
+
+			pw.print("HTTP/1.0 200 Response" + CRLF);
+			pw.print("Content-type: text/html" + CRLF);
+			String s1 = "<html><head><title>Wrong System Reached</title></head>";
+			String s2 =", ....</body></html>\n";
+
+			pw.print("Content-length: " + s1.length() + from.length() + s2.length()) + CRLF);
+			pw.print(CRLF);
+			pw.print(s1 + from + s2 + CRLF);
+			pw.flush();
+			
+			s.close();
+		} catch (IOException e) {
+			System.out.println("IOException " + e);
+		}
+
+		return;
+	}
+}
+
+
+
+16.6 Securing Web Server with SSL and JSSE
+
+
+***  SSLServerSocketFactory vs ServerSocket  ***
+
+
+public class JSSEWebServer0 extends WebServer0 {
+	public static final int HTTPS = 8443;
+
+	public static void main(String[] args) throws Exception {
+		if (system.getProperty(java.net.ssl.keyStore") == null) {
+			System.err.println("must pass in a keystore via -D; see documentation");
+			System.exit(1);
+		}
+
+		System.out.println("JSSE Server starting ...");
+		JSSEWebServer0 w = new JSSEWebServer0();
+		w.runServer(HTTPS);
+	}
+
+
+	protected ServerSocket getServerSocket(int port) throws Exception {
+		SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+
+		return ssf.createServerSocket(port);
+	}
+
+}
 
 
 
 
 
+16.7 Network Logging 
+
+1) Java standard logging API, can passing msg to Unix syslog
+
+2) Apache Logging (log4j), 
+
+3) Apache Jakart Commons Logging (JCL) 
+
+4) SLF4J (simple logging facade for Java), a facade that can use the others
+
+5) ...
+
+
+*** log listener should be behind a firewall, so that hackers cannot making lot of connections to the log system, causing log disk full, causing slowdown system,  causing DoS (denial of service)
+
+
+16.8 Network logging with SLF4J
+
+
+public class Slf4jDemo {
+  final static Logger log = LoggerFactory.getLogger(Slf4jDemo.class);
+
+	public static void main(String[] args) {
+		Object o = new Object();
+		log.info("obj " + o);
+	}
+}
+
+
+
+level 				Meaning
+trace 				verbose debugging (disabled by default)
+debug 				verbose debugging
+info					low-level informational msg
+warn					possible error
+error					serious error
+
+
+
+16.9 Logging with Log4J
+
+Logger log = Logger.getLogger("com.MyClass");
+log.info("created : " + new Object());
+
+
+log4j.rootLogger=DEBUG, APP1
+log4j.appender.APP1=org.apache.log4j.ConsoleAppender
+
+log4j.appender.APP1.layout=org.apache.log4j.PatternLayout
+.
+.
+.
+
+
+16.10 Logging with java.util.logging
+
+Logger log = Logger.getLogger("com.MyClass");
+
+log.info("created : " + new Object());
+
+
+
+
+16.11 Finding Network Interfaces
+
+Enumeration lst = NetowrkInteface.getNetworkInteraces();
+
+NetworkInterface ifs = (NetowrkInterface) lst.nextElement();
+
+Enumeration addrs = ifs.getInetAddresses();
+
+while (addrs.hasMoreElements()) {
+	InetAddress addr = (InetAddress) addrs.nextElement();
+}
+
+
+16.12 Java Chat Server  (check GitHub for code example)
+
+.
+.
+.
+
+
+
+Chapter 17 -- Java and Electronic Mail
+
+
+javax.mail  
+
+
+
+17.2 
+
+Sending Email over SMTP
+
+1) create java.util.Properties object to pass information about the mail server,
+2) load Properties with at least the hostname of SMTP mail server
+3) create Session object
+4) create Message from the Session object
+5) set the From, To, CC addresses, and Subject in the Message
+6) Set the message text into the message body
+7) use static method Transport.send() to send message
+
+
+Properties props = new Properties();
+props.put("mail.smtp.host", "mailhost");
+Session = Session.getDefaultInstance(props, null);
+session.setDebug(true);
+
+try {
+	msg = new MimeMessage(session);
+
+	msg.setFrom(new InternetAddress("nobody@host.domain"));
+
+	InternetAddress toAddress = new InternetAddress(message_recip);
+	msg.addRecipient(Message.RecipientType.TO, toAddress);
+
+	InternetAddress cc = new InternetAddress(message_cc);
+	msg.addRecipient(Message.RecipientType.CC, ccAddress);
+
+	msg.setSubject(message_subject);
+
+	msg.setText(message_body);
+
+	// I18N: use setText(msgText.getText(), charset)
+
+	// Send the message
+	Transport.send(msg);
+
+}
+
+
+
+
+17.3 Mail-Enabling : a server program
+
+
+javax.mail 
+
+
+
+
+17.4 Sending MIME Mail
+
+.
+.
+.
+
+
+17.5 Providing Mail Settings
+
+.
+.
+.
+
+17.6 Reading Email
+
+1) Get a Session using Session.getDefaultInstance(), can pass System.getProperties() 
+2) get a Store from Session object
+3) Get the root Folder
+4) If the root Folder can contain subfolders, list them
+5) For each Folder that can contain message, call getMessages(), which returns an array of Message objects
+6) post-processing the message
+
+
+Session session = Session.getDefaultInstance(System.getProperties(), null);
+session.setDebug(false);
+
+FileProperties fp = new FileProperties(fileName);
+String protocol = fp.getProperty(MailConstants.RECV_PROTO);
+
+Store store = session.getStore(protocol);
+
+store.connect(host, user, password);
+
+Folder rf;
+
+rf = store.getFolder(root);
+
+rf.open(Folder.READ_WRITE);
+
+
+
+
+17.7 Program : MailReaderBean
+
+check GitHub
+
+
+
+17.8 Program: MailClient
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	   
