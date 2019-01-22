@@ -3365,7 +3365,281 @@ jar cvf MyWebApp.war .
 
 
 
+Chapter 22 -- Threads
 
+
+Thread lifecycle methods
+
+start()
+isAlive()
+suspend()/resume()
+stop()
+
+join()
+
+
+getName()/setName()
+
+
+
+22.5 Synchronize  (using Servlet as an example)
+
+
+public class BuzzInfServlet extends HttpServlet {
+
+	protected final static String WINNER = "buzzin.winner";
+
+	// doGet is called from the contestants web page; 
+	// uses a synchronized code block to ensure only 1 contestant can change the state of "buzzed"
+	public void doGet(HttpServletRequest request, HttpServletResponse response) {
+		ServletContext application = getServletContext();
+
+		boolean iWon = flase;
+
+		String user = request.getRemoteHost() + "@" + request.getRemoteAddr();
+
+		// Do syncrhoization first, and all in one place
+		synchronized (application) {
+			if (application.getAttrbute(WINNER) == null) {
+				application.setAttribute(WINNER, user);
+				iWon = true;
+			}
+		}
+
+
+		response.setContentType("text/html");
+
+		PrintWriter out = response.getWriter();
+
+		out.println("<html><head><title>example</title></head>");
+		out.println("<body>");
+
+		if (iWon) {
+			out.println("<b>You Got it</b>");
+		} else {
+			out.println("Thanks for playing");
+		}
+
+		out.println("</body></html>");
+	}
+
+
+	.
+	.
+	.
+
+}
+
+
+
+22.6 Simplifying Synchronization with Locks
+
+Lock lck = ...
+
+try {
+	lck.lock();
+	.
+	.
+	. // do work
+} finally {
+	lck.unlock();
+}
+
+
+
+Locking methods of Lock class
+
+void lock() 
+boolean tryLock()
+boolean tryLock(long time, TimeUnit units) throws InterruptedException
+void lockInterruptible() throws InterruptedException
+void unlock()
+
+
+// example   -- 2 readers, 1 writer
+
+previate ReadWriteLock lock = new ReentrantReadWriteLock();
+
+// 2 readers
+for (int i = 0; i < 2; i++) {
+	new Thread() {
+		public void run() {
+			while (!done) {
+				lock.readLock().lock();
+
+				try {
+					theData.....
+				} finally {
+					lock.readLock().unlock();
+				}
+
+				try {
+					Thread.sleep(((long) (Math.random()*1000)));
+				} catch (InterruptedException ex) {
+					// nothing to do
+				}
+			}
+		}
+	}.start();
+}
+
+
+
+
+// starting 1 writer
+new Thread() {
+	public void run() {
+		while (!done) {
+			lock.writeLock().lock();
+
+			try {
+				theData.voteFor(....);
+			} finally {
+				lock.writeLock().unlock();
+			}
+
+			try {
+				Thread.sleep(((long) (Math.random()*1000)));
+			} catch (InterruptedException ex) {
+				// nothing to do
+			}
+		}
+	}
+}.start();
+
+
+
+22.7 Syncrhonizing threads with Hard way with wait() and notifyAll()
+
+protected LinkedList<Object> lst = new LinkedList<>();
+
+ported void produce() {
+	int len = 0;
+
+	synchronized(lst) {
+		Object newObj = new Object();
+		lst.addFirst(newObj);
+		len = list.size();
+		lst.notifyAll();
+	}
+}
+
+proted void consume() {
+	Object o = null;
+	int len = 0;
+
+	syncrhonized(lst) {
+		while (!Collections.isEmpty(lst)) {
+			try {
+				lst.wait();
+			} catch (InterruptedException ex) {
+				return;
+			}
+		}
+
+		obj = lst.removeLast();
+		len = lst.size();
+	}
+}
+
+
+
+
+
+22.8 Simplifying Producer/Consumer with Queue Interface
+
+*** java.util.BlockingQueue subinterface
+
+
+// Inner class representing Producer 
+
+class Producer implements Runnable {
+
+	protected BlockingQueue<Object> queue;
+
+	try {
+		while (true) {
+			Object justProduced = getRequestFromNetwork();
+			queue.put(justProduced);
+
+			if (done) {
+				return;
+			}
+		}
+	} catch (InterruptedException ex) {
+		...
+	}
+
+
+
+	Object getRequestFromNetwork() {	 // simulate reading from client
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException ex) {
+			...
+		}
+		return new Object();
+	}
+
+}
+
+
+
+
+// Inner class representing the Consumer side
+
+class Consumer implements Runnable {
+
+proted BlockingQueue<Object> queue;
+
+Consumer(BlockingQueue<Object> q) {
+	queue = q;
+}
+
+public void run() {
+	try {
+		while (true) {
+			Object o = queue.take();		// the BlockingQueue
+			in len = queue.size();
+
+			process(o);
+
+			if (done) {
+				return;
+			}
+		}
+	} catch (InterruptedException ex) {
+		...
+	}
+}
+
+
+
+22.9 Optimizing Parallel Processing with Fork/Join
+
+
+check GitHub
+
+
+22.10 Background saving in an Editor
+
+check GitHub
+
+
+22.11 Trheaded Network Server
+
+check GitHub
+
+
+22.12 Simplifying Servers using the concurrency utitilities 
+
+
+check GitHub
+
+
+
+
+...
 
 
 
