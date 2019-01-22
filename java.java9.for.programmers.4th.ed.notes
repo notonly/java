@@ -37,6 +37,7 @@ if (Files.exists(path)) {
 		DirectoryStream<Path> dirStream = Files.newDirectoryStream(path);
 
 		// ? using foreach on stream ?   DirectoryStream may be not a Java 8 stream 
+		// Yea, "stream" in IO is stream, NOT Java 8 type of streams ...
 		for (Path p : dirStream) {
 			System.out.println(p);
 		}
@@ -78,6 +79,216 @@ try (Scanner input = new Scanner(Paths.get("clients.txt"))) {
 }
 
 
+
+15.5 XML Serialization
+
+
+1) creating a sequential file using XML serialization
+
+	try (BufferedWriter output = Files.newbufferedWriter(Paths.get("clients.xml"))) {
+		Scanner input = new Scanner(System.in);
+
+		while (input.hasNext()) {
+			try {
+				Account record = new Account(input.nextInt(), input.next(), input.next()
+																		 input.nextDouble());
+
+				accounts.getAccounts().add(record);
+			} catch (NoSuchElementException ex) {
+				input.nextLine();
+			}
+		}
+
+		JAXB.marshal(accounts, output);
+	} catch (IOException e) {
+		....
+	}
+
+
+
+2) Reading and Deserializaing Data from a Sequential File
+
+	try (BufferedReader input = Files.newBufferedReader(Paths.get("clients.xml"))) {
+
+		Accounts accounts = JAXB.unmarshal(input, Accounts.class);
+
+		accounts.forEach(System.out::println);
+	} catch (IOException ex) {
+		.
+		.
+		.
+	}
+
+
+
+15.6 FileChooser and DirectoryChooser ...
+
+
+1) Pipe Streams --> "synchronized" communication channel between "threads".  
+
+   PipedOutputStream, PipedInputStream
+
+2) Filter Streams --> providing additional functionality, such as aggregating bytes into meaningful primitive-type units
+
+		FilterInputStream, FilterOutputStream
+
+		PrintStream performs text output to specified Stream
+
+
+3) Data Streams --> help read data as aggregates of bytes that form ints, floats, doubles and ....
+
+
+4) Buffered Streams --> directed to a region in "memory" called a "buffer" that is large enough to hold the data of many output operations ... 
+
+    "physical output operation"
+		"logical output operation"
+
+
+		"flush" method
+
+5) Memory-based byte Array Streams --> "byte arrays in memory" ...
+
+   ByteArrayInputStream, 
+
+
+6) Sequencing Input from Multiple Streams  -->  logically concatenates several InputStreams ... 
+
+   SequnceInputStream   (not used before)
+
+
+
+
+
+15.7.2 Interfaces and classes for Character-Based Input and Output
+
+1) Char-based buffering Readers/Writers
+
+    BufferedReader/Writer
+
+2) Momoery-based char Array Readers/Writers
+
+		CharArrayReader/Writer
+
+3) char-based File, Pipe, String Reader/Writer
+
+		InputStreamReader/Writer
+		PipedReader/Writer
+		StringReader/Writer
+
+
+
+
+Chapter 16:  Generic Collection
+
+1) Object-based collections
+
+
+2) Generic collections
+
+
+
+16.3 Type-wrapper classes
+
+Boolean, Byte, Character, Double, Float, Integer, Long, Short
+
+
+16.4 Autoboxing, Auto-Unboxing
+
+
+16.5 Interface Collection,  Class Collections
+
+
+16.6 Lists
+
+	a) ListIterator
+	
+	b) ArrayList
+
+	c) LinkedList
+
+
+	List<String> lst = new ArrayList<>();
+	lst.add("a");
+	lst.add("z");
+
+	Iterator<String> iterator =lst.iterator();
+
+	while (iterator.hasNext()) {
+		iterator.next();
+	}
+
+
+
+16.6.2 LinkedList
+
+.
+.
+.
+
+
+16.7 Collections Methods
+
+	sort
+	binarySearch
+	reverse
+	shuffle
+	fill				sets every List element to refer to a specified object
+	copy
+	min
+	max
+	addAll
+	frequency
+	disjoint		determines whether two collections have no elements in common
+
+
+
+16.8 PriorityQueue
+
+
+
+
+16.9 Sets
+
+
+"Sorted Sets" -->  TreeSet 
+
+
+16.10 Map 
+
+"sorted map"  --> TreeMap
+
+
+
+16.11 Synchronized Collections
+
+List<String> list1 = new ArrayList<>();
+
+List<String> l2 = Collections.syncrhonizedList(list1);
+
+
+16.12 Unmodifiable collections  -- Immutable collections
+
+List<String> list1 = new ArrayList<>();
+List<String> l2 = Collections.unmodifiableList(list1);
+
+
+16.13 Abstract Implementations
+
+AbstractCollection/List/Map/Set/Queue
+
+
+16.14  Java SE 9:   convenience Factory methods for Immutable Collections
+
+
+List.of("a", "b");
+
+Set.of("a", "b");
+
+Map.of("a", 1, "b", 2);
+
+Map.ofEntries(
+	Map.entry("Jan", 31),
+	Map.entry("Feb", 28));
 
 
 
