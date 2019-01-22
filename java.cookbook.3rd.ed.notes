@@ -2884,5 +2884,342 @@ refer to the above example
 18.8 Storing Results in a RowSet
 
 
+.
+.
+.
+
+(nowadays, enterprise programs using Spring Framework with either Hibernate or MyBattis),  rarely working on JDBC level
+
+
+18.9 Changing Data using SQL
+
+
+18.9 Finding JDBC metadata
+
+ResultSetMetaData md = rs.getMetaDate();
+
+md.getColumnLabel(i);
+
+
+// DB metadata
+DatabaseMetaData dbmd = conn.getMetaData();
+
+dbmd.getDatabaseProductName();
+dbmd.getDatabaseProductVersion();
+
+
+
+18.11 SQLRunner 
+
+the author's class
+
+
+
+Chapter 20 Processing XML
+
+
+*** The history of XML,  from GML, to SGML, HTML and then XML.
+
+
+
+													GML (IBM's General Markup Lang)
+
+	MIF (Adobe's Maker Interchange Format)		 									SGML 
+
+																										HTML
+																											
+																															XML
+
+
+
+
+XML parsers : SAX, DOM
+
+
+DTD -- Document Type Definition
+DOM -- Document Object Model
+
+
+XSL (Extensible Style Lang) ...	  <-- more sophisticated ariation on HTML stylesheet concept allowing to specify formatting for particular elements.
+
+XSL-FO (XSL Formatting Objects)   <-- what's the use?
+
+
+
+** Well Formed -- conforms to the syntax of all XML documents
+
+** Valid -- well-formed and also tested to conform to the requirements of an XML "schema" (or DocType)
+
+
+**  XML encoding  -- iso-8859-1,  utf-8,  utf-16
+
+
+
+20.1 Converting between objects and XML with JAXB
+
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "configuration", propOrder = {"screenName", "webProxy", "verbose", "colorName"})
+@xmlRootElement(name = "config")
+public class Config {
+	
+		private String webProxy;
+		private boolean verbose;
+		private String colorName;
+		private String ScreenName;
+
+		.
+		.
+		.
+}
+
+
+*** using JAXB-provided utility, "schemagen" to generate XML
+
+
+schemagen -cp $js/target -d /tmp Config.java
+
+
+^^ the above creates following 
+
+schema1.xsd  (xsd -- XML Schema Definition)
+
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="config" type="config">
+
+	<xs:complexType name="config">
+		<xs:sequence>
+			<xs:element name="screenName" type="xs:string" minOccurs="0"/>
+			<xs:element name="webProxy" type="xs:string" minOccurs="0"/>
+			<xs:element name="verbose" type="xs:boolean"/>
+			<xs:element name="colorName" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+
+
+
+JAXBContext jc = JAXBContext.newInstance("xml.jaxb");
+Marshaller m = jc.createMarshaller();
+final File f = new File("config.bkp");
+
+Writer w = new FileWriter(f);
+w.marshal(c, f);			// where c is the above Config class  type
+w.close();
+
+assertTrue(f.exists());
+
+Unmarshaller loader = jc.createUnmarshaller();
+config c2 = (Config) loader.unmarshal(f);
+
+assertEquals(c, c2);
+
+
+
+20.2 Converting between Objects and XML with Serializers
+
+XMLEncoder xe = new XMLEncoder(new FileOutputStream("file.name"));
+
+xe.writeObject(myObject);
+xe.close();
+
+
+
+XMLDecoder xd = new XMLDecoder(new FileInputStream("file.name"));
+xd.readObject();
+xd.close();
+
+
+
+20.3 Transforming XML with XSLT
+
+
+1) XSLT (Extensible stylesheet lang for transformation), render XML into another format such as HTML.
+
+
+people.xml  (orig)
+
+people.xsl  (the scripting to xfer xml to html)
+
+people.html (the xml rendered to html)
+
+
+
+2) the people.xsl content
+
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
+<xsl:template match="/">
+
+<html>
+<head><title>the people</title></head>
+<body>
+
+	<table border="1">
+
+		<tr>
+			<th>Name</th>
+			<th>Email</th>
+		</tr>
+
+		<xsl:for-each select="people/person">
+			<tr>
+				<td><xsl:value-of select="name"/></td>
+				<td><xsl:value-of select="email"/></td>
+			</tr>
+		</xsl>
+
+	</table>
+
+</body>
+</html>
+
+</xsl:tempate>
+</xsl:stylesheet>
+
+
+
+
+3) the code
+
+Transform xf = TransformerFactory.newInstance().newTransformer(new StreamSource(new File("file.name")));
+
+xf.transform(new StreamSource(new File("file.name")), new StreamResult(new File("output.file.name")));
+
+
+
+20.4 Paring XML with SAX 
+
+
+XMLReader parser = XMLReaderFactory.createXMLReader();
+
+parser.setContentHandler(new PeopleHandler());
+
+parser.parse("xml/people.xml");
+
+class PeopleHandler extends DefaultHandler {
+	boolean person = false;
+	boolean email = false;
+
+	public void startElement(String uri, String localNm, String, rawNm, Attributes attr) 
+		throws SAXException {
+
+		if (rawNm.equalsIgnoreCase("name")) {
+			person = true;
+		}
+
+		if (rawNm.equalsIgnoreCase("email")) {
+			email = true;
+		}
+	}
+
+	public void characters(char[] ch, int start, int leng) {
+		if (person) {
+			System.out.println("Person: " + new String(ch, start, leng));
+
+			person = false;
+		} else if (email) {
+			System.out.println("Email: " + new String(ch, start, leng));
+
+			person = false;
+		}
+	}
+}
+
+
+
+20.5 Parsing XML with DOM
+
+*** resulting in-memory tree
+
+
+Major DOM interfaces
+
+Interface				Function
+Document				To-level representation of an XML document
+Node						the node in XML tree
+Element					an XML element
+Text						a textual string
+
+
+SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+String schemaLocation = "xml.schema";
+File schemaFile = new File(schemaLocation);
+
+if (!schemaFile.exists()) {
+	// error
+}
+
+schema = sf.newSchema(schemaFile);
+
+...
+
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+dbf.setSchema(schema);
+
+dbf.setNamespaceAware(true);
+
+dbf.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", 
+								 XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+
+Documentbuilder parser = dbf.newDocumentBuilder();
+
+if (schema == null) {
+	parser.setEntityRsolver(new MyDTDResolver());
+}
+
+parser.parse(xmlFile);
+
+
+
+
+20.6  Finding XML Elements with XPath
+
+
+Documentbuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+String doc = "<?xml version='1.0'?>" 
+	+ "<section><sectiontitle>testing XPath</sectiontitle>"
+	+ "<sectionnumber>1.2</sectionnumber>"
+	+ "<SC>Introduction</SC><p></p></section>";
+
+Document doc = parser.parse(new ByteArrayInputStream(doc.getBytes()));
+
+XPath xp = XPathFactory.newInstance().newXPath();
+
+String exp = "/section/sectionnumber";
+
+Number secNum = (Number) xp.evaluate(exp, doc, XPathConstants.NUMBER);
+
+
+
+^^
+
+1) create Document parser
+2) XML file or string
+3) Create a Document from the XML document created in the above step-2
+4) create an XPath execution wrapper
+5) specifiy the string to match,  "sectionnumber" in the above example
+6) evaluate XPath expression
+7) use the result
+
+
+
+20.7 Verifying Structure with Schema or DTD
+
+*** XML Schema  (people.xsd) 
+
+*** XML document type definition  (people.dtd)
+
+
+
+20.8 Generating own XML with DOM and the XML Transformer
+
+
+
+
 
 
