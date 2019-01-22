@@ -3223,3 +3223,152 @@ Number secNum = (Number) xp.evaluate(exp, doc, XPathConstants.NUMBER);
 
 
 
+chapter 21  Packages and Packaging
+
+
+java.applet
+java.awt
+java.io
+java.lang
+java.lang.annotation
+java.math
+java.net
+java.nio
+java.sql
+java.text
+java.time
+java.util
+java.util.regx
+
+javax.naming      (for JNDI)
+javax.print				(support printing)
+javax.script			(Java y6: Scripting engines support)
+javax.swing
+
+
+
+
+21.2 JavaDoc 
+
+@author
+{@code text}
+@deprecated
+{@docroot}
+@exception
+{@inheritDoc}
+@link
+@linkplain
+{@literal text}
+@param name description
+@return
+@see
+@serial
+@serialData
+@serialField
+@since
+@throws
+{@value [ref]}
+@version
+
+
+
+21.3 Beyond Javadoc, Annotations/Metadata
+
+
+
+
+
+21.4 Archiving with JAR
+
+jar cvf /tmp/MyClasses.jar .
+
+
+
+
+21.5 Running a program from a JAR
+
+javac HelloWorld.java
+
+jar cvmf manifest.stub hello.jar HeeloWorld.class
+
+java -jar hello.jar
+
+
+
+
+21.6 Preparing a Class as a JavaBean
+
+JavaBean requirements: 
+
+1) must implement java.io.Serializable
+2) must have a no-argument constructor
+3) should use set/get paradigm
+4) the class file should be packaged into a JAR file with the JAR 
+
+
+the manifest with java-Bean field
+
+Name: LabelText.class
+java-Bean: true
+
+
+
+21.8 Packaging a Servlet into a WAR File
+
+
+structure
+
+1) index.html, foo.jsp
+2) WEB-INF   (server directory)
+3) WEB-INF/web.xml  (descriptor)
+4) WEB-INF/classes  (directory for servlets and any classes used by them or by JSPs)
+5) WEB-INF/lib  (directory for any JAR files of classes needed by classes in WEB-INF/classes dir)
+6) 
+
+
+jar cvf MyWebApp.war .
+
+
+
+21.9 "Write once, install anywhere"
+
+.
+.
+.
+
+
+21.12 Signing Your JAR file
+
+*** jarsigner 
+
+
+1) create a new key in a new "keystore"
+
+   keytool -genkey -keystore myKeystore -alias myself
+
+2) put password for protecting the keystore, then put name, city etc info
+
+3) create a self-signed test certificate
+
+		keytool -selfcert -alias myself -keystore myKeystore
+
+4) to verify the above worked correctly, can list contents of the keystore
+
+		keytool -list -keystore myKeystore
+
+5) now sign JAR file with the above test certificate
+
+		jarsigner -keystore myKeystore test.jar myself
+
+
+
+
+
+
+
+
+
+
+
+
+
