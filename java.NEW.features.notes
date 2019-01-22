@@ -1,0 +1,25 @@
+
+
+1)  static interface can be defined inside an interface
+
+    Also, @FunctionalInterface inside an interface
+
+
+ java.nio.file.DirectoryStream
+
+
+ public interface DirectoryStream<T> extends Closeable, Iterable<T> {
+
+		@FunctionalInterface
+		public static interface Filter<T> {
+			boolean accept(T entry) throws IOException;
+		}
+
+
+		@Override
+		Iterator<T> iterator();
+ }	
+
+
+
+
