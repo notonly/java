@@ -1,0 +1,83 @@
+
+
+Chapter 15 -- NIO, XML serialization
+
+
+1) java.io
+2) java.nio
+
+
+15.3 Using NIO classes and Interfaces to get file and directory information
+
+Path (interface) -- represent location of a file or dir; but not open file
+
+Paths (class) -- provides static methods used to get Path object
+
+Files (class) -- provides static methods for common file and dir manipulation: copying, creating, or deleting files and dirs;  
+Files
+
+
+DirectoryStream (interface) -- to iterate throught the contents of a dir
+
+
+*** Aboslute vs Relative Paths
+
+
+Example :
+
+Path path = Paths.get("/tmp");
+
+if (Files.exists(path)) {
+	path.getFileName();
+	Files.getLastModifiedTime(path);
+	Files.size(path);
+	path.toAbsolutePath();
+
+	if (Files.isDirectory(path)) {
+		DirectoryStream<Path> dirStream = Files.newDirectoryStream(path);
+
+		// ? using foreach on stream ?   DirectoryStream may be not a Java 8 stream 
+		for (Path p : dirStream) {
+			System.out.println(p);
+		}
+	}
+}
+
+
+
+
+15.4 Sequential Text Files
+
+
+1) creating a Sequential Text File
+
+try (Formatter output = new Formatter("clients.txt")) {
+	Scanner input = new Scanner(System.in);
+
+	while (input.hasNext()) {
+		try {
+			output.format("%d %s %s %.2f%n", input.nextInt(),
+										input.next(), input.next(), input.nextDouble());
+		} catch (NoSuchElementException ex) {
+			input.nextLine();
+		}
+	}
+}
+
+
+2) Reading Data from a Sequential Text File
+
+try (Scanner input = new Scanner(Paths.get("clients.txt"))) {
+	
+	while (input.hasNext()) {
+		System.out.println("%-10d%-12s%10.sf%n", input.nextInt(),
+											 input.next(), input.next(), input.nextDouble());
+	} 
+} catch (IOException | NoSuchElementException) {
+	...
+}
+
+
+
+
+
