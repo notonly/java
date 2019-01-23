@@ -673,3 +673,169 @@ But, the type "T" can be used inside maximum method, because T is a specified ty
 
 
 
+
+
+
+Chapter 21  Concurrency and Multi-Core Peformance
+
+21.2 Thread States and Life Cycle  (Fig 21.1) is good, with methods called
+
+						"new"
+
+					"runnable"
+
+	"waiting"  "timed waiting"    "terminated"  "blocked"
+
+
+
+21.2.6 Operating-System view of the Runnable State
+
+    "Runnable"
+
+			"ready"  --->  "running"
+			         <--- 
+
+
+
+21.2.7 Thread Priorities and Thread Scheduling
+
+
+21.2.8 Indefinite Postponement and Deadlock
+
+
+
+21.3 Creating and Executing threads with Executor Framework
+
+1) creating concurrent Tasks with Runnable interface
+2) executing Runnable objects with an Executor
+3) using class Executors to obtain an ExecutorService
+
+4) let Thread handle InterruptedExceptions 
+
+
+Check the Source-Code for the examples 
+
+
+ExecutorService svc = Executors.newCachedThreadPool();
+svc.execute(() -> {
+										Thread.sleep(500); 
+										System.out.println("thread1");});
+svc.execute(() -> {
+										Thread.sleep(300); 
+										System.out.println("thread2");});
+
+
+svc.shutdown();
+
+
+
+5)  "Main Thread"
+
+
+
+21.4 Thread Synchronization
+
+1) Immutable data
+
+2) monitors
+
+3) ExecutorService method "awaitTermination"
+
+
+4) syncrhonize mutable data sharing -- making operations "Atomic"
+
+
+21.5 Producer/Consumer ... with and without (can raise logic errors) Syncrhonization 
+
+
+21.6 "ArrayBlockingQueue"  -- Producer/Consumer with syncrhonization 
+
+
+21.7 (advanced) Producer/Consumer with Syncrhoized, wait, notify and notifyAll
+
+
+^^^ Check the source code to see the example  (notify and notifyAll -- low-level syncrhonization) 
+
+
+21.8 (Advanced) Producer/Consumer Rekationship:  Bounded Buffers 
+
+*** Circular Buffer
+
+
+21.9 (Advanced) Producer/Consumer : the Lock and Condition Interfaces
+
+1) Interface Lock and Class ReentrantLock
+2) Interface Condition
+
+3) using Locks and Conditions to implement Syncrhonization
+
+
+
+21.10 Concurrent Collections
+
+-->  
+
+ArrayBlockingQueue
+
+ConcurrentHashMap
+
+ConcurrentLinkedDeque
+
+ConcurrentLinkedQueue
+
+ConcurrentSkipListMap
+ConcurrentSkipListSet
+ConcurrentSkipListList
+
+CopyOnWriteArraySet
+
+DelayQueue
+
+LinkedBlockingQueue
+
+LinkedtransferQueue
+
+
+PriorityBlockingQueue
+
+SyncrhonousQueue
+
+
+(Fig 21.22 having Descriptions for each of the above)
+
+
+21.13 Java SE 8: Sequential vs Parallel Streams
+
+
+
+21.14 Interfaces Callable and Future
+
+
+21.15  Fork/Join Framework
+
+
+
+
+^^^ Need to revisit
+
+
+
+Chapter 25 ATM Case Study :  Part 1:  Object-Oriented Design with the UML
+
+
+^^^  need to revisit,  the process !
+
+
+Chapter 26 ATM Case Study :  Part 2:  Implementing an Object-Oriented Design 
+
+^^^  need to revisit,  the process !
+
+
+
+Chapter 27 Java Platform Module System
+
+^^^ Need to revisit
+
+
+
+
