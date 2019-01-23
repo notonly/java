@@ -483,8 +483,193 @@ IntStream.iterate(1, x -> x + 1)			// creating infinite stream
 Chapter 18  Recursion 
 
 
+Need to revisit <-- also need to combine this with Dynamic Programming
 
 
+
+Chapter 19 Generic Classes and Methods
+
+
+19.3 Generic methods: implementation and compile-time translation
+
+public static<T> void printArray(T[] inputArray) {
+	for (T elem : inputArray) {
+		System.out.println(elem);
+	}
+}
+
+
+*** Erasure at compilation time :  by default, all generic types are replaced with type "Object", as shown below
+
+(in C++ templates, a separate copy of the source code is generated, and compiled for every type passed as an argument to the method)
+
+
+public static void printArray(Object[] inputArray) {
+	for (Object elem: inputArray) {
+		System.out.println(elem);
+	}
+}
+
+
+19.4 Additional compile-time translation issues: methods that use a type parameter as the "return type"
+
+public static<T extends Comparable<T>> T maximum(T x, T y, T z) {
+	T max = x;
+
+	if (y.comparTo(max) > 0) {
+		max = y;
+	}
+	if (z.compareTo(max) > 0) {
+		max = z;
+	}
+
+	return max;
+}
+
+*** specifying a type parameter's "upper bound"
+T extends Comparable<T>  --- only objects of classes that implement interface Comparable<T> can be used with this method.
+
+
+*** "Upper Bound" may be a comma-separated list that contains zero or one class and zero or more interfaces
+
+*** maximum method's type parameter is "more restrictive" than the one for "printArray".
+
+
+
+*** Erasure and the Upper Bound of a Type Parameter   (NOTE, it uses "UPPER BOUND", instead of "Object") 
+
+public static Comparable maximum(Comparable x, Comparable y, Comparable z) {
+	Comparable max = x;
+
+	if (y.compareTo(max) > 0) {
+		max = y;
+	}
+	if (z.compareTo(max) > 0) {
+		max = z;
+	}
+
+	return max;
+}
+
+
+
+19.5 Overloading Generic methods
+
+Generic method may be overloaded like any other method.
+
+
+
+19.7 Generic Classes
+
+public class Statck<E> {
+	private final ArrayList<E> elements;
+
+	// no-arg ctor
+	public Stack() {
+		this(10);
+	}
+
+	public Stack(int cap) {
+		int initCap = cap > 0 ? cap : 10;
+		elemetns = new ArrayList<E>(initCap);
+	}
+
+	public void push(E val) {
+		elements.add(val);
+	}
+
+	public E pop() {
+		if (elements.isEmpty()) {
+			throw new NoSuchElementException("stack is empty, cannot pop");
+		}
+
+		return elements(remove(elements.size() - 1);
+	}
+}
+
+
+
+
+*** creating Generic Methods to Test Generic Class Stack<E>
+
+public class StackTest {
+
+
+	public static void main(String[] args) {
+
+		Double[] ds = {1.1, 3.1, 5.3};
+		Integer[] ins = {1, 3, 5, 7};
+
+		Stack<Double> dstack = new Stack<>(5);
+		Stack<Integer> istack = new Stack<>();  // the default is 10 capacity
+
+		testPush("doubleStack", dstack, ds);
+		testPop("doubleStack", dstack);
+
+		testPush("integerStack", istack, ins);
+		testPop("integerStack", istack);
+	}
+
+	public static <E> void testPush(String name, Stack<E> stack, E[] elements) {
+		System.out.println("pusing element to " + name);
+		Arrays.stream(elements).forEach(e -> stack.push(e));
+	}
+
+	public static <E> void testPop(String name, Stack<E> stack) {
+		System.out.println("popping element from " + name);
+		try {
+			E popval;
+
+			while (true) {
+				popval = stack.pop();
+				System.out.println("popped out: " + popval);
+			}
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+
+		
+
+
+19.7 Wildcards in Methods that accept type parameters
+
+public class WildcardTest {
+
+	public static double sum(List<? extends Number> list) {
+		double rslt = 0;
+
+		// Note, the UPPER BOUND type is used in the looping;  
+		// because of  "? extends Number",  anything of Number type,  so, using Number will cover the passed in types of "? extends Number"
+
+		for (Number elem : list) {
+			rslt + elem.doubleValue();
+		}
+
+		return rslt;
+	}
+
+
+	public static void main(String[] args) {
+		Number[] nbrs = {1, 2.4, 3, 4.1, 5};
+
+		List<Number> nbrlst = new ArrayList<>();
+
+		for (Number e : nbrs) {
+			nbrlst.add(e);
+		}
+
+		System.out.println("total of the elements in the nbrs is " + sum(nbrlst));
+	}
+}
+
+
+
+*** wildcard restrictions ;  the wildcard "?" cannot be used inside the method, because it does NOT specify any type.
+
+But, the type "T" can be used inside maximum method, because T is a specified type (for the method signature)
 
 
 
