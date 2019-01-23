@@ -292,3 +292,199 @@ Map.ofEntries(
 
 
 
+
+Chapter 17 Lambdas and Streams
+
+
+1) an example 
+
+IntStream.rangeClosed(1, 10).map((int x) -> x * 2).sum();
+
+
+2) Intermediate operations
+
+filter
+distinct
+limit
+map
+sorted
+
+3) Terminal operations
+
+forEach
+
+"Reduction operations"
+
+average
+count
+max
+min
+reduce
+
+
+4) concatenating strings with "collect"
+
+InteStream.range(1, 5).sorted().mapToObject(String::valueOf).collect(Collectors.joining(","));
+
+
+5) Terminal Operation "reduce"
+
+int[] values = {3, 5, 7, 9, 11};
+
+IntStream.of(values).reduce(0, (x, y) -> x + y);
+
+// the first argument to reduce -- 0 -- is the operation's identity value;
+// the second argument is a "method" that receives two-int-values (representing left and right operands of a binary operator), performs a calculation with the values and returns the results.
+
+0 + 3 -> 3
+3 + 5 -> 8
+8 + 7 -> 15
+15 + 9 -> 24
+24 + 11 -> 35
+
+
+InteStream.of(values).reduce((x, y) -> x + y).getAsInt();
+
+// reduce with one-argument, returns an OptionalInt,  
+
+3 + 5 -> 8
+8 + 7 -> 15
+15 + 9 -> 24
+24 + 11 -> 35
+
+
+
+
+17.8 Functional Interfaces
+
+java.util.function
+
+Interface							Description
+-----------------			----------------------------
+BinaryOperator<T>
+Consume<T>
+Function<T, R>
+Predicate<T>
+Supplier<T>
+UnaryOperator<T>
+
+
+
+17.9 Lambdas: A Deeper Look
+
+1) scope and lambdas
+
+2) capturing lambdas and final local variables
+
+
+17.10 Sorting a stream and collecting the results
+
+Arrays.stream(values).sorted().collect(Collectors.toList());
+
+
+Arrays.stream(stringArray).filter(s -> s.compareToIgnoreCase("n") < 0)
+												  .sorted(String.CASE_INSENSITIVE_ORDER.reversed())
+													.collect(Collectors.toList());
+
+
+3) short-circuit stream pipeline processing
+
+list.stream().filter(...).findFirst().get();   // findFirst() returns an Optional, if no values, get() will throw exception
+
+
+
+
+17.12.5 Grouping ....
+
+Map<String, List<Employee>> groupedByDept = list.stream().collect(Collectors.groupingBy(Employee:getDepartment));
+
+groupbyDept.forEach((dept, empInDept) -> { System.out.println("department: " + dept);
+																						empInDept.forEach(e -> System.out.println(e));
+																					});
+
+
+17.12.6 Counting the number of employees in each department
+
+Map<String, Long> empCntsByDept = List.stream().collect(Collectors.groupBy(Employee::getDepartment, Collectors.counting()));
+
+empCntsByDept.forEach((dept, cnt) -> System.out.println("department " + dept + ", number of emps " + cnt));
+
+
+
+// calculate sum of Emp salaries with stream reduce method
+
+list.stream().mapToDouble(Employee::getSalary)
+					   .reduce(0, (v1, v2) -> v1 + v2);
+
+
+list.stream().mapToDouble(Employee::getSalary).average().getAsDouble();
+
+
+
+
+17.13 Creating a Stream<String> from a File
+
+Pattern p = Pattern.compile("\\s+");
+
+// count occurrences of each word in a Stream<String> sorted by word
+Map<String, Long> wordCounts = Files.lines(Paths.get("example.file.txt"))
+			.flatMap(line -> p.splitAsStream(line))
+			.collect(Collectors.groupingBy(String::toLowerCase, TreeMap::new, Collectors.counting());
+
+
+// display the words grouped by starting letter
+wordCounts.entrySet().stream()
+	.collect(
+		Collectors.groupingBy(entry -> entry.getKey().charAt(0), TreeMap::new, Collectors.toList()))
+	.forEach((letter, wordList) -> {
+				System.out.printf("letter: " + letter);
+				wordList.stream().forEach(word -> System.out.println("word: " + word.getKey() + ", number: " + word.getValue()));
+			});
+
+
+
+==>  results ==>
+
+A
+	  	       a: 2
+ 	         and: 3
+
+B
+         begin: 1
+
+C
+    calculates: 1
+	
+	.
+	.
+	.
+
+
+
+*** Note the above Pattern::splitAsStream
+
+
+
+17.15 Infinite Streams
+
+
+IntStream.iterate(1, x -> x + 1)			// creating infinite stream
+	.limit(10)													// set limits
+	.forEach(System.out::println);			// terminal operation
+
+
+
+17.16 Lambda Event Handler
+
+
+
+
+
+Chapter 18  Recursion 
+
+
+
+
+
+
+
