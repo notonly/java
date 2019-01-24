@@ -79,4 +79,20 @@ O(2^n) - Exponential
 O(n!) - Factorial
 
 
+Chapter 3 - Using Python to work with Algorithms
+
+1) obtaining Analytics Anaconda
+
+2) installing Python on MacOS
+
+https://mas-dse.github.io/startup/anaconda-macosx-install/
+
+3) Downloading the Datasets and Example Code
+
+--> using Jupyter Notebook
+
+go to $HOME/anaconda3/scripts
+and type	"jupyter Notebook"  to open it on browser
+
+
 
