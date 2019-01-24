@@ -1,0 +1,82 @@
+
+
+Algorithms for dummies by John Paul Mueller and Luca Massaron, 2017
+
+
+Chapter 1: introduction
+
+1) searching
+
+2) sorting
+
+3) transforming (Fast Fourier Transform -- FFT)
+
+4) scheduling  (UniTime)
+
+5) Graph analysis
+
+6) cryptography
+
+7) pseudorandom number generations
+
+8) AI algorithms
+
+
+
+CPU and GPU
+
+Special-purpose chips
+
+
+leveraging networks
+
+leveraging available data
+
+
+Distinguishing between Issues and Solutions
+
+1) being correct and efficient
+
+2) adapting strategy to the problem
+
+3) describing algorithms in a lingua franca (?) 
+
+Facing hard problems
+
+
+*** Structuring data to obtain a solution 
+
+
+
+Chapter 2 Considering Algorithm Design
+
+
+1) modeling real-world problems
+
+2) Dividing and Conquering 
+
+3) Avoiding brute-force solutions
+
+4) starting by making it simpler
+
+5) BREAKING down a problem is usually better
+
+6) Computing Costs and Following Heuristics
+
+7) Evaluating algorithms
+
+--> simulating using abstract machines
+--> getting more abstract
+
+
+O(1) - constant complexity
+O(logn) - logarithmic complexity
+O(n) - linear complexity
+O(nlogn) - linearithmic complexity
+O(n^2) - Quadratic
+O(n^3) - Cubic
+O(2^n) - Exponential
+O(n!) - Factorial
+
+
+
