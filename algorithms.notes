@@ -96,3 +96,81 @@ and type	"jupyter Notebook"  to open it on browser
 
 
 
+Chapter 4 Python intro
+
+1) function
+
+  a. define function
+
+			def DoSum(v1, V2)
+				return v1 + v2
+
+
+	b. calling function
+
+			DoSum(3, 5)
+
+			# calling by argument names
+			DoSum(v1 = 3, v2 = 5)
+
+
+2) conditions 
+
+    if value == 5:
+			print('value is 5')
+		elif value == 6:
+			print('value is 6')
+		else:
+			print('value is other than 5, 6')
+
+
+
+		 # nested decisions
+     if (v1 > 1) and (v2 < 10):
+		 	if (v2 >5) and (v2 < 8):
+
+
+3) loop
+
+		for w in words:
+			if w.upper() == 'CONT':
+				continue
+			elif w.upper() == 'BREAK':
+				break
+			else:
+				...
+
+
+    while flag == True:
+			.
+			.
+			.
+
+			if ...:
+				flag = False
+
+		.
+		..
+
+
+
+4) Sets, Lists, Tuples
+
+setA = set(['red', 'blue', 'green'])
+
+
+listA = [1, 2, 3]
+
+
+
+tupleA = (1, 2, 3, (4, 5, (6, 7, 8)))
+
+
+
+			
+
+
+
+
+
+
