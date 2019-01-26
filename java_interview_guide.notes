@@ -1,0 +1,8 @@
+
+1. JVM vs JDK
+
+JVM - Java Virtual Machine, emulates a physical machine. JVM acts an intermediary between "bytecode" and the underlying "physical machine"
+
+JRE - the Java Runtime Environment, where Java bytecode executed
+
+JDK - Java Development Kit, 
