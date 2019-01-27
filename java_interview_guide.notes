@@ -1,8 +1,419 @@
 
-1. JVM vs JDK
+1. JRE vs JDK
 
-JVM - Java Virtual Machine, emulates a physical machine. JVM acts an intermediary between "bytecode" and the underlying "physical machine"
+JVM - Java Virtual Machine, "emulates" a physical machine. JVM acts an intermediary between "bytecode" and the underlying "physical machine";    
+      * Java applications are portable because every JVM adheres to a standard interface.  
+		  * Every platform supporting Java with its own "implementation" of JVM, but all have the same standard interface.   <-- OpenJDK vs Oracle-JDK;    <--  "implementations" vs "contracts/interfaces"
 
-JRE - the Java Runtime Environment, where Java bytecode executed
+JRE - the Java Runtime Environment, the distribution of JVM and standard libraries is called JRE.
 
-JDK - Java Development Kit, 
+JDK - Java Development Kit, including JRE, Compiler, Debugger
+
+
+
+
+2. Procedural programming vs Object-Oriented programming
+
+1) procedural -- sytle of writing code that executes a seriers of linear procedures to produce result.
+
+2) OOP -- style of writing code that uses objects to encapsulate "state" and "behavior"
+
+
+
+
+
+3. Object-Oriented Concepts
+
+1) Abstraction -- goal of abstraction is to "reduce complexity" in software system.
+
+                  (my notes) "Abstract class", get the "common" features/behaviors of a group of "objects", and put the common in the "abstract class",  the process is "abstraction"
+
+
+2) Encapsulation -- a technique that encourages abstraction by purposefully "hiding information".  Java uses "interfaces", "access modifiers" that limit the visibility of classes, fields, and methods.
+
+
+3) Polymorphisms -- a technique that encourages "abstraction" by allowing an entity to assume "multiple forms".   In Java, an object can take on the "form" of any "parent" in its hierarchy or any interface in its hierarchy.
+
+                  (my notes) Ploymorphisms is easier to understand from "parent" class point of view;   any derived classes objects can be assigned to that "Parent" class (because, children-type is the parent-type);   When parent-method is called,  "Dynamically", the underneath behavior is really depend on "children"'s behavior.   <-- hence, from "parent" class point of view,  
+
+
+4) Mutability --
+
+    immutable objects are good for a) multi-threading,  b) functional-programming ...
+
+
+5) De-Coupling -- 
+
+    decoupled components are more flexible and easier to maintain.  
+
+		*** Program to interface, not implementations  (https://stackoverflow.com/questions/2697783)
+		     <-- maybe it's an old design topic;  
+				 
+		*** new design topics are SOLID - 
+
+				a) Single responsiblity principle  -- a class just does a thing, not many things  (decoupling helps also)
+
+				b) Open/closed pinciple -- open for extension, but closed for modification.  (https://stackify.com/solid-design-open-closed-principle/)  <-- add "new functionality" without changing "existing code".
+				
+				     for instance, Spring Framework deliveried the libraries/Jars  (CLOSED, from projects using Spring),  but many projects created by applying/using Spring (Open for extension, from Spring point of view)
+
+
+						 A class is "closed", be compiled, stored in library, and ditributed and used by clients.  It is also "open", since new class may use it as "parent", adding "new feature".   <== But, "inheritance" introducing "tightly coupled" system.   <== Redifned Open/Closed principle, uses "interfaces", instead of "superclasses";  to allow different implementations  (<-- here, the program to interface, over to implementation)  
+
+
+				c) Liskov substitution principle -- objects of a superclass shall be replacable with objects of its subclasses without breaking the application.   
+
+					  ^^ That requires the objects of your subclasses to behave in the same way as the objects of your superclass.   <=== BUT, subclass usually extends superclass by adding new feature <-- does this Liskov substitution mean,  NOT-to-add-new-features-in-subclasses?
+
+
+				"overridden methods of a subclass" needs to accept the same input parameter values as the method of the superclass.
+
+				similar rules applied to the "return of the method".
+
+
+
+				Need to implement own checks to ensure "Barbara Liskov substitution principle" (the behavior of your classes becomes more important than its str,  because compile only checks "structural rules defined by Java lang"
+
+
+
+
+				**************  Requiring all subclasses to "behave" in the same way as the parent class ****   (so, subclass's overridden methods accept the same parameters, and returns the same type)  ;   
+
+				^^ to achieve that:
+
+				i) don't implement any stricter validation rules on input paremters than implemented by the parent class.
+			 ii) apply at the least the same rules to all output parameters as applied by the parent class.
+
+					 can achieve by "design by contract (interface)" concept defined by Bertrand Meyer
+
+
+
+         d) Interface segregation principle
+
+				    -- Clients should not be forced to depend upon interfaces that they do not use, defined by Robert C. Martin
+
+						-- similar to "Single responsibility principle", the goal is to reduce the "side effects" and "frequency of changes by splitting the software into multiple, independent parts".
+
+
+
+
+					  to achieve that,  we have create multiple interfaces;  and even interface inherit from other interface,  and then a class implements the new interface.   Doing so, will keep the "original interface" segragated (not polluted) ...
+
+
+
+				 e) Dependency Inversion  -- Spring framework (the object creations are handled by the Spring,  not using new in client source)
+
+
+				 		-- high-level modules should NOT depend on low-level modules.  Both should depend on "abstractions".
+
+						-- Abstractions should not depend on details. "Details" should depend on "abstractions".
+
+
+						-- In the end, we get two dependencies:
+						   i.  the high-level module depends on the abstraction, and
+							ii.  the low-level dependes on the same abstraction.
+
+
+				   ^^ https://stackify.com/dependency-inversion-principle/ says, if we consequently apply the "Open/Closed Principle" and the "Liskov Substitution Principle" to the code, it will also follow the "Dependency Inversion Principle".
+
+
+					
+
+			 ALL THESE SOLID desing principles, have things to do with :  "abstraction", "interface", and "single responsibility -- class and interface",  and keep them consistent (subclasses are replacable by suprclass's other subclasses).   
+
+
+
+
+6) Cohesion --
+
+   refers to an entity's level of focus -- cohesive components are more robust and easier to test.  
+
+	 -->  less-coupling leads to high-cohesion which is great for software.
+
+
+
+
+
+4. Object-Oriented Programming (part-1)
+
+  1) Classes and Objects
+
+			superclass must be initialized before subclass;  
+
+			in destruction, subclass destroyed before superclass's
+
+
+	2) Primitive types
+
+		 boolean, byte, char, short, int, float, double
+
+
+		 the associated classes, Boolean, Byte, Character, Short, Integer, Float, Double 
+
+
+		 When auto-unboxing (from Integer to Integer.intValue()), need to pay attention to NullPointerException.
+
+
+  3) Arrays --
+
+	    An array is an object that can hold a fixed number of values of a single type.
+
+			"capacity" of an array is defined when array is initialized.
+
+			Arrays are covariant, meaning an array can be cast to an array of its superclass type.
+
+
+			*** String[] could be cast to an Object[], because String extends Object. 
+
+			     But, Generics is NOT like so;  
+
+					      that is,  List<String>  cannot be cast to List<Object> ;  because, Java Generics implementation uses "type erasure" -- class MyGen<T extends Comparable<T>> implements Comparable<T> {...} ;  yet, List<? extends Number>  can hold elements of Number, Integer, Double, Float elements, because the type "? extends Number" saying any type of Number.
+
+
+					More on Generics :  https://docs.oracle.com/javase/tutorial/java/generics/inheritance.html
+					   *** List<Integer> is NOT subtype of List<Number>
+						 *** both List<Integer> and List<Number> are subtype of "Object"
+						 *** Generic classes and Subtyping:
+						     
+								   Collection<String>
+									         ^
+													 |
+										  List<String>
+											     ^
+													 |
+										ArrayList<String>
+
+
+
+
+  4) Strings --
+
+     are unique objects used to repsent text.  
+
+		 StringBuffer vs StringBuilder -- a) StringBuffer is thread-safe, and immutable;  b) StringBuilder is mutable, when append(), no new String is created ;   c) "+" on String objects, creates new String object.
+
+
+
+  5) Enums --
+
+      are short for enumerated types, are special classes representing a set of single-instance constants.
+
+
+			*** Enums were introduced to replace String and Integer "constants", 
+			*** Enums can a) contain "methods", b) "implements interfaces", c) provider "type safety".
+			*** However, Enums cannot be subclassed or extend any class besides the "implicitly extended Enum class"
+
+
+  6) Packages --
+
+			package-by-layer strategy groups classes together according to their layer in an application;  which may include "model", "controller", "service", "dao".   It works well for "small projects", but not for large projects.
+
+			package-by-feature groups classes together according to their cohesiveness in an application.  For example, may include a "customer", "order", "product", "review", "report" packages.  Package-by-feature encourages high modularity and loose coupling and is preferable.
+
+
+
+
+5. Object-Oriented Programming (Part II)
+
+  1) methods --
+
+	   contain logic providing an object with behavior.  
+
+		 Method Signature : is the combination of method name as well as the types and order of its parameters (note, the names of parameters are NOT included in the method signature).  Looks like "return type" is not include either?
+
+
+		 A method calling itself is called "recursion".  A recursive method with no termination condition will eventually cause a StackOverflowError.
+
+
+	2) pass-by-reference vs pass-by-value
+
+	   All parameters are passed by value in Java.
+
+
+		 If a list is passed into a method, the list reference is not changable,  but list's contens/elements can be changed.
+
+
+	3) Final keyword
+
+	    -- final class : cannot be extended
+			-- final method: cannot be overridden
+			-- final field:  needs to initialize during construction, and cannot be changes after init
+			-- 
+
+
+  4) Static keyword
+
+	    defines a property/method belongs to a "class", does NOT require "this" reference.
+
+			
+			object-methods can access "static" fields;
+			
+			but, class/static-methods cannot access object-fields/methods.
+
+
+			"static class",  means this type,  if used as an inner class,  which does NOT depend on the enclosing class's field/methods.   Hence, more "independent inner class" which can be taken out.  <-- sometimes uses it to show such "static inner class" just meanful inside this current class.
+
+			
+			"static interface" :  https://stackoverflow.com/questions/8374646
+
+
+           public interface Map<K, V> {
+					 	
+					   public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K, V>> comparingByKey() {
+						     return (Comparator<Map.Entry<K, V>> & Serializable)
+								          (c1, c2) -> c1.getKey().compareTo(c2.getKey());
+             }
+
+
+             // ^^ the above complicated defn:  
+						 //    a)  method type 
+						              <K extends Comparable<? super K>, V>
+						       b)  return 
+									        Comparator<Map.Entry<K, V>>
+                   c) the "cast" on anonymous function. and the "&"  on Serializable interface
+
+									     that is, 2 interfaces: Comparator and Serializable
+
+
+
+  5) Access modifiers
+
+	     public -- visible to all "classes"
+
+			 protected -- visible to "subclasses" and "classes in the same package"
+
+			 <none> -- (Java's default access), visible to classes in the same package
+
+			 private -- visible to the enclosing class.
+
+
+
+
+  6) Annotations 
+
+	     apply to "fields", "methods", "classes", and "packages" to embed metadata alongside code.
+
+			   Using "reflection" to get annotations defined
+
+
+			Syntax of defining annotation in Java
+
+			   public @interface MyAnnotation {
+				   int age;
+					 String gender;
+					 .
+					 .
+					 .
+				 }
+
+
+
+				 ==>  javac will transfer @interface to 
+
+				    public interface MyAnnotation extends Annotation 
+
+
+
+  7) The Object superclass
+
+	   a. clone() method,  not good,  Cloneable interface;  
+
+		     Use copy-constructor instead
+
+
+		 b. equals()  ,   the default implemnetation is doing reference comparison
+
+
+		 c. hashCode(),  
+
+		     find the optimal hash function is non-trivial work;  some Java class found the 31 prime number, and add, and... 
+
+		 d.  toString()
+
+		 e.  getClass()  returns the "Class" "object" ...
+
+
+		 f.  finalize()  
+
+		      <-- designed to be always called by JVM when object garbage-collected;  
+					    but it was NOT guaranteed ...
+
+
+		 g. wait(), notify(), notifyAll()
+
+
+
+  8) Composition (Has-A) & inheritance (Is-A)
+
+	   Car class can be composed with Tire, Door, Engine, ...
+
+		 Circle can inherit from Shape abstract class.
+
+
+
+     a. method orverriding vs overloading
+
+	      Overriding -- allows subclass to change the functionality of a superclass
+
+				Overloading -- when several methods have the same name, with different parameter types or number of parameters.
+
+
+	   
+		    
+  9)  *** Abstract class & Interface
+
+
+	   a.  Abstract classes often used with Interfaces
+
+		     Java's AbstractList abstract-class partially implements methods from List Interface, reducing the burden for subclasses such as ArrayList and LinkedList. 
+
+				 public abstract class AbstractList<E> extends AbstractCollection<E> 
+				 			   implements List<E> {
+				 .
+				 .
+				 .
+
+
+				 }
+
+		 b.  Interface --- the common contracts implemented by classes
+
+		 c.  Abstract class -- designed to be extended, and NOT be instantiated.
+
+
+		     In general, "abstract classes" are used to plan an inheritance hierarchy, and simplify the work of subclass.
+
+
+         "Interface" are used to introduce a layer of abstraction and decouple modules of code.
+
+
+
+  10) Anonymous classes
+
+	     allowing anonymous classes to be instantiated with "new keyword".
+
+			 *** provides "closure" <-- a block of code can be passed around while maintaining the access to variables of enclosing scope.
+
+
+           Note, in Java, the closure has to be "final" variables of enclosing scope.
+
+
+
+ 11) Exceptions 
+
+     a. Unchecked exceptions 
+
+		    represnet a defect in the application, such as NullPointerException, RuntimeException, IllegalArgumentException, ClassCastException
+
+
+				Not need to "catch",  
+
+
+		b. Checked excpetions 
+
+		    represent a defect that occurs outside of the control of the application.
+
+				  IOException,  FileNotFoundException, InterruptedException
+
+
+				Need to "catch", and handle these exception
