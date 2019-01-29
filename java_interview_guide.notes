@@ -417,3 +417,89 @@ JDK - Java Development Kit, including JRE, Compiler, Debugger
 
 
 				Need to "catch", and handle these exception
+
+
+
+		c. Errors
+
+		     is thrown by JVM to indicate the "fatal" condition has occured. 
+
+				    OutOfMemoryError,  StackOverflowError
+
+
+		d.  try/catch/finally
+
+
+		    *** finally will always execute 
+
+
+    e. Try-with-Resources
+
+		   introduced in Java 7, allowing "resources" that implement "AutoCloseable" interface, to be declared as parameters inside "try" block;  upon "try" block completes, the JVM will automatically call the "close()" method on those resources, to eliminate "finally" block.
+
+
+
+
+
+6. Generics
+
+
+1) Compile-time Errors vs Runtime Errors
+
+
+2) Generics were introduced to prevent runtime erros caused by invalid "type casting".  ClassCastException  (runtime error,  unchecked exception)
+
+
+3) WildCards
+
+   Unlike arrays, "generics" are "invariant" -- meaning that generic objects do not share the same relationship as its types. 
+	     
+			   *** Integer extends Number;  BUT List<Integer> does NOT extends List<Number>
+
+				 *** The common parent of List<Integer> and List<Number> is List<?>
+
+				                       List<?>
+
+															 ^      ^
+															 |      |
+											List<Integer>  List<Number>
+
+
+	 
+	 *** Wildcards can be used to create restrictions on generic types. 
+
+	     for example, the upper bounded wildcard List<? extends Number> allows the Number type and all its sublcasses of Number.
+
+
+			 "lower bounded wildcard" List<? super Number> allows the Number type and all superclasses of Number.
+
+
+
+4) Type Erasure
+
+	 Java Generic implementation, using "type erasure", for backwards compatibility;  "generic types" are REMOVED by compile, and "replaced" with "bounded type", or Object (in case of no bounds).
+
+
+	 *** Type Erasure "prevents" the need to recompile legacy code;  
+
+	 *** but introduces several limitations:
+
+	     a) "Generic Exceptions" are NOT allowed, because "catch" block cannot tell the difference between a GenericException<String> and GenericException<Integer>
+
+			 b)similarly, a "class" cannot implement both Comparable<String> and Comparable<Integer>, because, without generic types, they both represent the SAME interface (Comparable) !
+
+
+
+The Oracle documents are still good 
+
+  1) good for Java 8
+
+	   https://docs.oracle.com/javase/tutorial/java/generics/nonReifiableVarargsType.html
+
+	2) need to check this also:
+
+		https://docs.oracle.com/javase/tutorial/extra/generics/index.html
+
+
+
+
