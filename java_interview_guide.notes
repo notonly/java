@@ -503,3 +503,16 @@ The Oracle documents are still good
 
 
 
+
+
+7. Concurrency
+
+
+  1) JVM typically launches as a single "process", and
+	2)        spawning multiple threads that share its resources.
+	3)  threads that modify "shared" resources must be coordinated in order to prevent unpredicatable behavior.
+
+
+	4) Lifecycl
+
+
