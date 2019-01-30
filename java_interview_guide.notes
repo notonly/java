@@ -513,6 +513,59 @@ The Oracle documents are still good
 	3)  threads that modify "shared" resources must be coordinated in order to prevent unpredicatable behavior.
 
 
-	4) Lifecycl
+	4) Lifecycle
+
+	   Thread.start() --> "runnable state" 
+
+		 Thread.run() is invoked by "schedule" --> "running state" 
+
+		                 --> "blocked state"
+		                    
+										 --> "completes/dies" after run() finishes
+
+
+    *the Java Cookbook has more information on this*
+
+	
+
+	5) Synchronization
+
+
+	    a.  syncrhonized keyword  
+
+			     i.  synchronized "statci method",  the singleton Class object  is implicitly used as the lock
+
+					ii.  synchronized "non-static method",  the "object instance" is implicitly used as the lock.
+
+				 iii.	 in a synchronized statement, the lock must be provided as an argument.
+
+				        multiple locks allow for more granular levels of synchronization.
+
+
+
+  6) Volatile keyword 
+
+	   
+		 JVM memory modle:
+
+		   i. each "thread" has "thread-level cache" (to improve spped) ..
+
+			ii. the changed shared variable's value may be just pushed to "thread-level cache",  
+			   
+				  hence, other thread(s) may not be guaranteed to see the updated value, when other thread(s) get the time share.
+
+		iii.  to solve issues like this, "volatile" is introduced,
+
+		      variables with "volatile" modifier will not be cached in thread, hence, once it's changed/updated,  its value is pushed to JVM memory, and then other thread(s) can see the updates when they get time share.
+
+
+         ^^ the guarantee that a memory write will be visible to another block of code, is called "happens-before" relationship.   <-- in another way,  the change-happens-before,  and visible .
+
+				 *** Both "volatile" and "synchronize" keywords guarantee a "happens-before" relationship.
+				    
+
+
+
+
 
 
