@@ -565,6 +565,53 @@ The Oracle documents are still good
 				    
 
 
+  7) Concurrent Data Structures
+
+	   *** java.util.concurrent
+
+
+		 i.  CopyOnWriteArrayList  (thread safe) compared to ArrayList
+		 ii. ConcurrentHashMap  
+		 iii. BlockingQueue was introduced to allow producers to block and wait while a queue is full, and allow consumers to block and wait while a queue is empty
+
+
+	8) Executor Framework
+
+	   
+		 i.   ExecutorService manages a thread pool that accepts "Runnable" or "Callable" tasks.
+
+		 ii.  Submitting a task immediately returns a "Future" object, which contains methods that return the status and result of a running task.
+
+		 *** "executor framework" effectively decouples "tasks" from their "execution policies"
+
+
+
+  9) ThreadLocal 
+
+	   i.   allows "values" to be stored "inside" of the currently running "Thread" object.  
+
+		      --> usecase:  for HTTP request that starts in a servlet and traverses through as service;  rather than pass a "transaction ID as an argument" in every method,  could just "store" the "ID" in a "ThreadLocal" object and retrieve it statically along the way.  
+
+
+					*** need to avoid "memory leaks",  for ThreadLocal objects, need to remove the jobect when the "thread returns to a thread pool"
+
+
+
+  10) Atomic Variables
+
+	   AtomicInteger
+		 AtomicLong
+		 AtomicBoolean
+
+
+
+		 *** AtomicInteger is implemented with native method calls
+
+		     "native mthod call" executes outside of JVM in a platform-dependent programming lang.
+
+
+
+
 
 
 
