@@ -134,3 +134,124 @@ Chapter 5 Using Streams
 																.collect(toList());
 
 		                
+  5.2.2 Truncating a stream
+
+	   using limit(3)  to truncate a stream
+
+
+  5.2.3 Skipping elements
+
+	   skip(2)  
+
+
+
+
+  5.3 Mapping
+
+	    1) applying a function to each element of a stream
+
+
+			   map(String::length)
+
+
+			2) "Flattening streams"   ***  <== need to DEPTH-FIRST !    *** Page-105
+
+
+			   String[] words = {"Hello", "World"};
+
+				 NOT-working one:  
+				 
+				     words.stream().map(word -> word.split("")).distinct().collect(Collectors.toList());
+
+				 ^^ map(word -> word.split("")) created Stream<String[]>  ;   
+
+
+				     the above returns List<String[]>  ,  instead of List<String>  (ie, the distinct characters fo the array of two words "Hello" and "World")
+
+
+
+  			Correct way:
+
+				    {"Hello", "World"}.stream()						// Stream<String>
+									.map(word -> word.split(""))    // Stream<String[]>  due of word.split("")
+									.flatMap(Arrays::stream)				// Stream<String>
+									.distinct()											
+									.collect(Collectors.toList());	// List<String>
+
+
+
+       
+			 *** another example
+
+			   Given a list of numbers, how to return a list of the square of each number?  
+
+				 [1, 2, 3, 4, 5]  ==> return [1, 4, 9, 16, 25]
+
+
+				 Arrays.asList(1, 2, 3, 4, 5).stream()
+				 														 .map(n -> n * n)
+																		 .collect(Collectors.toList());
+
+
+
+      
+			 ^^^ Given 2 lists of numbers, return all pairs of numbers.   
+
+				 List<Integer> nbr1 = [1, 2, 3]  and List<Integer> nbr2 = [5, 6]   
+				 
+				      ==>  (1, 5), (1, 6),  (2, 5), (2, 6),  (3, 5), (3, 6)
+
+
+         List<int[]> pairs = nbr1.stream()
+				                      .flatMap(i -> nbr2.stream()
+															                  .map(j -> new int[]{i, j})
+																			)
+															.collect(toList());
+
+				  
+
+
+
+			^^^ extend previous example to return only pairs whose sum is divisible by 3
+
+
+			    List<int[]> pairsDivisibleBy3 = nbr1.stream()
+										.flatMap(i -> nbr2.stream()
+																			.filter(j -> (i + j) % 3 == 0)
+							                        .map(j -> new int[]{i, j})
+														)
+										.collect(toList());
+
+
+
+  5.4 Finding and matching
+
+	    "allMatch(Predicate<T>)"
+
+      "anyMatch"
+
+			"noneMatch"
+
+			"findFirst"
+
+			"findAny"
+
+
+
+	*** Optional in a nutshell
+
+
+	    "isPresent()"  returns true if Optional contains a value
+
+			"ifPresent(Consumer<T> block)"   if Optional contains a value, and then consume such a value
+
+			"T get()"  returns the value if present; otherwise throws NoSuchElementException
+
+			"T orElse(T other)"  returns the value if present;  otherwise returns "default" value
+
+
+
+
+
+
+
