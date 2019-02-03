@@ -43,5 +43,61 @@ Chapter 2  lambda
 
 
 
+3.8 Useful methods to compose lambda expressions
+
+
+  1) composing "Comparators"
+	   
+		 inventory.sort(comparing(Apple::getWeight).reversed());
+
+
+		 ^^ Comparator.comparing static method returns a Comparator ...
+
+
+		 ^^ Chaining comparactors
+
+		    inventory.sort(comparing(Apple::getWeight)
+				                 .reversed()
+												 .thenComparing(Apple::getCountry)
+				               );
+
+
+  2) composing "Predicates"
+
+
+     *** existing Predicate -- negate, and, or
+
+
+		 Predicate<Apple> notRedApple = redApple.negate();   // here redApple is a Predicate
+
+
+		 Predicate<Apple> redAndHeavyApple = redApple.and(apple -> apple.getWeight() > 150);
+
+		 Predicate<Apple> redAndHeaveyAppleOrGreen 
+		      = redApple.and(a -> a.getWeight() > 150).or(a -> GREEN.equals(a.getColor()));
+
+
+
+  3) composing "Functions"
+
+	   "Function" interface comes with two default methods, "andThen",  "compose",  both returns instance of "Funmction"
+
+
+		 Function<Integer, Integer> plus1 = x -> x + 1;
+
+		 Function<Integer, Integer> times2 = x -> x * 2;
+
+		 Function<Integer, Integer> plus1AndThenTimes2 = plus1.andThen(times2);
+
+		 Integer rslt = plus1AndThenTimes2.apply(2);   // rslt is:  (2 + 1) * 2 == 6
+
+     ^^^ same as Math :   times2(plus1(x))
+
+
+		 Now, how about plus1(times2(x))
+
+		 Function<Integer, Integer> comp = plus1.compose(times2);    // 
+
+		 Integer rslt = comp.apply(2);   // the result is  2 * 2 + 1 == 5
 
   
