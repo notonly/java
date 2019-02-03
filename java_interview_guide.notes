@@ -644,6 +644,68 @@ Memory Management
 
 
 
+      *** when an application uses more memoery than the allocated heap space, runtime error (OutOfMemoryError) will be thrown.  
+
+			   <-- OutOfMemoryError can be fixed by allocating a larger heap size through JVM management;  but "memory leak" could eventually fill up a heap of any size.
+
+
+  4) Memory Leaks
+
+	   
+		 i.  ThreadLocal -- put objects in running thread, but if NOT removed when thread put back to pool, can cause memory leaks
+
+		 ii. when using ConcurrentMap to cache object, but if there are more and more users look up the cached object, the cache may grow dramatically.
+
+		     <-- Java provides different "Reference" objects to prevent such  problems
+
+		 iii. Debugging memory leaks, using "Profiler" to analyze the heap dump when JVM crashes, and recreate the reference hierarchy to pinpoint where the majority of memory is being retained.
+
+
+
+  5) Soft References
+
+	   is an object that can only be retrieved by invoking the get() method on a "SoftReference" container.
+
+		 *** Softly reachable objects will not be eagerly GC'ed;  making them ideal for "caches".
+
+		    SoftReference<MyClass> used inside ConcurrentMap, when cache grow until it filled the heap, at that time, the get() method would return "null" that were GC'ed; we could than treat those values as if there "Expired Cache Entries".
+
+
+
+
+  6) Weak References
+
+
+	   an object that can "only" be retrieved by invoking get() method on "WeakReference" container.
+
+		 Weak referenced objects will be eagerly GC'ed, meaking them ideal for short-lived object associations.
+
+		 session object using WeakReference<User> 
+
+
+
+	7) Reference Queue
+
+
+	   SoftReference<MyClass> "cache" automatically removes "MyClass" objects, but we could still fill up the map with keys and "empty" SoftReference containers.  
+
+		 ^^ Java provides "ReferenceQueue" to solve such issue.
+
+		 ReferenceQueue is a queue that can be passed into the constructor of "Reference" objects, when an object wrapped by a Reference becomes GC'ed, the "Reference" is enqueued onto "ReferenceQueue".  This queue can then be polled for cleanup operations.
+
+
+		 If subclass "SoftReference" or "WeakReference" to store objects,  we would have a convenient callback for removing expired map entries.
+
+
+  8) Phantom References
+
+	   is an object that is wrapped inside of PhantomReference container.
+
+		 Invoking get() method on PhantomReference will always return null.  
+
+		 *** a phantom reference in conjunction with a ReferenceQueue provides a "safer alternative" to the "finalize() method",  because there is no possibility of reviving a dea object with new references.
+
+
 
 
 
