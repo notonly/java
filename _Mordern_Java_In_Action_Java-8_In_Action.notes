@@ -284,6 +284,57 @@ Chapter 5 Using Streams
 
 
 
+  5.6 Summary
+
+
+	   Intermediate and terminal operations
+
+
+		 Operation        Type      Return Type   Type/Functional used      Function descriptior
+    ------------      -------   -----------      ----------------         ------------------
+
+		  filter          interm.    Stream<T>       Predicate<T>             T -> boolean
+
+			distinct        interm.    Stream<T>       n/a                      n/a
+                     (stateful/unbounded)
+
+			takeWhile       interm.    Stream<T>       Predicate<T>             T -> boolean
+
+			dropWhile       interm     Stream<T>       Predicate<T>             T -> boolean
+
+			skip            interm.    Stream<T>       long                     n/a
+
+			limit           interm.    Stream<T>       long                     n/a
+
+			map             interm.    Stream<R>       Function<T, R>           T -> R
+
+			flatMap         interm.    Stream<R>       Function<T, Stream<R>>   T -> Stream<R>
+
+			sorted          interm.    Stream<T>       Comparator<T>            (T, T) -> int
+                     (stateful/unbounded)
+
+			anyMatch        Terminal   boolean         Predicate<T>             T -> boolean
+
+			noneMatch       Terminal   boolean         Predicate<T>             T -> boolean
+
+			allMatch        Terminal   boolean         Predicate<T>             T -> boolean
+
+			findAny         Terminal   Optional<T>     n/a                      n/a
+
+			findFirst       Terminal   Optional<T>     n/a                      n/a
+
+			forEach         interm.    void            Consumer<T>              T -> void
+
+			collect         Terminal   R               Collector<T, A, R>       n/a
+
+			reduce          Terminal   Optional<T>     BinaryOperator<T>        (T, T) -> T
+                     (stateful/unbounded)
+
+      count           Terminal   long            n/a                      n/a
+
+
+
+
 
    
 
