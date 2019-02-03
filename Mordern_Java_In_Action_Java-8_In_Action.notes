@@ -1,0 +1,47 @@
+
+
+Chapter 2  lambda
+
+
+1) lambda
+
+  inventory.sort((Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight()));
+
+
+
+2)	Functional Interface  (@FunctionalInterface)
+
+    ^^ Only 1 abstract method.
+
+
+		a.  Predicate<T>     --  test(...)
+
+
+    b.  Consume<T>       --  accept(...)
+
+
+		c.  Function<T, R>   --  apply(...)
+
+
+		d.  Supplier<T>      --  () -> T
+
+
+		e. UnaryOperator<T>  --   T -> T
+
+
+		f. BinaryOperator<T> --  (T, T) -> T
+
+
+		g. BiPredicate<T, U> -- (T, U) -> boolean
+
+
+		h. BiConsumer<T, U>  -- (T, U) -> void
+
+
+		i. BiFunction<T, U, R> -- (T, U) -> R
+
+
+
+
+
+  
