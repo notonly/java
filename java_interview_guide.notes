@@ -614,5 +614,37 @@ The Oracle documents are still good
 
 
 
+Memory Management
+
+
+  1) Heap Memory
+
+	   Java objects reside in a "dynamically sized area of memory" called heap.
+
+		 *** Heap is divied into "young generation objects" and "old generation objects".
+
+
+  2) Garbage collection
+
+	   GC routine is automatically invoked when the heap fills up.
+
+		 GC identifies objects that are no longer referenced by the application and removes them to free up memory.
+
+
+		 *** Manually invoked throught System.gc() method, but "no guarantee" when the process will start.
+
+
+	3) Strong References
+
+	   is a refernce such as assigning an object to a variable or putting an object in an array.
+
+		 "Strong reference" to an object guarantees that the object will remain on the heap.  
+
+		 *** An object is eligible for GC if it cannot be accessed through any chain of "strong reference"
+
+
+
+
+
 
 
