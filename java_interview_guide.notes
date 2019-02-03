@@ -617,6 +617,9 @@ The Oracle documents are still good
 Memory Management
 
 
+Oracle document :  https://docs.oracle.com/cd/E13150_01/jrockit_jvm/jrockit/geninfo/pdf/diagnos.pdf
+
+
   1) Heap Memory
 
 	   Java objects reside in a "dynamically sized area of memory" called heap.
@@ -707,6 +710,8 @@ Memory Management
 
 
 
+
+  
 
 
 
