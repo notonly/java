@@ -252,6 +252,41 @@ Chapter 5 Using Streams
 
 
 
+  5.5 Reducing
+
+
+	 1) sum
+
+
+	   int sumOneToTen = IntStream.rangeClosed(1, 10).reduce(0, (a, b) -> a + b);
+
+		 or
+
+		 int sumOneToTen = IntStream.range(1, 11).reduce(0, Integer::sum);
+
+
+
+    *** "no initial value"  -- returns Optional 
+
+		 Optional<Integer> sum = IntStream.range(1, 11).reduce(Integer::sum);
+
+		 ^^ if stream does not have elements,  and then, no sum will be returned, but just an Optional
+
+
+
+  2) Max and min
+
+
+	   Optional<Integer> max = IntStream.range(1, 11).reduce(Integer::max);   // again, no init values,  return Optional
+
+
+		 ^^ min will using Integer::min function
+
+
+
+
+   
+
 
 
 
