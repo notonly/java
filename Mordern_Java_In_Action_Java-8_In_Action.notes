@@ -100,4 +100,37 @@ Chapter 2  lambda
 
 		 Integer rslt = comp.apply(2);   // the result is  2 * 2 + 1 == 5
 
+
+
+  4) similar ideas from mathematics 
+
+	   a) integration :   
+
   
+
+
+
+
+
+Chapter 5 Using Streams
+
+
+  5.2 Slicing a stream 
+
+	   *** slicking using a predicate
+
+		   Java 9 added 2 new methods:  "takeWhile" -- lets you slice any stream (including infinite stream) using a "predicate",  and it stops once it has found an element that "fails" to match.
+
+		List<Dish> slicedMenu1 = specialMenu.stream()
+		                            .takeWhile(dish -> dish.getCalories() < 320)
+																.collect(toList());
+
+
+
+     "dropWhile" -- not taking elements matching the Predicate
+
+		 List<Dish> menuWithCaloriesGreaterThan320 = specialMenu.stream()
+		                            .dropWhile(dish -> dish.getCalories() < 320)
+																.collect(toList());
+
+		                
