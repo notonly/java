@@ -501,5 +501,31 @@ Chapter 6 Collecting data with Streams
 
 
 
+  6.3 Grouping
+
+	  Map<Dish.Type, List<Dish>> dishesByType = menu.stream()
+		                                              .collect(Collectors.groupingBy(Dish::getType));
+
+
+    Map<CaloricLevel, List<Dish>> dishesByCal = menu.stream()
+							.collect(Collectors.groupingBy(
+								 dish -> {
+								    if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+										else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+										else return CaloricLevel.FAT;
+									}));
+
+
+
+   6.3.1 Manipulating grouped elements
+
+	    Map<Dish.Type, List<Dish>> caloricDishesByType 
+			  = menu.stream()
+				    .collect(Collectors.groupingBy(Dish::getType, 
+						                                Collectors.filtering(dish -> dish.getCalories() > 500, toList())));
+
+
+
+																									   
 
 
