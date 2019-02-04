@@ -430,3 +430,49 @@ Chapter 5 Using Streams
        IntStream ones = IntStream.generate(() -> 1);
 
 
+
+
+Chapter 6 Collecting data with Streams
+
+
+  6.1 Collectors in a netshell
+
+	  6.1.1 Collectors as advanced reductions 
+
+		  
+		6.1.2  Predfined collectors
+
+
+  6.2 Reducing and summarizing
+
+	   long nbr = menu.stream().collect(Collectors.counting());
+
+		 or
+
+		 nbr = menu.stream().count();
+
+
+		 ***  java.util.stream.Collectors.*;
+
+
+	 6.2.1  Collectors.maxBy,  minBy;  
+
+	   Comparator<Dish> comparator1 = Comparator.comparingInt(Dish::getCalories);
+
+		 Optional<Dish> mostCaloriesDish = menu.stream()
+		             .collect(Collectors.maxBy(comparator1));
+
+
+
+   6.2.2  Collectors.summingInt   
+	        Collectors.averagingInt
+					Collectors.summarizingInt ...
+
+
+
+
+	        
+
+
+
+
