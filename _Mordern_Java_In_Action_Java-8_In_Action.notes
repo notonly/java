@@ -471,7 +471,34 @@ Chapter 6 Collecting data with Streams
 
 
 
+   6.2.3  Joining strings
+
+	    menu.stream().map(Dish::getName).collect(Collectors.joining());
+
+
+
+	 6.2.4  generalized summarization with reduction
+
+
+	    int totalCal = menu.stream()
+												 .collect(
+													  Collectors.reducing(0, Dish::getCaloeries, 
+																													 (i, j) -> i + j));
+
 	        
+        Collectors.reducing(....)
+
+				    1st argument: starting value of the reduction operation
+						2nd argument: the function to get value for each element
+						3rd argument: BinaryOperator aggregates 2 items into a single value of the same type
+						                (T, T) -> T    ;   BinaryOperator(T)
+
+
+            1st argument -- "initial value"
+						2nd argument -- Transformation function
+						3rd argument -- Aggregating function   (like  Integer::sum  ;  or  (i, j) -> i + j
+
+
 
 
 
