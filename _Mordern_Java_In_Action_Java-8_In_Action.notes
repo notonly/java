@@ -335,6 +335,46 @@ Chapter 5 Using Streams
 
 
 
+ 5.7 Practicing
+
+     List<Transaction> tr2011 = transactions.stream()
+		      .filter(x -> x.getYear() == 2011)
+					.sort(Comparator.comparing(Transaction::getValue))
+					.collect(Collectors.toList());
+
+
+
+
+  1)  Numeric streams
+
+	   int calories = menu.stream().map(Dish::getCalories)
+		                    .sum();
+
+
+     ** "mapping to a numeric stream"
+
+		    menu.stream()
+				    .mapToInt(Dish::getCalories)
+						.sum();
+
+
+    ** "converting back to a stream of objects"
+
+		  IntStream iStrm = menu.stream().mapToInt(Dish::getCalories);
+			
+			Stream<Integer> strm = iStrm.boxed();
+
+
+
+    ** "Default values: OptionalInt"
+
+		   OptionalInt maxCal = menu.stream().mapToInt(Dish::getCalories)
+			                          .max();
+
+
+			int maxCal2 = maxCl.orElse(1);
+
+
 
    
 
