@@ -377,7 +377,56 @@ Chapter 5 Using Streams
 
 
    
+  5.8 Building Streams
+
+	    1) streams from values : Stream.of
+
+			  Stream<String> strm = Stream.of("hello", "world", "from");
+				strm.map(String::toUpperCase).forEach(System.out::println);
 
 
+      2) stream from nullable : ofNullable
+
+			   Stream<String> strm = Stream.ofNullable(System.getProperty("home"));
+
+
+
+     3) streams from arrays
+
+		     Arrays.stream(new int[] {1, 2, 3, 4}).sum();
+
+
+		 4) streams from "files"
+
+
+		    long uniqueWords = 0;
+
+				try (Stream<String> lines = Files.lines(Paths.get("data.txt"), Charset.defaultCharset())) {
+				    uniqueWords = lines.flatMap(line -> Arrays.stream(line.split(" ")))
+						                   .distint()
+															 .count();
+				} catch (IOException ignorable) {
+				}
+
+
+
+
+     5) streams from functions: creating infinite streams
+
+
+		    Stream.iterate(0, n -> n + 2)
+				      .limit(10)
+							.forEach(System.out::println);
+
+
+
+    6) Generate
+
+		   Stream.generate(Math::random)
+			       .limit(5)
+						 .forEach(System.out::println);
+
+
+       IntStream ones = IntStream.generate(() -> 1);
 
 
