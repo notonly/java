@@ -496,7 +496,7 @@ Chapter 6 Collecting data with Streams
 
             1st argument -- "initial value"
 						2nd argument -- Transformation function
-						3rd argument -- Aggregating function   (like  Integer::sum  ;  or  (i, j) -> i + j
+						3rd argument -- Aggregating function   : like  Integer::sum  ;  or  (i, j) -> i + j
 
 
 
@@ -526,6 +526,16 @@ Chapter 6 Collecting data with Streams
 
 
 
+
+     Map<Dish.Type, List<String>> dishNamesByType 
+		    = menu.stream()
+				   .collect(Collectors.groupingBy(Dish::getType, 
+					              Collectors.mapping(Dish::getName, toList())));
 																									   
+
+     Map<Dish.Type, List<String>> dishNamesByType 
+		    = menu.stream()
+				   .collect(Collectors.groupingBy(Dish::getType, 
+					            Collectors.flatMapping(dish -> dishTages.get( dish.getName() ).stream(), toSet())));
 
 
