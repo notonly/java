@@ -539,3 +539,34 @@ Chapter 6 Collecting data with Streams
 					            Collectors.flatMapping(dish -> dishTages.get( dish.getName() ).stream(), toSet())));
 
 
+
+
+   6.3.2  Multilevel grouping 
+
+
+	 Map<Dish.Type, Map<CalricLevel, List<Dish>>> dishesByTypeCaloricLevel
+	    = menu.stream().collect(
+			    Collectors.groupingBy(Dish::getType,
+					    Collectors.groupingBy(dish -> {
+							    if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+							    if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+									else return CaloricLevel.FAT;
+							})
+					)
+			);
+
+
+
+
+   6.3.3 Collecting data in subgroups
+
+
+      Map<Dish.Type, Long> typesCount 
+			  = menu.stream().collect(Collectors.groupingBy(Dish::getType, counting()));
+
+
+
+      Map<Dish.Type, Optional<Dish>> mostCaloricByType
+			  = menu.stream().collect(groupingBy(Dish::getType, 
+				                         maxBy(comparingInt(Dish::getCalories))));
+
