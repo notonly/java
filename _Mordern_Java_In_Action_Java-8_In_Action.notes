@@ -618,6 +618,48 @@ Chapter 6 Collecting data with Streams
 
 
 
+  ***  main static factory methods of "Collectors" class
+
+	   Factory method              Return type              Used to
+
+		 toList                       List<T>                 Gather all the stream's items in list
+
+		 toSet
+
+		 toCollection
+
+
+		 counting                      Long                    Count the # of items in the stream
+
+		 summingInt                    Integer                 Sum val of items in the stream
+
+
+		 averagingInt
+
+		 summarizingInt
+
+		 join                          String                  concat strings from toString on item
+
+
+		 maxBy                         Optional<T>             max ele in the stream given comparator
+
+		 minBy
+
+
+		 reducing                      type by reduction opr   Reduce stream to a single value starting from an initial value used as accumulator and iteratively combining it with each item of the stream using "BinaryOperator"
+
+
+		 collectingAndThen             type returned by xforming  Wrap antoher collector and apply a tranformation function to its result
+
+
+		 groupingBy                   Map<K, List<T>>          Group items in the stream based on the value of one of their properties and use those values as keys in resulting map
+
+		 partitioningBy               Map<Boolean, List<T>>     partition items in stream based on result of the application of a predicate to each of item.
+
+
+
+
+
 
 
 
