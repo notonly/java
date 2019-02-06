@@ -570,3 +570,54 @@ Chapter 6 Collecting data with Streams
 			  = menu.stream().collect(groupingBy(Dish::getType, 
 				                         maxBy(comparingInt(Dish::getCalories))));
 
+
+
+      *** Collectors.collectingAndThen
+
+			Map<Dish.Type, Dish> mostCaloricByType 
+			  = menu.stream()
+				   .collect(groupingBy(Dish::getType,   // classification function
+					          collectingAndThen(
+										   maxBy(comparingInt(Dish::getCalories)),  // wrapped collector
+											 Optional::get)));   // Transformation function
+
+
+
+      Collectors.groupingBy
+			Collectors.mapping
+			Collectors.flatMapping
+			Collectors.collectingAndThen
+
+
+
+
+
+   6.4 Partitioning
+
+
+      Map<Boolean, List<Dish>> partitionedMenu
+			  = menu.stream().collect(partitioningBy(Dish::isVegetarian));
+
+
+
+      Map<Boolean, Map<Dish.Type, List<Dish>>> vegetarianDishesByType
+			  = menu.stream().collect(
+				     partitioningBy(Dish::isVegetarian,         // partitioning function
+						                 grouping(Dish::getType))); // 2nd collector
+
+
+
+
+      Map<Boolean, Dish> mostCaloricPartitionedByVegetarian
+			  = menu.stream().collect(
+				     partitioningBy(Dish::isVegetarian,
+						                CollectingAndThen(
+														    maxBy(comparingInt(Dish::getCalories)), Optional.get)));
+
+
+
+
+
+
+
+
