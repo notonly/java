@@ -771,6 +771,50 @@ Chapter 8 Collection API enhancements
 
 
   
+	
+	8.3  Working with Map
+
+
+    8.3.1  "forEach"
+
+		  Old-way
+
+			   for (Map.Entry<String, Integer> entry : ageOfFriends.entrySet()) {
+				   String friend = entry.getKey();
+					 Integer age = entry.getValue();
+
+					 ...
+				 }
+
+
+			Java 8 way:
+
+			  ageOfFriends.forEach( (friend, age) -> System.out.println(friend +  " is " + age  + " years old"));
+
+
+
+		8.3.2 "sorting"
+
+		   
+			 *** Entry.comparingByValue
+
+			 *** Entry.comparingByKey 
+
+
+			 ageOfFriends.entrySet()
+			             .stream()
+									 .sorted(Entry.comparingByValue())
+									 .forEachOrdered(System.out::println);
+
+
+
+    8.3.3  "getOrDefault"
+
+
+		  ageOfFriends.getOrDefault("a", 33);
+
+
+
   
 
 
