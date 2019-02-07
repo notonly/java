@@ -661,5 +661,121 @@ Chapter 6 Collecting data with Streams
 
 
 
+  6.6 Developing own collector for better performance
+
+	  ^^ need to check the code and revisit
+
+
+
+
+
+
+Chapter 7  Parallel Streams 
+
+
+   ^^ skipped, need to revisit 
+
+
+
+
+Chapter 8 Collection API enhancements
+
+
+ 8.1.1  List factory
+
+    List<String> abc = List.of("A", "B", "C");
+
+
+ 8.1.2  Set factory
+
+    Set<String> abc = Set.of("a", "b", "c");
+
+
+ 8.1.3  Map factory
+
+    Map<String, Integer> abc = Map.of("a", 1, "b", 2, "c", 3);
+
+		Map<String. Integer> abcd = Map.ofEntries(Map.entry("a", 1),
+		    Map.entry("b", 2), Map.entry("c", 3));
+
+
+
+ 8.2 "removeIf" removes element matching a predicate
+
+     "replaceAll" replacing elements using a UnaryOperator function
+
+		 "sort" 
+
+
+
+		 *** note the ConcurrentModificationException  ;  when elements are removed while being accessed /read ; 
+
+
+		    
+   Some Interview Questions: 
+
+
+	    PROBLEM CODE:
+
+			   for (Transaction x : transactions) {
+				   if (Character.isDigit(x.getReferenceCode().charAt(0))) {
+							transactions.remove(x);				// Causing ConcurrentModificationException
+						}
+				 }
+
+
+
+        ^^ under the hood, for-each loop uses an Iterator object,
+
+				   so the above is more like :
+
+
+				for (Iterator<Transaction> iter = transactions.iterator(); iter.hasNext(); ) {
+				  Transaction x = iter.next();
+
+					if (Character.isDigit(x.getReferencecode().charAt(0))) {
+					  transactions.remove(x);
+					}
+				}
+
+
+
+			To FIX the issue,  have to use the Iterator object "Explicitly" and call iterator's "remove" method
+
+			  for (Iterator<Transaction> iter = transaction.iterator(); iter.hasNext(); ) {
+				  Transaction x = iter.next();
+
+					if (Character.isDigit(x.getReferenceCode().charAt(0))) {
+
+					  iter.remove();      //  compared to the above,  this avoids ConcurrentModificationException
+
+					}
+				}
+
+
+
+     *** The above is verbose to write;
+
+		  Java 8 has "removeIf" 
+
+			transactions.removeIf(x -> Character.isDigit(x.getReferenceCode().charAt(0)));
+
+
+
+  8.2.2 "replaceAll"
+
+
+	    referenceCodes.replaceAll(code -> Character.toUpperCase(code.charAt(0)) + code.substring(1));
+
+
+
+
+  
+  
+
+
+
+
+
 
 
