@@ -815,6 +815,62 @@ Chapter 8 Collection API enhancements
 
 
 
+    8.3.4  Computer patterns
+
+
+		  *** computeIfAbsent -- if there is no specified value for the given key (it's absent or null), calculate the "new value" by "using the key" and add it to the map.
+
+			*** computeIfPresent -- if the specified "eky" is presnet, calculate a new value for it, and add to the map.
+
+			*** computer -- calculates a new value for a given key and stores in the map.
+
+
+
+     one of the uses for computeIfAbsent is for "caching information"
+
+
+		 lines.forEach(line -> dataToHash.computeIfAbsent(line, this::calculateDigest));
+
+
+   8.3.5  Remove patterns
+
+
+	   favoriteMoviews.remove(key, value);
+
+
+
+   8.3.6  Replacement patterns
+
+	   favoriteMoviews.replaceAll((friend, moview) -> movie.toUpperCase());
+
+
+
+   8.3.7 Merge -- takes a BiFunction to merge values that have a duplicate key.
+
+	   Map<String, String> m = new HashMap<>();
+
+	   favoriteMovie.ofEntry( (k, v) -> m.merge(k, v, (movie1, movie2) -> movie1 + " & " + movie2));
+
+
+
+   8.4 Improved ConcurrentHashMap
+
+	   * forEach
+		 * reduce
+		 * search
+
+
+		 Map.Entry,  and (key, value) 
+
+
+		 8.4.2 "Counting"
+
+		 8.4.3 "Set views"
+
+
+
+
+
   
 
 
