@@ -871,11 +871,445 @@ Chapter 8 Collection API enhancements
 
 
 
+
+Chapter 9  Refactoring, testing and debugging
+
+
+    https://github.com/iluwatar/java-design-patterns/blob/master/strategy/src/main/java/com/iluwatar/strategy/App.java  
+
+		^^ has conventional way of handling "Strategy Pattern", and the Java 8 way using Lambda expressions
+
+		-->  https://java-design-patterns.com/patterns/strategy/   (the diagram and more)
+
+
+  9.1.3  From lambda expression to method references
+
+	  From:
+
+		  Map<CaloricLevel, List<Dish>> dishesByCaloricLevel 
+			  = menu.stream()
+				   .collect(
+					   groupingBy(dish -> {
+						   if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+							 else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+							 else return CaloricLevel.FAT;
+						 }));
+
+
+    To:
+
+		   menu.stream()
+			     .collect(groupingBy(Dish::getCaloricLevel));
+
+			 where Dish's 
+
+			  CaloricLevel getCaloricLevel(Dish dish) {
+					 if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+					 else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+					 else return CaloricLevel.FAT;
+				}
+
+
+
+
+   ===============
+	    another example
+
+
+    From:
+
+			inventory.sort((Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight()));
+
+
+		TO:
+				  
+			inventory.sort(Collectors.comparng(Apple::getWeight));
+
+
+
+
+	=================
+
+	  FROM:
+
+		  int totalCal = menu.stream()
+			                   .map(Dish::getCalories)
+			                   .reduce(0, (c1, c2) -> c1 + c2);
+
+    TO:
+
+		    menu.stream().collect(Collectors.summingInt(Dish::getCalories));
   
 
 
+  9.1.4 From Imperative data processing to Streams
 
 
+	  List<String> dishNames 
+		   = menu.stream()
+			       .map(Dish::getName)
+						 .collect(Collectors.toList());
+
+
+  9.1.5 Improving code flexibility
+
+
+    *** Adopting "Functional Interfaces"
+
+		*** Conditional Deferered Execution
+
+		in Java 8,
+
+		   logger.log(Level.FINER, Supplier<String msgSupplier);
+
+
+    The Java 8 internal implementation of log
+
+     public void log(Level level, Supplier<String> msgSupplier) {
+		   if (logger.isLoggable(level)) {
+			   log(level, msgSupplier.get());
+			 }
+		 }
+
+
+  
+
+	  *** Execute Around
+
+		  String oneLine = processFile((BufferedReader b) -> b.readLine());
+
+			String twoLines = processFile(BufferedReader b) -> b.readLine() + b.readLine());
+
+			public static String processFile(BufferedReaderProcessor p) throws IOException {
+			  try (BufferedReader br = new BuffferedReader(new FileReader("myfile.txt"))) {
+				  return p.process(br);
+				}
+			}
+
+			public interface BufferedReaderProcessor {
+			  String process(BufferedReader b) throws IOException;
+			}
+
+
+
+  9.2 Refactoring object-oriented design patterns with lambdas
+
+	   *** Strategy
+		 *** Template method
+		 *** Observer
+		 *** Chain of responsibility
+		 *** Factory
+
+
+
+==>  From the following examples (source code),  the Observer pattern is very similar to Strategy pattern,  the Observer pattern just went 1-level up by adding a container to hold several "clients"  (observers) in "Subject" ... 
+
+
+		 9.1.2 Strategy  -- a family of algorithms and choose them at Runtime  
+
+		       ^^^ Typical polymorphic ...   <-- using Interface ...
+
+		   client -->  Strategy  <---  ConcreteStrategyA
+			                       <---  ConcreteStrategyB
+
+
+		   public interface ValidationStrategy {
+			   boolean execute(String s);
+			 }
+
+			 public class IsAllLowerCase implements ValidationStrategy {
+			   public boolean execute (String s) {
+				   return s.matches("[a-z]+");
+				 }
+			 }
+
+
+			 public class IsNumeric implements ValidationStrategy {
+			   public boolean execute (String s) {
+				   return s.matches("\\d+");
+				 }
+			 }
+
+
+			 ========
+
+			 public class Validator {
+			   private final ValidationStrategy strategy;
+
+				 public Validator (ValidationStrategy v) {
+				   this.strategy = v;
+				 }
+
+				 public boolean validate(String s) {
+				   return strategy.execute(s);
+				 }
+			 }
+
+
+			 Validator numericValidator = new Validator(new IsNumeric());
+			 boolean b1 = numericValidator.validate("abc");
+
+			 Validator lowerCaseValidator = new Validator(new IsAllLowerCase());
+			 boolean b2 = lowerCaseValidator.validate("abc");
+
+
+
+      =========  Now, Java 8 way
+
+			  ValidationStrategy is implicitly a "functional interface", and it has the same "function descriptor" as Predicate<String>
+
+				Instead of declaring "new classes to implement different strategies, just pass lambda expression directly"
+
+
+			 Validator numValidator = new Validator((String s) -> s.matches("\\d+"));
+			 numValidator.execute("abc");
+
+			 Validator lowerCaseValidator = new Validator(s -> s.matches("[a-z]+"));
+			 lowerCaseValidator.execute("abc");
+
+
+
+  9.2.2  Template method  -- this design pattern needed to represent outline of an algorithm and flexibility to change certain parts of it.
+
+	      ^^ something like passing "functions" into methods ... 
+
+
+	   abstract class OnlineBanking {
+		   public vid processCustomer(int id) {
+			   Customer c = Database.getCustomerWithId(id);
+				 makeCustomerHappy(c);
+			 }
+
+			 abstract void makeCustomerHappy(Customer c);
+
+		 }
+
+
+		 different branches can provider different implementations of makeCustomerHappy method by subclassing the OnlineBanking class.
+
+
+		 ================
+
+		 using lambda expressions
+
+
+		 public void processCustomer(int id, Consumer<Customer> makeCustomerHappy) {
+		   Customer c = Database.getCustomerWithId(id);
+			 makeCustomerHappy.apply(c);
+		 }
+
+		 new OnlineBankingLambda().processCustomer(12345, (Customer c) -> System.out.println("Hello " + c.getName()));
+
+
+  9.2.3 Observer
+
+
+	  subject               Observer          concreteObserverB
+                                            concreteObserverA
+		notifyObservers()      notfiy()     
+
+	  
+
+		interface Observer {
+		  void notify (String s);
+		}
+
+		class NYTimes implements Observer {
+		   public void notify(String msg) {
+			   if (StringUtils.isNotBlank(msg) && msg.contains("money")) {
+				   System.out.println("....");
+				 }
+			 }
+		}
+
+		class Guardian implements Observer {
+		 .
+		 . 
+		 .
+		}
+
+		=====
+
+		interface Subject {
+
+		  void registerObserver (Observer o);
+			void notifyObservers (String msg);
+	  }
+
+		class Feed implements Subject {
+		   
+			 private final List<Observer> obsvrs = new ArrayList<>();
+
+			 public void registerObserver(Observer o) {
+			   this.observers.add(o);
+			 }
+
+			 public void notifyObservers(String msg) {
+			   obsvrs.forEach(Observer::notify);
+			 }
+		}
+
+
+		Feed f = new Feed();
+		f.registerObserver(new NYTimes());
+		f.registerObserver(new Guardian());
+
+		f.notifyObservers("....");
+
+
+		=========================
+
+		Using Java 8 Lambda ....
+
+		   Instead of instantiaing 3 observer objects explicitly, can pass a lambda expression directly to represent the behavior to execute
+
+
+			 f.registerObser((String msg) -> {
+			     if (StringUtils.isNotBlank(msg) && msg.contains("money")) {
+					   System.out.println("....");
+					 });
+			   
+			 f.registerObser((String msg) -> {
+			     if (StringUtils.isNotBlank(msg) && msg.contains("Guardian...")) {
+					   System.out.println("....");
+					 });
+			   
+		
+
+   9.2.4  Chain of responsibility  -- to create a chain of processing objects (chain of operations);  it's implemented by defining an abstract class representing a processing object that defines a field to keep track of a successor.
+
+
+	 public abstract class ProcessingObject<T> {
+	   protected ProcessingObject<T> successor;
+
+		 public void setSuccessor(ProcessingObject<T> successor) {
+		   this.successor = successor;
+		 }
+
+		 public T handle(T input) {
+		   T r = handleWork(input);
+
+			 if (successor != null) {
+			   return successor.handle(r);
+			 }
+		 }
+
+		 abstract protected T handleWork(T input);
+
+		}
+
+
+
+
+		public class HeaderTextProcessing extends ProcessingObject<String> {
+		  public String handleWork(String text) {
+			  return "Added Header..."  + text;
+			}
+		}
+
+		public class SpellCheckerProcessing extends ProcessingObject<String> {
+		  public String handleWork(String text) {
+			  return text.replaceAll("labda", "lambda");
+			}
+		}
+
+
+		====
+
+
+		ProcessingObject<String> p1 = new HeaderTextProcessing();
+		ProcessingObject<String> p2 = new SpellCheckerTextProcessing();
+
+    p1.setSuccessor(p2);
+   
+	  String rslt = p1.handle("This labda is new in Java 8");
+
+		System.out.println(rslt);   // Added Header... This lambda is new in Java 8
+
+
+
+		===============
+
+		Java 8 way -- Using "Functional Interface" ...
+
+    1)  this pattern looks like "chaining" functions;  composing lambda expression.  Use Function<String, String> to represent "ProcessingObject" ...,  or (more precisely) a UnaryOperator<String>.  
+
+		    UnaryOperator extends Function interface;  BinaryOperator extends BiFunction interface
+
+				a good blog on UnaryOperator and BinaryOperator ...
+
+
+    2)  to "Chain" them,  use "andThen" method 
+
+
+		UnaryOperator<String> headerProcessing = 
+		    (String text) -> "Added Header..." + text;
+
+		UnaryOperator<String> spellCheckerProcessing = 
+		    (String text) -> text.replaceAll("labda", "lambda");
+
+
+		Function<String, String> pipeline =
+		    headerProcessing.andThen(spellCheckerProcessing);
+
+		String result = pipeline.apply("This labda is new in Java 8");
+		    
+
+
+
+  9.2.5 Factory
+
+
+	  public class ProductFactory {
+		  public static Product createProduct(String name) {
+			 switch (name) {
+			   case "loan": return new Loan();
+			   case "stock": return new Stock();
+				 default: throw new RuntimeException("no such product " + name);
+			 }
+			}
+		}
+
+
+		Product p = ProductFactory.createProduct("loan");
+
+
+		========
+
+		using Java 8
+
+		  using "method reference"
+
+
+		Supplier<Product> loanSupplier = Loan::new;
+
+		Loan loan = loanSupplier.get();
+
+
+		Now, rewrite the above factory 
+
+		final static Map<String, Product> products = Map.ofEntries(
+			Map.entry("loan", Loan::new),
+			Map.entry("stock", Stock::new)
+		 );
+
+
+		 public static Product createProduct(String name) {
+		   Supplier<Product> p = map.get(name);
+
+			 if (p != null) {
+			   return p.get();
+			 }
+
+			 throw new IllegalArgumentException("no such product " + name);
+		}
+
+
+
+
+
+
+	   
 
 
 
