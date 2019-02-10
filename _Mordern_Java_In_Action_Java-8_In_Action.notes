@@ -1307,9 +1307,251 @@ Chapter 9  Refactoring, testing and debugging
 
 
 
+  9.3 Testing lambdas   <== the book did not give much information here
+
+
+     Unit test ... 
+
+
+
+  9.4 Debugging 
+
+
+	   logging information
+
+
+		 List<Integer> rslt =
+		     numbers.stream()
+				        .peek(x -> System.out.println("from stream: " + x))
+								.map(x -> x + 17)
+				        .peek(x -> System.out.println("after map: " + x))
+								.collect(Collectors.toList());
 
 
 	   
 
 
+Chapter 10  Domain-specific languages using lambdas
 
+
+  1) using inner class
+
+	   Collections.sort(persons, new Comparator<Person>() {
+		   public int compare(Person p1, Person p2) {
+			    return p1.getAge() - p2.getAge();
+			 }
+		 }
+
+
+	2) using lambda expression
+
+
+	   Collections.sort(persons, 
+
+		    (Person p1, Person p2) -> p1.getAge() - p2.getAge());
+
+
+  3) using Collectors.comparing static method
+
+
+	  Collections.sort(persons,
+		     Collectors.comparing(p -> p.getAge()));
+
+
+    Collections.sort(persons,
+		     Collectors.comparing(Person::getAge));
+
+
+  4) chaining
+
+	   Collections.sort(persons,
+		     Collectors.comparing(Person::getAge).reverse());
+
+
+     Collections.sort(persons,
+		     comparing(Person::getAge)
+				    .thenComparing(Person::getName));
+
+
+
+  5) streaming
+
+	   List<String> errors = 
+		   Files.lines(Paths.get("myfile.txt"))
+			      .filter(line -> line.startsWith("ERROR"))
+						.limit(40)
+						.collect(toList());
+
+
+  6) Collectors as a DSL to aggregate data
+
+     Map<String, Map<Color, List<Car>>> carsByBrandAndColor
+			 = cars.stream()
+			       .collect(groupingBy(Car::getBrand,
+						                      groupingBy(Car::getColor)));
+
+
+     
+		 Comparator<Person> comparator
+		   = comparing(Person::getAge)
+			      .thenComparing(Person::getName);
+
+
+
+  7) Grouping collectors BUILDER
+
+	  public class GroupingBuilder<T, D, K> {
+		  private final Collector<? super T, ?, Map<K, D>> collector;
+
+			private GroupingBuilder(Collector<? super T, ?, Map<K, D>> collector) {
+			  this.collector = collector;
+			}
+
+			public Collector<? super T, ?, Map<K, D>> get() {
+			  return collector;
+			}
+
+			public <J> GroupingBuilder<T, Map<K, D>, J>
+			   after(Function<? super T, ? extends J> classifier) {
+				   
+				 return new Groupingbuilder<>(groupingBy(classifier, collector));
+			}
+
+			public static <T, D, K> GroupingBuilder<T, List<T>, K>
+			   groupOn(Function<? super T, ? extends K> classifier) {
+
+				 return new GroupingBuilder<>(groupingBy(classifier));
+			}
+		}
+
+
+		Collector<? super Car, ?, Map<Brand, Map<Color, List<Car>>>>
+		  carGroupingCollector = 
+			   groupOn(Car::getColor)
+				 .after(Car::getBrand)
+				 .get();
+
+
+  10.3  Patterns and techniques to create DSL in Java
+
+
+
+  10.4  JOOQ -- an internal DSL that implements SQL as a type-safe embedded lang in Java
+
+
+
+	   SQL :
+
+		   select * from book
+			 where BOOK.PUBLISHED_IN = 2018
+			 order by BOOK.TITLE
+
+		 
+		 JOOQ :
+
+		   create.selectFrom(BOOK)
+			       .where(BOOK.PUBLISHED_IN.eq(2018))
+						 .orderBy(BOOK.TITLE)
+
+
+     =====
+		   
+			 selecting books from a data by using jooQ DSL
+
+			 Class.forName("org.h2.Driver");
+
+			 try (Connection c = 
+			       getConnection("jdbc:h:~/sql-goodies-with-mapping", "sa", "")) {
+
+						 DSL.using(c)
+						    .select(BOOK.AUTHOR, BOOK.TITLE)
+								.where(BOOK.PUBLISHED_IN.eq(2018))
+							.orderBy(BOOK.TITLE)
+							.fetch()
+							.stream()
+							.collect(groupingBy(
+							   r -> r.getValue(BOOK.AUTHOR),
+								   LinkedHashMap::new,
+									 mapping(r -> r.getValue(BOOK.TITLE), toList()))
+							.forEach((autho, titles) ->
+							      System.out.println(author = " is author of " + titles));
+
+
+   10.4.2  Cucumber   -- Behaviro-driven development (BDD)
+
+	    ^^ the cucumber not used in current projects/comp
+
+
+
+   10.4.3 Spring Integration
+
+	   
+
+
+
+Part 4  -- Everyday Java
+
+
+Chapter 11  Using Optional 
+
+  11.1.1  Reducing NullPointerException with defensive checking
+
+
+  11.3  Patterns for adopting Optionals
+
+	   
+		 *** Creating Optional objects
+
+		   Optional<Car> optCar = Optional.empty();
+
+		  *** Optional from a non-null value
+
+			  Optional<Car> optCar = Optional.of(car);
+
+		 *** optional from null
+
+		    Optional<Car> optCar = Optional.ofNullable(car);
+
+
+   
+	 ***  flatMap methods of "Stream" and "Optional"
+
+	    
+			// note the parameter  Optional
+			public String getCarInsuranceName(Optional<Person> person) {
+			  return person.flatMap(Person::getCar)
+				             .flatMap(Car::getInsurance)
+										 .map(Insurance::getName)
+										 .orElse("Unknow");
+
+	   
+		  
+
+		Stream<Optional<String>> stream = ....;
+
+		Set<String> rslt = stream.filter(Optional::isPresent)
+					.map(Optional::get)
+					.collect(toSet());
+
+
+
+  11.3.5  default actions and unwrapping an optional
+
+
+	   1)  get()
+		 2)  orElse(T other)
+		 3)  orElseGet(Supplier<? extends T> other)
+		 4)  or(Supplier<? extends Optional<? extends T>> supplier)
+		 5)  orElseThrow(Supplier<? extends X> exceptionSupplier)
+		 6)  ifPresent(Consume<? super T> consumer)
+
+		 7)  Java 9 introducing:  
+
+		     ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction) -- differsfrom ifPresent by taking a Runnable ... 
+
+
+
+  11.3.6 Combining two optionals 
+
+
+	  
