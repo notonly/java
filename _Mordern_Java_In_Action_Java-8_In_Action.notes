@@ -1599,7 +1599,154 @@ Chapter 11  Using Optional
 
 		12) orElse -- returns the value if present;  otherwise, the given default value
 
-		13) orElseGet -- 
+		13) orElseGet -- returns the value if present; otherwise, returns the one provided by the gien "Supplier"
+
+		14) orElseThrow -- returns the value if present; otherwise, throws the exception created by the given "Supplier"
+
+		15) stream -- if a value is present, returns a stream containing only it;  otherwise, returns an "empty stream"
+
+
+
+
+  11.4 Practical examples of using Optional
+
+
+	  11.4.1 wrapping a potentially null value in an Optional
+
+		  Optional<Object> value = Optional.ofNullable(map.get("key"));
+
+
+    11.4.2 Exceptions vs Optional
+
+
+		  public static Optional<Integer> stringToInt(String s) {
+			  try {
+				    return Optional.of(Integer.parseInt(s));
+				} catch (NumberFormatException e) {
+				    return Optional.empty();
+				}
+			}
+
+
+
+    11.4.4 Putting it all together
+
+
+		  public int readDurationFromProperty(Properties props, String name) {
+			   return Optional.ofNullable(props.getProperty(name))
+				                .flatMap(OptionalUtility::stringToInt)
+												.filter(i -> i > 0)
+												.orElse(0);
+			}
+
+
+
+
+
+Chapter 12 -- Date and Time API
+
+
+  java.util.Date since Java 1.0
+
+
+
+12.1  LocalDate, LocalTime, LocalDateTime, 
+      Instant,
+			Duration, and Period
+
+
+
+  java.util.Data <====>  LocalDateTime 
+
+	  
+		 Using "Instant"
+
+
+	java.util.Date now = new Date();
+
+	Instant instant = now.toInstant();
+
+	instant.plus(1, ChronoUtil.DAYS);
+
+	java.util.Date tomorrow = Date.from(instant);
+
+
+
+ 
+  *** Common methods of date-time classes representing an "interval"
+
+		Method  static          notes
+
+	  between  yes
+		from     yes
+		of       yes
+		parse    yes
+		addto    no
+		get      no
+		isNegative no
+		isZero   no
+		minus    no
+		multipliedBy no
+		negated  no
+		plus     no
+		subtractFrom  no
+
+
+  *** Common methods of date-time classes representing a "point" in time
+
+		Method  static          notes
+
+    from    yes
+		now     yes
+		of      yes
+		parse   yes
+
+		atOffset no
+		atZone  no
+		format  no
+
+		get     no
+		minus   no
+		plus    no
+		with    no
+
+
+
+ ***  factory methods of "TemporalAdjusters" 
+
+    method                  description 
+
+		dayOfWeekInMonth 
+		firstDayOfMonth
+		firstDayOfNextMonth
+		firstDayOfNextYear
+		firstDayOfYear
+		firstInMonth
+
+		lastDayOfMonth
+		lastDayOfNextMonth
+		lastDayOfNextYear
+		lastDayOfYear
+		lastInMonth
+
+		next
+		previous
+
+		nextOrSame
+		prveiousOrSame
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
