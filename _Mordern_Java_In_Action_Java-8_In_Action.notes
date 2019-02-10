@@ -1554,4 +1554,52 @@ Chapter 11  Using Optional
   11.3.6 Combining two optionals 
 
 
-	  
+	  Using combination of map and flatMap methods, to implement a method in a single statement and without writing any conditional constructs
+
+
+		return persons.flatMap(person -> cars.map(car -> findCheapestInsurance(person, car)));
+
+
+		Optional<Insurance> optionalInsurance = ...;
+
+		optionalInsurance.filter(insurance -> "CambridgeInsurance".equals(insurance.getName()))
+		                 .ifPresent(x -> System.out.println("ok"));
+
+
+
+
+  ***  Methods of Optional class
+
+	  1) empty  -- returns an empty Optional 
+
+		2) filter -- if value present and matches the given predicate, returns this Optional; otherwise, returns the empty-Optional
+
+		3) flatMap -- if a value if presnet, returns Optional resulting from the application of the provided mapping function to it;  otherwise, returns the empty Optional
+
+		4) get -- if value present, retunr Optional of the value;  otherwise, throws NoSuchElementException 
+
+		5) ifPresent -- iv value is present, the specified "consumer" is invoked with the value;  otherwise, doing nothing
+
+		6) ifPresentOrElse -- similar to the above, but, when "no value / empty",  do something instead of nothing
+
+    7) isPresent  -- 
+
+
+		8) map  -- if a value is present, applies the provided mapping function to the value
+
+		            what if NOT present?  ...
+
+
+    9) of   -- returns an Optional wrapping the given value;  or throws NullPointerException if value is "null"
+
+
+		10) ofNullable -- if value present, returns Optional wrapping the value;  otherwise, empty Optional if the value is "null"
+
+		11) or  -- if value present, returns the same Optional;  otherwise, returns another Optional produced by the supplying function
+
+		12) orElse -- returns the value if present;  otherwise, the given default value
+
+		13) orElseGet -- 
+
+
+
