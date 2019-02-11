@@ -1840,8 +1840,160 @@ Chapter 13 -- Default methods
 
 
 
+Chapter 14 -- Java Module System  (Java 9 feature)  
 
 
+   ^^^ Revisit after Multi-Threading 
+
+
+
+
+
+
+chapter 15 -- Concepts behind CompletableFuture 
+              and Reactive Programming             (Java 9 feature)
+
+
+ 1) Threads, Futures, evolutionary forces causing Java to support richer concurrency APIs
+ 2) Asynchronous APIs
+ 3) The boxes-and-channels view of concurrent computing
+ 4) CompletableFuture combinators to connect boxes dynamically
+ 5) The publish-subscribe protocol that forms the basis of 
+    Java 9 "Flow API" for "Reactive" programming 
+
+ 6) Reactive programming and reactive systems
+
+
+
+   Trendings:  
+
+	    the first trend related to "hardware" 
+			     Multi-cores --> speed application
+			the second trend concerns how applications are strutured 
+
+			     (particularly how they interact)
+
+   
+
+
+      Split large tasks, make each subtask run in parallel;
+
+			***   "fork/join" framework (since Java 7), and
+
+			***   "parallel streams"  (snce Java 8)
+
+			***   adoption of "microservices architecture", 
+			           (instead of building a monolithic app)
+
+						many more internet services are accessible through public APIs, 
+						 made available by Google (localization info),
+						    Facebook (social info), and Twitter (news).
+
+
+
+
+ 7)  Concurrency  vs Parallelism
+
+     *** Concurrency -- multi-tasks running concurrently on 1-core
+
+		 *** Parallelism -- multi-tasks running concurrently on multi-cores.
+
+
+ 8)  Java's new CompletableFuture and Flow APIs
+
+
+     starts from:  Java evolution of concurrency, 
+		   including Threads, higher-level abstractions including Thread-Pools and Futures.
+
+
+
+    i.  Initially Java had "locals" vis "synchronized" classes and methods
+		    
+				"Runnable" and "Thread"
+
+
+    ii.  2004, Java 5 introduced the java.util.concurrent package
+		     supporting more expressive concurrency,
+
+				 "ExecutorService" interface -- decoupled tasks "submission" from "execution"
+
+				 "Callable<T>" and "Future<T>", produced higher-level 
+				    and result-returning varaints of Runnable and Thread,
+						  and using "Generics".
+
+
+         ExecutorServices can execute both Runnables and Callables,
+				 
+
+				 ^^ These features facilitated parallel programming on "multi-core" CPUs.
+
+
+				 Java 7  java.util.concurrent.RecursiveTask ...
+
+
+    iii.  Java 8 "CompletableFuture implementation of Future", 
+
+          also the parallel stream
+
+					  sum = Arrays.stream(stats).parallel().sum()
+
+		
+		iv.   Java 9 provided explicit support for "distributed asynchronous programming"
+
+		      "publish-subscribe" protocol
+
+
+
+
+  15.1.2  Executors and thread pools
+
+    1) Java threads access operating-system threads directly.  
+
+		2) operating-system threads have "limits", if Java threads 
+		   exceeds it, Java app can crash mysteriously.
+
+
+		3) Java ExecutorService provides an interface, to submit tasks and 
+		   obtain their results later.
+
+			 ExecutorService newFixedThreaddPool(int nThreads);
+
+         here, nThreads, are "worker threads", and stored in a thread pool.
+
+		 *** One great outcome is that it is cheap to "submit" 
+		     thousands of tasks to a thread pool while keeping the 
+				 number of tasks to a hardware-appropriate number.
+
+
+				 Several configurations: size of the queue;  
+				                         rejection policy, and
+																 priority for different tasks
+
+
+         Note the wording: Programmer submits "a task (Runnalbe or Callable)"
+				                    which is executed by "a thread"
+	   
+		 *** Thread pools are better than explicity thread manipulation ,
+
+		     but still need to be aware of 2 "gotchas"
+
+				 i.  A thread pool with "k" threads, can execute only k tasks concurrently
+
+
+				     also, if there is a task submitted waiting for I/O,
+						    then, the true thread-throughput is lowered.
+
+             
+						 also possible to have "deadlock" in thread pool 
+						 if earlier task submissions or already running tasks, 
+						 need to wait for later task submission   <== which is a typical use-pattern for Futures.
+
+
+				 ii.  
+
+
+
+     
 
 
 
