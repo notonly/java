@@ -1738,6 +1738,107 @@ Chapter 12 -- Date and Time API
 
 
 
+Chapter 13 -- Default methods 
+
+
+  1) "default" methods are for backward compatibility, 
+	    when interface added "default" method,  the existing/old
+			 classes implements this interface, are NOT foreced to recompile.
+
+
+
+  2) "static" methods
+
+
+	   a common pattern in Java is to define both an "interface" and a "utility" companion classe
+
+
+		 Collections is a companion class to deal with "Collection" objects
+
+
+		 Now that "static" methods can exists inside "interface", 
+		     the "companion" class can go away.
+
+
+
+  3) Multiple inheritance of behavior
+
+	   
+		 ArrayList is a direct "subtype" of 7 types: 
+		     AbstractList, List, RandomAccess, 
+				 Cloneable, Serializable, Iterable, and Collection
+
+
+
+  4) "composing interfaces"
+
+	   
+
+  13.4  "Resolution rules"
+
+	   public interface A {
+		    default void hello() {
+				  System.out.println("A");
+				}
+		 }
+
+
+		 public interface B extends A {
+		     default void hello() {
+				    System.out.println("B");
+				 }
+		 }
+
+		 public class C implements B, A {
+		   public static void main(String... args) {
+			   new C().hell();  
+			 }
+		 }
+
+
+		 ??? what's the result ?   <== using "sub-interface" rule, "B", the most specific interface compared to A interface.
+
+
+    13.4.1  Three resolution "rules" to know
+
+
+		   1.  Classes always win.  
+			       a method declared in class or superclass, takes priority over any default method declaration.
+
+
+       2.  otherwise, "sub-interface" win:  method with the same signature in the 
+			      most "specific" default-providing interface is selected.   
+
+    
+		   3.  Finally, if choice is still ambiguous, 
+			       class inheriting from multiple "interfaces" has to 
+						    "explicitly" select which "default method implementation to us"
+								  by overriding it and calling the desired method Explicitly.
+
+
+
+   13.4.2 Most specific default-providing interface wins
+
+
+
+   13.4.3  Conflicts and explicity disambiguation
+
+
+	    public class D implements B, A {
+			   void hello() {
+				    B.super.hello();
+				 }
+		  }
+
+
+
+   13.4.4  "Diamond" problem
+
+
+	  
+
+
+
 
 
 
