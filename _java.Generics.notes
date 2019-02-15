@@ -1,0 +1,259 @@
+
+
+Book:  
+
+   Core Java Volume 1 - 11th Edition
+
+
+
+1. @SafeVarargs (introduced in Java 7)
+
+
+  @SafeVarargs
+	public static <T> void addAll(Collection<T> coll, T... ts) {
+	 .
+	 .
+	}
+
+ 
+  prior to Java 7,  would use @SuppressWarnings("unchecked")
+
+
+
+
+2. Cannot create Arrays of Parameterized types
+
+   wrong/not-working  ==>    var table = new Pair<String>[10]; 
+	  ^^ because, after 'type erasure", "table variable" is of type "Pair[]"
+
+
+   If need to collect parameterized type objects, just use an  
+	   ArrayList<Pair<String>> ...
+
+
+
+3. Runtime type inquiry only works with Raw types
+
+   wrong/not-working  ==>   if (a instanceof Pair<String>) 
+
+	   ^^ again, the type erasure...
+   
+
+
+   Pair<String> stringPair ...;
+	 Pair<Employee> empPair ...;
+
+	 // following always Equal
+	 if (stringPair.getClass() == empPair) ;  because both calls on getClass return "Pair.class" 
+
+
+
+4. Cannot instantiate type variables
+
+
+  wrong/not-working ==>  
+
+	  public Pair() { 
+		  first = new T();
+			second = new T();
+		}
+
+
+    ^^ because "type erasure" change "T" to "Object",  and you don't just do "new Object()" (not much information from those) !
+
+
+  Best workaround, available since "Java 8", to make caller provide a constructor expression
+
+	   Pair<String> strPair = Pair.makePair(String::new);
+
+		 where
+
+		 public static <T> Pair<T> makePair(java.util.function.Supplier<T> constr) {
+		     return new Pair<>(constr.get(), contr.get());
+		 }
+
+
+
+   =========== prior to Java 8,  the following ...
+
+
+   wrong/not-working ==>   
+	    first = T.class.getConstructor().newInstance();  //error
+
+			T.class is "illegal", it would erase to "Object.class";  
+
+	  ^^ Solution, design the API handle a Class object
+
+		 public static<T> Pair<T> makePair(Class<T> cl) {
+		     try {
+				    return new Pair<>(cl.getConstructor().newInstance(),
+						     cl.getConstructor().newInstance());
+
+				 } catch (Exception e) {
+				    return null;
+				 }
+     }
+
+
+		 ^^ it's called 
+
+		 Pair<String> p = Pair.makePair(String.class);
+
+
+6.  Cannot construct a generic array
+
+
+   Wrong/not-working 
+
+	  public static<T extends Comparable> T[] minMax(T... a) {
+		    T[] mm = new T[2];   // Error
+		}
+
+		^^ "Type erasue" made the above return Comparable[2]
+
+
+
+7.  Type variables not valid in static contexts of generic classes
+
+   Wrong/not-working
+	   public class Singleton<T> {
+		   private static T singletonInstance;  // error
+
+			 public static T getInstance() {  /// error
+
+
+	^^ if this could be done, then a program could declare a Singleton<Random> to share a random number generator and Singleton<JFileChooser> to share a file chooser dialog.  
+
+	But, not working, after "type erasure", there is only one "Singtlton" class, and only one singletonInstance field.  
+
+
+8. Cannot throw or catch instance of Generic class
+
+   cannot throw, nor catch objects of Generic class;  
+
+	   not even legal for a generic class to extend Throwable
+
+
+   public class Problem<T> extends Exception {....}  // Error
+
+	 public static <T extends Throwable> void doWork(Class<T> t) {
+	   try {
+		   ...
+		 } catch (T e) {  // error
+		  ...
+		 }
+	 }
+
+
+	 However, can use Type in exception specification
+
+	 public static <T extends Throwable> void method {   // OK
+	   ...
+	 }
+
+
+9. Beware of clashes after Erasure 
+
+   
+
+10.  Inheritance Rules for generic types
+
+      Manager  (is a)  Employee
+
+			But,
+
+			Pair<Manager>  (no relationship) Pair<Employee>
+
+
+      ================
+
+			ArrayList (is a) List
+
+			ArrayList<Manager>  (is a) List<Manager>
+
+
+			===============
+
+
+11. Wildcard types
+
+      Pair<Manager> (is a) Pair<? extends Employee>
+
+			Pair<Employee> (is a) Pair<? extends Employee>
+
+
+12. Supertype Bounds for wildcards 
+
+
+    Intuitively speaking, supertype bound wildcards let you write to "a generic object"  (push/write) to a Generic Object
+
+		While subtype bound wildcards let you "read" from a Generic Object.
+
+
+   public static <T extends Comparable<T>> T min(T[] a) {...}
+
+
+    This is more thorough than just using "T extends Comparable" ... 
+    
+
+13. Unbounded wildcards
+
+
+   public static boolean hasNulls(Pair<?> p) {
+	   return p.getFirst() == null || p.getSecond() == null;
+	 }
+
+
+14. Wildcard capture
+
+   public static void swap(Pair<?> p) { swapHelper(p); }
+
+	 public static <T> void swapHelper(Pair<T> p) {
+	   ...
+	 }
+
+	 public static void maxminBonus(Manager[] mgr, Pair<? super Manager> rslt) {
+	   minmaxBonus(mgr, rslt);
+		 swapHelper(rslt);
+	 }
+
+
+15. Reflection and Generics
+
+  1) Generic Class class
+
+	  Class<T>
+
+		T newInstance()
+		T cast(Object o)
+		T[] getEnumConstants()
+		Class<? super T> getSuperClass()
+		Constructor<T> getConstructor(Class.. parameterTypes)
+
+
+  2) type erasure
+
+	  public static <T extends Comparable<? super T>> T min(T[] a)
+
+		after erasure, it becomes
+
+		public static Comparble min(Comparable[] a)
+
+
+
+16. Type Literals
+
+
+  ...
+
+
+   
+
+
+
+
+
+
+
+
+
