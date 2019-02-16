@@ -2,9 +2,10 @@
 
 These books are goo:
 
-1) Functional Programming in Java -- Pierre-Yves
-Saumont 2) Java Performance Companion -- Charlie
-Hunt ...  3) Java By Comparison -- Simon Harrer
+1) Functional Programming in Java -- Pierre-Yves 
+    Saumont 
+2) Java Performance Companion -- Charlie Hunt ...  
+3) Java By Comparison -- Simon Harrer
 
 
 
@@ -96,27 +97,87 @@ Functional Programming:
    f(x, y) ...
 
 
+   function with single argument
+     f : x -> x + 2
+     g : x -> x * 2
+
+     // composing
+     f o g (5) = f(g(5)) = f(5 * s) = 10 + 2 = 12
+
+
+
+   Multiple-argument, made in "Tuple"
+
+    f(x, y) = x + y
+
+    f((3, 5)) = 3 + 5 = 8
+
+
+    by convention, the parenthese on tuple can be 
+    removed
+
+
+    f(3, 5) = 3 + 5 = 8
+
+
+
 6) Function currying 
 
    f(x)(y) = g(y)
 
-   the result of applying function f to the
-   argument x is a new function g.  
+  using the above example,  
+  where 
+     g(y) = x + y
 
-   when applyingg, x is no londer a variable. 
+
+    in such a case, we can write f(x)(y) to
+
+     f(x) = g
 
 
-   f(x)(y) is the "curried" form of function f(x,
-   y), Applying this transformation to a function
-   of a tuple (which you can call a function of
-   several arguments if you prefer) is called
-   "currying", after the mathematician Haskell
-   Curry (he was not the inventor of this
-   transformation)
+   ^^^  f(x) = g  
+
+     which means that the result of applying the 
+     function f to the argument x, is a new 
+     function g.  Applying this g function to y
+     gives the following:
+
+     g(y) = x + y
+
+
+  when applying function g,  x is no longer a 
+  variable.  It's a constant.
+
+
+  so, currying
+
+    f(3)(5) = g(5) = 3 + 5 = 8
+
+
+  The only new thing here is that the "codomain"
+  of f is a set of functions instead a set of
+  numbers.  The "result" of applying f to an
+  integer is a "function".  
+  The "result" of applying this function -- g,  to
+  an integer is an integer.
+
+       
+
+
+  **********************
+  f(x)g(y) is the "curried" form of the function 
+  f(x, y)
+  **********************
+
+  Applying this tranformation to a function of a
+  "tuple" (which we can call a function of several
+  arguments if we prefer), is called currying.
+
 
 
    Note, there is Haskell programming language, a
    Functional programming.
+
 
 
 7) Partially applied functions
@@ -378,10 +439,32 @@ Specifying Function Types:
      * x;
 
 
+===================================================
+
+(Sections here are so important for understanding
+ the following contents of at least this Chapter 2
+ -- using Functions,  the complex combined types
+ and functions as argument, and the currying)
+
+
 2.3 Advanced function features
 
 
  2.3.1 function with multiple arguments
+
+
+   *** Function of one tuple of arguments.  
+
+   Tuple2, tuple3, tuple4, etc ... 
+
+
+
+   Let's try to define a function for adding 2
+   integers; you will apply a function to the 1st
+   argument, and this will return a function!
+   (curring).  The type will be as of following:
+  
+
 
    Function<Integer, Function<Integer, Integer>> 
 
@@ -609,18 +692,18 @@ Specifying Function Types:
 
 Exercise 2.5 (HARD)
   write a polymorphic version of "compose"
-	function.
+  function.
 
   Java does not have "polymorphic properties", the
-	solution is to store function in a method,
-	interface, instead of in a property.
+  solution is to store function in a method,
+  interface, instead of in a property.
 
 
   Java does not handle variance, finding trying to
-	cast Function<Integer, Integer> to
-	Function<Object, Object> which will generate
-	compile error.  Solution is to specify the type
-	for variables.
+  cast Function<Integer, Integer> to
+  Function<Object, Object> which will generate
+  compile error.  Solution is to specify the type
+  for variables.
 
 
 
@@ -636,6 +719,52 @@ But, in Java,  all parameterized types are
 Matcher<Red> has nothing to do with
 Matcher<Color>, even though Red is subtype of
 Color.    This may be due to "type erasure". 
+
+
+
+Only class, interface, method can define type
+parameter; most practical is a static method:
+
+static <T,U,V> 
+  Function<Function<U,V>,
+           Function<Function<T,U>,
+                    Function<T,V>>> 
+higherCompose() {
+
+    return f -> g -> x -> f.apply(g.apply(x));
+}
+
+
+^^ now my question, f, g, x,  what are their types?
+
+ is g of Function<T,V>, and x of V?
+
+
+ f : Function<U,V>
+ g : Function<T,U>
+ x : T
+
+
+ ? what has type V?  the result of g.apply , that
+ is, the "partial applied function"
+
+
+   return 
+     ( (f) -> ( (g) -> 
+                      ( (x) -> f.apply(g.apply(x)) 
+                      )
+               )
+     )
+
+
+
+
+
+
+
+
+
+
 
 
 
