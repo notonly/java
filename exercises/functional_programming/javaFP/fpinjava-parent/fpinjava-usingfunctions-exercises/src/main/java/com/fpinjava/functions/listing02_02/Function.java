@@ -1,5 +1,6 @@
 package com.fpinjava.functions.listing02_02;
 
+@FunctionalInterface
 public interface Function<T, U> {
 
   U apply(T arg);
