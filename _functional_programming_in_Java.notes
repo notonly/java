@@ -7,6 +7,12 @@ These books are goo:
 3) Java By Comparison -- Simon Harrer
 
 
+
+Pure Functional Programming:
+comparing Haskell and Lisp (https://markkarpov.com/post/lisp-and-haskell.html)
+
+
+
 Functional Programming:
 
 1) First-class function
@@ -134,7 +140,9 @@ Now, consider the "curried" version of these 2 functions:
 
 
 
-8) Understanding "currying"
+8) Understanding "currying"  -- the author using the example to stress that
+   sometimes, it's good to make currying (hence saving the curried intermediate
+	 values in memory)
 
    imaging travelling in foreign country, using calculator to convert currencies,
 	 would you prefer having to type conversion rate each time
@@ -162,16 +170,22 @@ Now, consider the "curried" version of these 2 functions:
 
 
  
+=====
  public int add(int a, int b) { return a + b; }
 
  ^^ is a Function
 
 
+=====
  public int div(int a, int b) { return a / b; }
  ^^ Is NOT function, because it throws div/0 exception.
 
  To make it a function, we could test the 2nd parameter and return a value if it's null
  it would have to be an int.  
+
+
+
+
 
 
 1. Recursive Functions
@@ -266,12 +280,278 @@ System.out.println(myFuncTriple2(7));  // 21
 
 ^^ Now calling the method
 
-System.out.println(compse(x -> x + 1,  x -> x * 2).apply);  // 
+System.out.println(compse(x -> x + 1,  x -> x * 2).apply(5));  //  (5+1) * 2
+
+System.out.println(compose(triple, square).apply(5));  //  (5 * 5) * 3 = 75
 
 
 	Or in Java 8 way (my try)
 
-	Function compose2 = (Function f1, Function f2) -> f1.apply(f2.apply(x));
+	Function compose2 = (Function f1, Function f2) -> { x -> f1.apply(f2.apply(x)) };
+
+	or
+
+	Function compose3 = (Function f1, Function f2) -> x -> f1.apply(f2.apply(x));
+
+
+
+2.1.2 Polymorphic functions
+
+
+public interface Function<T, R> {
+  R apply(T arg);
+}
+
+
+Function<Integer, Integer> triple = new Function<>() {
+  @Override
+	public Integer apply(Integer arg) {
+	  return arg * 3;
+	}
+}
+
+
+
+2.1.3  Do NOT compose too many functions (where curried is saved in memory), otherwise 
+       Stack Overflow will happen
+
+
+Overflow example:
+
+int fnbr = 10_000;
+Function<Integer, Integer> g = x -> x;   // Identity function
+Function<Integer, Integer> f = x -> x + 1;
+
+// may be no compiling, due to g is not final, and is changed inside lambda
+// IntStream.rangeClosed(1, fnbr).forEach(i -> g = Function.compose(f, g));
+
+for (int i = 0; i < fnbr; i++) {
+  g = Function.compose(f, g);
+}
+
+System.out.println(g.apply(0));
+
+^^ the author said, overflow when looping around 7,500
+
+
+2.2.5  Simplying the code using lambda
+
+
+Type inference:   where type not needed for variable in lambda sometimes, 
+                  because javac can infer the types from the left handle side
+
+
+Specifying Function Types:
+
+   the author prefers 
+	  
+		      Integer -> Integer squareFunc = x -> x * x;
+
+     ^^ the above is not allowed in Java yet, instead, it's 
+
+		 Function<Integer, Integer> squareFn = x -> x * x;
+
+
+2.3 Advanced function features
+
+
+ 2.3.1 function with multiple arguments
+
+   Function<Integer, Function<Integer, Integer>> 
+
+
+	      Note, here,  the argument is "Integer",  
+				             the return is a function,  Function<Integer, Integer>
+										          that is, a func with Integer input and returns an Integer
+
+	 ====>  
+
+	 Integer -> Integer -> Integer;   // reader from right to left,  a Function<T, R> 
+
+
+   due to associativity,  it's equivalent to 
+
+	 Integer -> (Integer -> Integer);
+
+
+
+
+	 Example:  
+
+
+	 Write a function to add two Integers
+
+	 Function<Integer, Function<Integer, Integer>> add 
+	   = x -> (y -> x + y);
+
+
+   ^^ the function takes an Integer as its argument 
+	    and Return "a function" from Integer to Integer, 
+			so the type wil lbe Function<Integer, Function<Integer, Integer>>
+
+
+
+
+	 Java 8 simplfying this:  by inheritance
+
+
+	 public interface BinaryOperator extends Function<Integer, Function<Integer, Integer>> {
+	 }
+
+	 BinaryOperator add = x -> y -> x + y;
+
+	 BinaryOperator mult = x -> y -> x * y;
+
+ 
+
+2.3.2  Applying curried functions
+
+	 continuing with the above example on "add" function;
+
+   System.out.println(add.apply(3).apply(5));
+
+
+	 1) add.apply(3)  returns a function,  y -> 3 + y  (it's Function<Integer, Integer>)
+
+	 2)  now,  add.apply(3).apply(5) goest to apply (y -> 3 + y) function on parameter 5
+
+	     so, the result is  8
+
+
+
+
+   So, in Scala:
+
+	    add(3)(5)
+
+
+   In Haskell:
+
+	    add 3 5
+
+
+
+
+         Note, previously, in many of our code in current projects, we do
+
+				    Function<Integer, Integer> addMethod = (x, y) -> x + y;
+
+						^^ Note, that did NOT use the "currying",  using the author's 
+						    currency conversion example,  we always "enter rate"... and
+                that is some function-application,  
+         
+				             System.out.println(addMethod(3, 5));
+
+
+
+2.3.3  Higher-order functions
+
+   higher-order functions:  take "functions" as its arguments and returning functions !
+
+
+
+
+			think of exmaple  (2 * 3) * (2 * 3)    // 
+
+        a.  a function  f = compose.apply(square).apply(triple);   // <==  triple first, 
+
+
+               Now, think of  (2 * 3) triple function;  and then  (x -> x * x) double function
+
+
+	 Example, write a function to compose two function square and triple used in previous exs..
+
+
+	 Function<Function<Integer, Integer>, Function<Function<Integer, Integer>, 
+                                                 Function<Integer, Integer>>>
+
+			compose = x -> y -> z -> x.apply(y.apply(z));
+
+
+
+			  ^^^  Note, this "compose" function, having  "x" being Function<Integer, Integer>
+				                                            "y" being Function<Integer, Integer>
+
+
+
+
+      compose2 = (Function<Integer, Integer> x) 
+			              -> ((Function<Integer, Integer> y) -> ((z) -> x.apply(y.apply(z)))
+										   )
+								 ;
+
+
+	  
+
+
+   here, compose function's argument is a function (Integer -> Integer),  
+	               and returns a function with argument of func (Integer -> Integer), and returning a function of (Integer -> Integer)
+
+
+
+   ^^ honest, not quite get this composing ...
+
+
+
+	 ^^^ The author stated on P35,  
+
+	     Function<T, Function<T, T>>
+
+
+			 Now, T is Function<Integer, Integer>;  replacing T with Function<Integer, Integer>
+
+			 so,  
+
+			 Function< Function<Integer, Integer>,  
+
+			                Function< Function<Integer, Integer>, Function<Integer, Integer>>>
+
+
+
+
+
+
+	 Function<Integer, Integer> triple = x -> x * 3;
+
+	 Function<Integer, Integer> square = x -> x * x;
+
+   Function<Integer, Integer> f = compose.apply(square).apply(triple);
+
+
+   ^^ the code starts by applying 1st argment, gives a new function to apply to the 
+	    2nd argument.   
+
+			The result is a function, which is the compisition of two function argments.
+
+
+
+
+   what is that fumular looks like?   
+
+
+	 system.out.println(f.apply(2));
+
+	   ==>   (2 * 3) * (2 * 3)
+
+
+
+		 Note, the triple is apply first compose definition;
+
+
+
+
+2.3.4  Polymorphic higher-order functions 
+
+
+
+
+    <T, U, V> Function<Function<T, U>,
+		                   Function<Function<V, T>,
+											          Function<V, U>>
+        highterCompose = f -> g -> x -> f.apply(g.apply(x));
+
+
+
 
 
 
