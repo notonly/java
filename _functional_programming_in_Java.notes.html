@@ -292,8 +292,8 @@ Overflow example:
 int fnbr = 10_000; Function<Integer, Integer> g = x -> x;   // Identity function
 Function<Integer, Integer> f = x -> x + 1;
 
-// may be no compiling, due to g is not final, and is changed inside lambda
-// IntStream.rangeClosed(1, fnbr).forEach(i -> g = Function.compose(f, g));
+// may be no compiling, due to g is not final, and is changed inside lambda //
+IntStream.rangeClosed(1, fnbr).forEach(i -> g = Function.compose(f, g));
 
 for (int i = 0; i < fnbr; i++) { g = Function.compose(f, g); }
 
@@ -535,7 +535,7 @@ Specifying Function Types:
 (type of Function not used before in projects)
 
 <A, B, C, D> Function<A, Function<B, Function<C, Function<D, String>>>> f() {
-return a -> b -> c -> d -> String.format("%s, %s, %s, %s", a, b, c, d); }
+			return a -> b -> c -> d -> String.format("%s, %s, %s, %s", a, b, c, d); }
 
 
 
@@ -547,11 +547,11 @@ import java.util.function.Function;
 public class Fnt {
 
 		public <A, B, C, D> String f1(A a, B b, C c, D d) { return
-		String.format("%s, %s, %s, %s", a, b, c, d); }
+			String.format("%s, %s, %s, %s", a, b, c, d); }
 
 		public <A, B, C, D> Function<A, Function<B, Function<C, Function<D,
-		String>>>> f2() { return a -> b -> c -> d -> String.format("%s, %s, %s, %s",
-		a, b, c, d); } }
+					String>>>> f2() { return a -> b -> c -> d -> String.format("%s, %s,
+					%s, %s", a, b, c, d); } }
 
 Fnt fnt = new Fnt();
 
@@ -595,7 +595,7 @@ calling function f2, new way: hello, world!, its, me
 		apply(f.apply(x)); }
 
 		default <V> Function<T, V> andThen(Function<U, V> f) { return x ->
-		f.apply(apply(x)); }
+			f.apply(apply(x)); }
 
 		static <T> Function<T, T> identity() { return t -> t; }
 
@@ -603,19 +603,18 @@ calling function f2, new way: hello, world!, its, me
 		{ return x -> f.apply(g.apply(x); }
 
 		static <T, U, V> Function<T, V> andThen(Function<T, U> f, Function<U, V> g)
-		{
+			{
 
 			// here f <T, U> , so x is of T,  and f.apply(x) is of U;   and then g <U,
-			// V>  having input of U,  and returns type of V
+				// V>  having input of U,  and returns type of V
 
 			return x -> g.apply(f.apply(x));   
 			
 		}
 
     
-		// higher order comp...
-		static <T, U, V> Function<Function<T, U>, Function<Function<U, V>,
-		Function<T, V>>> compose() {
+		// higher order comp...  static <T, U, V> Function<Function<T, U>,
+		Function<Function<U, V>, Function<T, V>>> compose() {
 
 				 return x -> y -> y.andThen(x); }
 
