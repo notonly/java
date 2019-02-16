@@ -5,7 +5,8 @@ Chapter 2  lambda
 
 1) lambda
 
-  inventory.sort((Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight()));
+  inventory.sort((Apple a1, Apple a2) ->
+  a1.getWeight().compareTo(a2.getWeight()));
 
 
 
@@ -14,31 +15,31 @@ Chapter 2  lambda
     ^^ Only 1 abstract method.
 
 
-		a.  Predicate<T>     --  test(...)
+    a.  Predicate<T>     --  test(...)
 
 
     b.  Consume<T>       --  accept(...)
 
 
-		c.  Function<T, R>   --  apply(...)
+    c.  Function<T, R>   --  apply(...)
 
 
-		d.  Supplier<T>      --  () -> T
+    d.  Supplier<T>      --  () -> T
 
 
-		e. UnaryOperator<T>  --   T -> T
+    e. UnaryOperator<T>  --   T -> T
 
 
-		f. BinaryOperator<T> --  (T, T) -> T
+    f. BinaryOperator<T> --  (T, T) -> T
 
 
-		g. BiPredicate<T, U> -- (T, U) -> boolean
+    g. BiPredicate<T, U> -- (T, U) -> boolean
 
 
-		h. BiConsumer<T, U>  -- (T, U) -> void
+    h. BiConsumer<T, U>  -- (T, U) -> void
 
 
-		i. BiFunction<T, U, R> -- (T, U) -> R
+    i. BiFunction<T, U, R> -- (T, U) -> R
 
 
 
@@ -48,18 +49,20 @@ Chapter 2  lambda
 
   1) composing "Comparators"
 	   
-		 inventory.sort(comparing(Apple::getWeight).reversed());
+     inventory.sort(comparing(Apple::getWeight)
+     .reversed());
 
 
-		 ^^ Comparator.comparing static method returns a Comparator ...
+     ^^ Comparator.comparing static method returns
+     a Comparator ...
 
 
-		 ^^ Chaining comparactors
+     ^^ Chaining comparactors
 
-		    inventory.sort(comparing(Apple::getWeight)
-				                 .reversed()
-												 .thenComparing(Apple::getCountry)
-				               );
+        inventory
+        .sort(comparing(Apple::getWeight)
+        .reversed()
+        .thenComparing(Apple::getCountry));
 
 
   2) composing "Predicates"
@@ -68,43 +71,56 @@ Chapter 2  lambda
      *** existing Predicate -- negate, and, or
 
 
-		 Predicate<Apple> notRedApple = redApple.negate();   // here redApple is a Predicate
+     Predicate<Apple> notRedApple =
+     redApple.negate();   // here redApple is a
+     Predicate
 
 
-		 Predicate<Apple> redAndHeavyApple = redApple.and(apple -> apple.getWeight() > 150);
+     Predicate<Apple> redAndHeavyApple =
+     redApple.and(apple -> apple.getWeight() >
+     150);
 
-		 Predicate<Apple> redAndHeaveyAppleOrGreen 
-		      = redApple.and(a -> a.getWeight() > 150).or(a -> GREEN.equals(a.getColor()));
+     Predicate<Apple> redAndHeaveyAppleOrGreen =
+     redApple.and(a -> a.getWeight() > 150) .or(a
+     -> GREEN.equals(a.getColor()));
 
 
 
   3) composing "Functions"
 
-	   "Function" interface comes with two default methods, "andThen",  "compose",  both returns instance of "Funmction"
+     "Function" interface comes with two default
+     methods, "andThen", "compose",  both returns
+     instance of "Funmction"
 
 
-		 Function<Integer, Integer> plus1 = x -> x + 1;
+     Function<Integer, Integer> plus1 = x -> x +
+     1;
 
-		 Function<Integer, Integer> times2 = x -> x * 2;
+     Function<Integer, Integer> times2 = x -> x *
+     2;
 
-		 Function<Integer, Integer> plus1AndThenTimes2 = plus1.andThen(times2);
+     Function<Integer, Integer> plus1AndThenTimes2
+     = plus1.andThen(times2);
 
-		 Integer rslt = plus1AndThenTimes2.apply(2);   // rslt is:  (2 + 1) * 2 == 6
+     Integer rslt = plus1AndThenTimes2.apply(2);   
+        // rslt is:  (2 + 1) * 2 == 6
 
      ^^^ same as Math :   times2(plus1(x))
 
 
-		 Now, how about plus1(times2(x))
+     Now, how about plus1(times2(x))
 
-		 Function<Integer, Integer> comp = plus1.compose(times2);    // 
+     Function<Integer, Integer> comp =
+     plus1.compose(times2);    // 
 
-		 Integer rslt = comp.apply(2);   // the result is  2 * 2 + 1 == 5
+     Integer rslt = comp.apply(2);   
+        // the result is  2 * 2 + 1 == 5
 
 
 
   4) similar ideas from mathematics 
 
-	   a) integration :   
+     a) integration :   
 
   
 
@@ -117,137 +133,160 @@ Chapter 5 Using Streams
 
   5.2 Slicing a stream 
 
-	   *** slicking using a predicate
+     *** slicking using a predicate
 
-		   Java 9 added 2 new methods:  "takeWhile" -- lets you slice any stream (including infinite stream) using a "predicate",  and it stops once it has found an element that "fails" to match.
+       Java 9 added 2 new methods:  "takeWhile" --
+       lets you slice any stream (including
+       infinite stream) using a "predicate",  and
+       it stops once it has found an element that
+       "fails" to match.
 
-		List<Dish> slicedMenu1 = specialMenu.stream()
-		                            .takeWhile(dish -> dish.getCalories() < 320)
-																.collect(toList());
+    List<Dish> slicedMenu1 = specialMenu.stream()
+    .takeWhile(dish -> dish.getCalories() < 320)
+    .collect(toList());
 
 
 
-     "dropWhile" -- not taking elements matching the Predicate
+     "dropWhile" -- not taking elements matching
+     the Predicate
 
-		 List<Dish> menuWithCaloriesGreaterThan320 = specialMenu.stream()
-		                            .dropWhile(dish -> dish.getCalories() < 320)
-																.collect(toList());
+     List<Dish> menuWithCaloriesGreaterThan320 =
+     specialMenu.stream() .dropWhile(dish ->
+     dish.getCalories() < 320) .collect(toList());
 
 		                
   5.2.2 Truncating a stream
 
-	   using limit(3)  to truncate a stream
+     using limit(3)  to truncate a stream
 
 
   5.2.3 Skipping elements
 
-	   skip(2)  
+     skip(2)  
 
 
 
 
   5.3 Mapping
 
-	    1) applying a function to each element of a stream
+      1) applying a function to each element of a
+      stream
 
 
-			   map(String::length)
+         map(String::length)
 
 
-			2) "Flattening streams"   ***  <== need to DEPTH-FIRST !    *** Page-105
+      2) "Flattening streams"   ***  <== need to
+      DEPTH-FIRST !    *** Page-105
 
 
-			   String[] words = {"Hello", "World"};
+         String[] words = {"Hello", "World"};
 
-				 NOT-working one:  
+         NOT-working one:  
 				 
-				     words.stream().map(word -> word.split("")).distinct().collect(Collectors.toList());
+             words.stream().map(word ->
+             word.split("")).distinct().collect(Collectors.toList());
 
-				 ^^ map(word -> word.split("")) created Stream<String[]>  ;   
-
-
-				     the above returns List<String[]>  ,  instead of List<String>  (ie, the distinct characters fo the array of two words "Hello" and "World")
-
+         ^^ map(word -> word.split("")) created
+         Stream<String[]>  ;   
 
 
-  			Correct way:
+             the above returns List<String[]>  ,
+             instead of List<String>  (ie, the
+             distinct characters fo the array of
+             two words "Hello" and "World")
 
-				    {"Hello", "World"}.stream()						// Stream<String>
-									.map(word -> word.split(""))    // Stream<String[]>  due of word.split("")
-									.flatMap(Arrays::stream)				// Stream<String>
-									.distinct()											
-									.collect(Collectors.toList());	// List<String>
+
+
+        Correct way:
+
+            {"Hello", "World"}.stream()
+            // Stream<String> .map(word ->
+            word.split(""))    // Stream<String[]>
+            due of word.split("")
+            .flatMap(Arrays::stream)				//
+            Stream<String> .distinct()
+            .collect(Collectors.toList());	//
+            List<String>
 
 
 
        
-			 *** another example
+       *** another example
 
-			   Given a list of numbers, how to return a list of the square of each number?  
+         Given a list of numbers, how to return a
+         list of the square of each number?  
 
-				 [1, 2, 3, 4, 5]  ==> return [1, 4, 9, 16, 25]
+         [1, 2, 3, 4, 5]  ==> return [1, 4, 9, 16,
+         25]
 
 
-				 Arrays.asList(1, 2, 3, 4, 5).stream()
-				 														 .map(n -> n * n)
-																		 .collect(Collectors.toList());
+         Arrays.asList(1, 2, 3, 4, 5).stream()
+         .map(n -> n * n)
+         .collect(Collectors.toList());
 
 
 
       
-			 ^^^ Given 2 lists of numbers, return all pairs of numbers.   
+       ^^^ Given 2 lists of numbers, return all
+       pairs of numbers.   
 
-				 List<Integer> nbr1 = [1, 2, 3]  and List<Integer> nbr2 = [5, 6]   
+         List<Integer> nbr1 = [1, 2, 3]  and
+         List<Integer> nbr2 = [5, 6]   
 				 
-				      ==>  (1, 5), (1, 6),  (2, 5), (2, 6),  (3, 5), (3, 6)
+              ==>  (1, 5), (1, 6),  (2, 5), (2,
+              6),  (3, 5), (3, 6)
 
 
          List<int[]> pairs = nbr1.stream()
-				                      .flatMap(i -> nbr2.stream()
-															                  .map(j -> new int[]{i, j})
-																			)
-															.collect(toList());
+         .flatMap(i -> nbr2.stream() .map(j -> new
+         int[]{i, j})) .collect(toList());
 
 				  
 
 
 
-			^^^ extend previous example to return only pairs whose sum is divisible by 3
+      ^^^ extend previous example to return only
+      pairs whose sum is divisible by 3
 
 
-			    List<int[]> pairsDivisibleBy3 = nbr1.stream()
-										.flatMap(i -> nbr2.stream()
-																			.filter(j -> (i + j) % 3 == 0)
-							                        .map(j -> new int[]{i, j})
-														)
-										.collect(toList());
+          List<int[]> pairsDivisibleBy3 =
+          nbr1.stream() .flatMap(i ->
+          nbr2.stream() .filter(j -> (i + j) % 3
+          == 0) .map(j -> new int[]{i, j}))
+          .collect(toList());
 
 
 
   5.4 Finding and matching
 
-	    "allMatch(Predicate<T>)"
+      "allMatch(Predicate<T>)"
 
       "anyMatch"
 
-			"noneMatch"
+      "noneMatch"
 
-			"findFirst"
+      "findFirst"
 
-			"findAny"
-
-
-
-	*** Optional in a nutshell
+      "findAny"
 
 
-	    "isPresent()"  returns true if Optional contains a value
 
-			"ifPresent(Consumer<T> block)"   if Optional contains a value, and then consume such a value
+  *** Optional in a nutshell
 
-			"T get()"  returns the value if present; otherwise throws NoSuchElementException
 
-			"T orElse(T other)"  returns the value if present;  otherwise returns "default" value
+      "isPresent()"  returns true if Optional
+      contains a value
+
+      "ifPresent(Consumer<T> block)"   if Optional
+      contains a value, and then consume such a
+      value
+
+      "T get()"  returns the value if present;
+      otherwise throws NoSuchElementException
+
+      "T orElse(T other)"  returns the value if
+      present;  otherwise returns "default" value
 
 
 
@@ -255,179 +294,212 @@ Chapter 5 Using Streams
   5.5 Reducing
 
 
-	 1) sum
+   1) sum
 
 
-	   int sumOneToTen = IntStream.rangeClosed(1, 10).reduce(0, (a, b) -> a + b);
+     int sumOneToTen = IntStream.rangeClosed(1,
+     10).reduce(0, (a, b) -> a + b);
 
-		 or
+     or
 
-		 int sumOneToTen = IntStream.range(1, 11).reduce(0, Integer::sum);
+     int sumOneToTen = IntStream.range(1,
+     11).reduce(0, Integer::sum);
 
 
 
     *** "no initial value"  -- returns Optional 
 
-		 Optional<Integer> sum = IntStream.range(1, 11).reduce(Integer::sum);
+     Optional<Integer> sum = IntStream.range(1,
+     11).reduce(Integer::sum);
 
-		 ^^ if stream does not have elements,  and then, no sum will be returned, but just an Optional
+     ^^ if stream does not have elements,  and
+     then, no sum will be returned, but just an
+     Optional
 
 
 
   2) Max and min
 
 
-	   Optional<Integer> max = IntStream.range(1, 11).reduce(Integer::max);   // again, no init values,  return Optional
+     Optional<Integer> max = IntStream.range(1,
+     11).reduce(Integer::max);   // again, no init
+     values,  return Optional
 
 
-		 ^^ min will using Integer::min function
+     ^^ min will using Integer::min function
 
 
 
   5.6 Summary
 
 
-	   Intermediate and terminal operations
+     Intermediate and terminal operations
 
 
-		 Operation        Type      Return Type   Type/Functional used      Function descriptior
-    ------------      -------   -----------      ----------------         ------------------
+     Operation        Type      Return Type
+     Type/Functional used Function descriptior
+     ------------      -------   -----------
+     ----------------         ------------------
 
-		  filter          interm.    Stream<T>       Predicate<T>             T -> boolean
+      filter          interm.    Stream<T>
+      Predicate<T>             T -> boolean
 
-			distinct        interm.    Stream<T>       n/a                      n/a
-                     (stateful/unbounded)
+      distinct        interm.    Stream<T>
+      n/a                      n/a
+      (stateful/unbounded)
 
-			takeWhile       interm.    Stream<T>       Predicate<T>             T -> boolean
+      takeWhile       interm.    Stream<T>
+      Predicate<T>             T -> boolean
 
-			dropWhile       interm     Stream<T>       Predicate<T>             T -> boolean
+      dropWhile       interm     Stream<T>
+      Predicate<T>             T -> boolean
 
-			skip            interm.    Stream<T>       long                     n/a
+      skip            interm.    Stream<T>
+      long                     n/a
 
-			limit           interm.    Stream<T>       long                     n/a
+      limit           interm.    Stream<T>
+      long                     n/a
 
-			map             interm.    Stream<R>       Function<T, R>           T -> R
+      map             interm.    Stream<R>
+      Function<T, R>           T -> R
 
-			flatMap         interm.    Stream<R>       Function<T, Stream<R>>   T -> Stream<R>
+      flatMap         interm.    Stream<R>
+      Function<T, Stream<R>>   T -> Stream<R>
 
-			sorted          interm.    Stream<T>       Comparator<T>            (T, T) -> int
-                     (stateful/unbounded)
+      sorted          interm.    Stream<T>
+      Comparator<T>            (T, T) -> int
+      (stateful/unbounded)
 
-			anyMatch        Terminal   boolean         Predicate<T>             T -> boolean
+      anyMatch        Terminal   boolean
+      Predicate<T>             T -> boolean
 
-			noneMatch       Terminal   boolean         Predicate<T>             T -> boolean
+      noneMatch       Terminal   boolean
+      Predicate<T>             T -> boolean
 
-			allMatch        Terminal   boolean         Predicate<T>             T -> boolean
+      allMatch        Terminal   boolean
+      Predicate<T>             T -> boolean
 
-			findAny         Terminal   Optional<T>     n/a                      n/a
+      findAny         Terminal   Optional<T>
+      n/a                      n/a
 
-			findFirst       Terminal   Optional<T>     n/a                      n/a
+      findFirst       Terminal   Optional<T>
+      n/a                      n/a
 
-			forEach         interm.    void            Consumer<T>              T -> void
+      forEach         interm.    void
+      Consumer<T>              T -> void
 
-			collect         Terminal   R               Collector<T, A, R>       n/a
+      collect         Terminal   R
+      Collector<T, A, R>       n/a
 
-			reduce          Terminal   Optional<T>     BinaryOperator<T>        (T, T) -> T
-                     (stateful/unbounded)
+      reduce          Terminal   Optional<T>
+      BinaryOperator<T>        (T, T) -> T
+      (stateful/unbounded)
 
-      count           Terminal   long            n/a                      n/a
+      count           Terminal   long
+      n/a                      n/a
 
 
 
 
  5.7 Practicing
 
-     List<Transaction> tr2011 = transactions.stream()
-		      .filter(x -> x.getYear() == 2011)
-					.sort(Comparator.comparing(Transaction::getValue))
-					.collect(Collectors.toList());
+     List<Transaction> tr2011 =
+     transactions.stream() .filter(x ->
+     x.getYear() == 2011)
+     .sort(Comparator.comparing(Transaction::getValue))
+     .collect(Collectors.toList());
 
 
 
 
   1)  Numeric streams
 
-	   int calories = menu.stream().map(Dish::getCalories)
-		                    .sum();
+     int calories =
+     menu.stream().map(Dish::getCalories) .sum();
 
 
      ** "mapping to a numeric stream"
 
-		    menu.stream()
-				    .mapToInt(Dish::getCalories)
-						.sum();
+        menu.stream() .mapToInt(Dish::getCalories)
+        .sum();
 
 
     ** "converting back to a stream of objects"
 
-		  IntStream iStrm = menu.stream().mapToInt(Dish::getCalories);
-			
-			Stream<Integer> strm = iStrm.boxed();
+      IntStream iStrm =
+      menu.stream().mapToInt(Dish::getCalories);
+
+      Stream<Integer> strm = iStrm.boxed();
 
 
 
     ** "Default values: OptionalInt"
 
-		   OptionalInt maxCal = menu.stream().mapToInt(Dish::getCalories)
-			                          .max();
+       OptionalInt maxCal =
+       menu.stream().mapToInt(Dish::getCalories)
+       .max();
 
 
-			int maxCal2 = maxCl.orElse(1);
+      int maxCal2 = maxCl.orElse(1);
 
 
 
    
   5.8 Building Streams
 
-	    1) streams from values : Stream.of
+      1) streams from values : Stream.of
 
-			  Stream<String> strm = Stream.of("hello", "world", "from");
-				strm.map(String::toUpperCase).forEach(System.out::println);
+        Stream<String> strm = Stream.of("hello",
+        "world", "from");
+        strm.map(String::toUpperCase).forEach(System.out::println);
 
 
       2) stream from nullable : ofNullable
 
-			   Stream<String> strm = Stream.ofNullable(System.getProperty("home"));
+         Stream<String> strm =
+         Stream.ofNullable(System.getProperty("home"));
 
 
 
      3) streams from arrays
 
-		     Arrays.stream(new int[] {1, 2, 3, 4}).sum();
+         Arrays.stream(new int[] {1, 2, 3,
+         4}).sum();
 
 
-		 4) streams from "files"
+     4) streams from "files"
 
 
-		    long uniqueWords = 0;
+        long uniqueWords = 0;
 
-				try (Stream<String> lines = Files.lines(Paths.get("data.txt"), Charset.defaultCharset())) {
-				    uniqueWords = lines.flatMap(line -> Arrays.stream(line.split(" ")))
-						                   .distint()
-															 .count();
-				} catch (IOException ignorable) {
-				}
-
-
-
-
-     5) streams from functions: creating infinite streams
+        try (Stream<String> lines =
+        Files.lines(Paths.get("data.txt"),
+        Charset.defaultCharset())) { uniqueWords =
+        lines.flatMap(line ->
+        Arrays.stream(line.split(" "))) .distint()
+        .count(); } catch (IOException ignorable)
+        { }
 
 
-		    Stream.iterate(0, n -> n + 2)
-				      .limit(10)
-							.forEach(System.out::println);
+
+
+     5) streams from functions: creating infinite
+     streams
+
+
+        Stream.iterate(0, n -> n + 2) .limit(10)
+        .forEach(System.out::println);
 
 
 
     6) Generate
 
-		   Stream.generate(Math::random)
-			       .limit(5)
-						 .forEach(System.out::println);
+       Stream.generate(Math::random) .limit(5)
+       .forEach(System.out::println);
 
 
-       IntStream ones = IntStream.generate(() -> 1);
+       IntStream ones = IntStream.generate(() ->
+       1);
 
 
 
@@ -437,106 +509,117 @@ Chapter 6 Collecting data with Streams
 
   6.1 Collectors in a netshell
 
-	  6.1.1 Collectors as advanced reductions 
+    6.1.1 Collectors as advanced reductions 
 
-		  
-		6.1.2  Predfined collectors
+
+    6.1.2  Predfined collectors
 
 
   6.2 Reducing and summarizing
 
-	   long nbr = menu.stream().collect(Collectors.counting());
+     long nbr =
+     menu.stream().collect(Collectors.counting());
 
-		 or
+     or
 
-		 nbr = menu.stream().count();
-
-
-		 ***  java.util.stream.Collectors.*;
+     nbr = menu.stream().count();
 
 
-	 6.2.1  Collectors.maxBy,  minBy;  
-
-	   Comparator<Dish> comparator1 = Comparator.comparingInt(Dish::getCalories);
-
-		 Optional<Dish> mostCaloriesDish = menu.stream()
-		             .collect(Collectors.maxBy(comparator1));
+     ***  java.util.stream.Collectors.*;
 
 
+   6.2.1  Collectors.maxBy,  minBy;  
 
-   6.2.2  Collectors.summingInt   
-	        Collectors.averagingInt
-					Collectors.summarizingInt ...
+     Comparator<Dish> comparator1 =
+     Comparator.comparingInt(Dish::getCalories);
+
+     Optional<Dish> mostCaloriesDish =
+     menu.stream()
+     .collect(Collectors.maxBy(comparator1));
+
+
+
+   6.2.2  Collectors.summingInt
+   Collectors.averagingInt
+   Collectors.summarizingInt ...
 
 
 
 
    6.2.3  Joining strings
 
-	    menu.stream().map(Dish::getName).collect(Collectors.joining());
+      menu.stream().map(Dish::getName).collect(Collectors.joining());
 
 
 
-	 6.2.4  generalized summarization with reduction
+   6.2.4  generalized summarization with reduction
 
 
-	    int totalCal = menu.stream()
-												 .collect(
-													  Collectors.reducing(0, Dish::getCaloeries, 
-																													 (i, j) -> i + j));
+      int totalCal = menu.stream() .collect(
+      Collectors.reducing(0, Dish::getCaloeries,
+      (i, j) -> i + j));
 
-	        
+
         Collectors.reducing(....)
 
-				    1st argument: starting value of the reduction operation
-						2nd argument: the function to get value for each element
-						3rd argument: BinaryOperator aggregates 2 items into a single value of the same type
-						                (T, T) -> T    ;   BinaryOperator(T)
+            1st argument: starting value of the
+            reduction operation 2nd argument: the
+            function to get value for each element
+            3rd argument: BinaryOperator
+            aggregates 2 items into a single value
+            of the same type (T, T) -> T    ;
+            BinaryOperator(T)
 
 
-            1st argument -- "initial value"
-						2nd argument -- Transformation function
-						3rd argument -- Aggregating function   : like  Integer::sum  ;  or  (i, j) -> i + j
+            1st argument -- "initial value" 2nd
+            argument -- Transformation function
+            3rd argument -- Aggregating function
+            : like Integer::sum  ;  or  (i, j) ->
+            i + j
 
 
 
 
   6.3 Grouping
 
-	  Map<Dish.Type, List<Dish>> dishesByType = menu.stream()
-		                                              .collect(Collectors.groupingBy(Dish::getType));
+    Map<Dish.Type, List<Dish>> dishesByType =
+    menu.stream()
+    .collect(Collectors.groupingBy(Dish::getType));
 
 
-    Map<CaloricLevel, List<Dish>> dishesByCal = menu.stream()
-							.collect(Collectors.groupingBy(
-								 dish -> {
-								    if (dish.getCalories() <= 400) return CaloricLevel.DIET;
-										else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
-										else return CaloricLevel.FAT;
-									}));
+    Map<CaloricLevel, List<Dish>> dishesByCal =
+    menu.stream() .collect(Collectors.groupingBy(
+    dish -> { if (dish.getCalories() <= 400)
+    return CaloricLevel.DIET; else if
+    (dish.getCalories() <= 700) return
+    CaloricLevel.NORMAL; else return
+    CaloricLevel.FAT; }));
 
 
 
    6.3.1 Manipulating grouped elements
 
-	    Map<Dish.Type, List<Dish>> caloricDishesByType 
-			  = menu.stream()
-				    .collect(Collectors.groupingBy(Dish::getType, 
-						                                Collectors.filtering(dish -> dish.getCalories() > 500, toList())));
+      Map<Dish.Type, List<Dish>>
+      caloricDishesByType = menu.stream()
+      .collect(Collectors.groupingBy(Dish::getType,
+      Collectors.filtering(dish ->
+      dish.getCalories() > 500, toList())));
 
 
 
 
-     Map<Dish.Type, List<String>> dishNamesByType 
-		    = menu.stream()
-				   .collect(Collectors.groupingBy(Dish::getType, 
-					              Collectors.mapping(Dish::getName, toList())));
-																									   
+     Map<Dish.Type, List<String>> dishNamesByType
+     = menu.stream()
+     .collect(Collectors.groupingBy(Dish::getType,
+     Collectors.mapping(Dish::getName,
+     toList())));
 
-     Map<Dish.Type, List<String>> dishNamesByType 
-		    = menu.stream()
-				   .collect(Collectors.groupingBy(Dish::getType, 
-					            Collectors.flatMapping(dish -> dishTages.get( dish.getName() ).stream(), toSet())));
+
+     Map<Dish.Type, List<String>> dishNamesByType
+     = menu.stream()
+     .collect(Collectors.groupingBy(Dish::getType,
+     Collectors.flatMapping(dish -> dishTages.get(
+     dish.getName() ).stream(), toSet())));
 
 
 
@@ -544,16 +627,15 @@ Chapter 6 Collecting data with Streams
    6.3.2  Multilevel grouping 
 
 
-	 Map<Dish.Type, Map<CalricLevel, List<Dish>>> dishesByTypeCaloricLevel
-	    = menu.stream().collect(
-			    Collectors.groupingBy(Dish::getType,
-					    Collectors.groupingBy(dish -> {
-							    if (dish.getCalories() <= 400) return CaloricLevel.DIET;
-							    if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
-									else return CaloricLevel.FAT;
-							})
-					)
-			);
+   Map<Dish.Type, Map<CalricLevel, List<Dish>>>
+   dishesByTypeCaloricLevel =
+   menu.stream().collect(
+   Collectors.groupingBy(Dish::getType,
+   Collectors.groupingBy(dish -> { if
+   (dish.getCalories() <= 400) return
+   CaloricLevel.DIET; if (dish.getCalories() <=
+   700) return CaloricLevel.NORMAL; else return
+   CaloricLevel.FAT; })));
 
 
 
@@ -561,32 +643,34 @@ Chapter 6 Collecting data with Streams
    6.3.3 Collecting data in subgroups
 
 
-      Map<Dish.Type, Long> typesCount 
-			  = menu.stream().collect(Collectors.groupingBy(Dish::getType, counting()));
+      Map<Dish.Type, Long> typesCount =
+      menu.stream().collect(Collectors.groupingBy(Dish::getType,
+      counting()));
 
 
 
-      Map<Dish.Type, Optional<Dish>> mostCaloricByType
-			  = menu.stream().collect(groupingBy(Dish::getType, 
-				                         maxBy(comparingInt(Dish::getCalories))));
+      Map<Dish.Type, Optional<Dish>>
+      mostCaloricByType =
+      menu.stream().collect(groupingBy(Dish::getType,
+      maxBy(comparingInt(Dish::getCalories))));
 
 
 
       *** Collectors.collectingAndThen
 
-			Map<Dish.Type, Dish> mostCaloricByType 
-			  = menu.stream()
-				   .collect(groupingBy(Dish::getType,   // classification function
-					          collectingAndThen(
-										   maxBy(comparingInt(Dish::getCalories)),  // wrapped collector
-											 Optional::get)));   // Transformation function
+      Map<Dish.Type, Dish> mostCaloricByType =
+      menu.stream()
+      .collect(groupingBy(Dish::getType,   //
+      classification function collectingAndThen(
+      maxBy(comparingInt(Dish::getCalories)),  //
+      wrapped collector Optional::get)));   //
+      Transformation function
 
 
 
-      Collectors.groupingBy
-			Collectors.mapping
-			Collectors.flatMapping
-			Collectors.collectingAndThen
+      Collectors.groupingBy Collectors.mapping
+      Collectors.flatMapping
+      Collectors.collectingAndThen
 
 
 
@@ -595,75 +679,100 @@ Chapter 6 Collecting data with Streams
    6.4 Partitioning
 
 
-      Map<Boolean, List<Dish>> partitionedMenu
-			  = menu.stream().collect(partitioningBy(Dish::isVegetarian));
+      Map<Boolean, List<Dish>> partitionedMenu =
+      menu.stream().collect(partitioningBy(Dish::isVegetarian));
 
 
 
-      Map<Boolean, Map<Dish.Type, List<Dish>>> vegetarianDishesByType
-			  = menu.stream().collect(
-				     partitioningBy(Dish::isVegetarian,         // partitioning function
-						                 grouping(Dish::getType))); // 2nd collector
-
-
-
-
-      Map<Boolean, Dish> mostCaloricPartitionedByVegetarian
-			  = menu.stream().collect(
-				     partitioningBy(Dish::isVegetarian,
-						                CollectingAndThen(
-														    maxBy(comparingInt(Dish::getCalories)), Optional.get)));
+      Map<Boolean, Map<Dish.Type, List<Dish>>>
+      vegetarianDishesByType =
+      menu.stream().collect(
+      partitioningBy(Dish::isVegetarian,
+      // partitioning function
+      grouping(Dish::getType))); // 2nd collector
 
 
 
 
-
-  ***  main static factory methods of "Collectors" class
-
-	   Factory method              Return type              Used to
-
-		 toList                       List<T>                 Gather all the stream's items in list
-
-		 toSet
-
-		 toCollection
-
-
-		 counting                      Long                    Count the # of items in the stream
-
-		 summingInt                    Integer                 Sum val of items in the stream
-
-
-		 averagingInt
-
-		 summarizingInt
-
-		 join                          String                  concat strings from toString on item
-
-
-		 maxBy                         Optional<T>             max ele in the stream given comparator
-
-		 minBy
-
-
-		 reducing                      type by reduction opr   Reduce stream to a single value starting from an initial value used as accumulator and iteratively combining it with each item of the stream using "BinaryOperator"
-
-
-		 collectingAndThen             type returned by xforming  Wrap antoher collector and apply a tranformation function to its result
-
-
-		 groupingBy                   Map<K, List<T>>          Group items in the stream based on the value of one of their properties and use those values as keys in resulting map
-
-		 partitioningBy               Map<Boolean, List<T>>     partition items in stream based on result of the application of a predicate to each of item.
+      Map<Boolean, Dish>
+      mostCaloricPartitionedByVegetarian =
+      menu.stream().collect(
+      partitioningBy(Dish::isVegetarian,
+      CollectingAndThen(
+      maxBy(comparingInt(Dish::getCalories)),
+      Optional.get)));
 
 
 
 
 
+  ***  main static factory methods of "Collectors"
+  class
 
-  6.6 Developing own collector for better performance
+     Factory method              Return type
+     Used to
 
-	  ^^ need to check the code and revisit
+     toList                       List<T>
+     Gather all the stream's items in list
+
+     toSet
+
+     toCollection
+
+
+     counting                      Long
+     Count the # of items in the stream
+
+     summingInt                    Integer
+     Sum val of items in the stream
+
+
+     averagingInt
+
+     summarizingInt
+
+     join                          String
+     concat strings from toString on item
+
+
+     maxBy                         Optional<T>
+     max ele in the stream given comparator
+
+     minBy
+
+
+     reducing                      type by
+     reduction opr   Reduce stream to a single
+     value starting from an initial value used as
+     accumulator and iteratively combining it with
+     each item of the stream using
+     "BinaryOperator"
+
+
+     collectingAndThen             type returned
+     by xforming  Wrap antoher collector and apply
+     a tranformation function to its result
+
+
+     groupingBy                   Map<K, List<T>>
+     Group items in the stream based on the value
+     of one of their properties and use those
+     values as keys in resulting map
+
+     partitioningBy               Map<Boolean,
+     List<T>>     partition items in stream based
+     on result of the application of a predicate
+     to each of item.
+
+
+
+
+
+
+  6.6 Developing own collector for better
+  performance
+
+    ^^ need to check the code and revisit
 
 
 
@@ -693,179 +802,207 @@ Chapter 8 Collection API enhancements
 
  8.1.3  Map factory
 
-    Map<String, Integer> abc = Map.of("a", 1, "b", 2, "c", 3);
+    Map<String, Integer> abc = Map.of("a", 1, "b",
+    2, "c", 3);
 
-		Map<String. Integer> abcd = Map.ofEntries(Map.entry("a", 1),
-		    Map.entry("b", 2), Map.entry("c", 3));
-
-
-
- 8.2 "removeIf" removes element matching a predicate
-
-     "replaceAll" replacing elements using a UnaryOperator function
-
-		 "sort" 
+    Map<String. Integer> abcd =
+    Map.ofEntries(Map.entry("a", 1),
+    Map.entry("b", 2), Map.entry("c", 3));
 
 
 
-		 *** note the ConcurrentModificationException  ;  when elements are removed while being accessed /read ; 
+ 8.2 "removeIf" removes element matching a
+ predicate
+
+     "replaceAll" replacing elements using a
+     UnaryOperator function
+
+     "sort" 
 
 
-		    
+
+     *** note the ConcurrentModificationException
+     ;  when elements are removed while being
+     accessed /read ; 
+
+
+
    Some Interview Questions: 
 
 
-	    PROBLEM CODE:
+      PROBLEM CODE:
 
-			   for (Transaction x : transactions) {
-				   if (Character.isDigit(x.getReferenceCode().charAt(0))) {
-							transactions.remove(x);				// Causing ConcurrentModificationException
-						}
-				 }
-
-
-
-        ^^ under the hood, for-each loop uses an Iterator object,
-
-				   so the above is more like :
-
-
-				for (Iterator<Transaction> iter = transactions.iterator(); iter.hasNext(); ) {
-				  Transaction x = iter.next();
-
-					if (Character.isDigit(x.getReferencecode().charAt(0))) {
-					  transactions.remove(x);
-					}
-				}
+         for (Transaction x : transactions) { if
+         (Character.isDigit(x.getReferenceCode().charAt(0)))
+         { transactions.remove(x); //
+         Causing ConcurrentModificationException }
+         }
 
 
 
-			To FIX the issue,  have to use the Iterator object "Explicitly" and call iterator's "remove" method
+        ^^ under the hood, for-each loop uses an
+        Iterator object,
 
-			  for (Iterator<Transaction> iter = transaction.iterator(); iter.hasNext(); ) {
-				  Transaction x = iter.next();
+           so the above is more like :
 
-					if (Character.isDigit(x.getReferenceCode().charAt(0))) {
 
-					  iter.remove();      //  compared to the above,  this avoids ConcurrentModificationException
+        for (Iterator<Transaction> iter =
+        transactions.iterator(); iter.hasNext(); )
+        { Transaction x = iter.next();
 
-					}
-				}
+          if
+          (Character.isDigit(x.getReferencecode().charAt(0)))
+          { transactions.remove(x); } }
+
+
+
+      To FIX the issue,  have to use the Iterator
+      object "Explicitly" and call iterator's
+      "remove" method
+
+        for (Iterator<Transaction> iter =
+        transaction.iterator(); iter.hasNext(); )
+        { Transaction x = iter.next();
+
+          if
+          (Character.isDigit(x.getReferenceCode().charAt(0)))
+          {
+
+            iter.remove();      //  compared to
+            the above,  this avoids
+            ConcurrentModificationException
+
+          } }
 
 
 
      *** The above is verbose to write;
 
-		  Java 8 has "removeIf" 
+      Java 8 has "removeIf" 
 
-			transactions.removeIf(x -> Character.isDigit(x.getReferenceCode().charAt(0)));
+      transactions.removeIf(x ->
+      Character.isDigit(x.getReferenceCode().charAt(0)));
 
 
 
   8.2.2 "replaceAll"
 
 
-	    referenceCodes.replaceAll(code -> Character.toUpperCase(code.charAt(0)) + code.substring(1));
+      referenceCodes.replaceAll(code ->
+      Character.toUpperCase(code.charAt(0)) +
+      code.substring(1));
 
 
 
 
   
-	
-	8.3  Working with Map
+ 
+  8.3  Working with Map
 
 
     8.3.1  "forEach"
 
-		  Old-way
+      Old-way
 
-			   for (Map.Entry<String, Integer> entry : ageOfFriends.entrySet()) {
-				   String friend = entry.getKey();
-					 Integer age = entry.getValue();
+         for (Map.Entry<String, Integer> entry :
+         ageOfFriends.entrySet()) { String friend
+         = entry.getKey(); Integer age =
+         entry.getValue();
 
-					 ...
-				 }
-
-
-			Java 8 way:
-
-			  ageOfFriends.forEach( (friend, age) -> System.out.println(friend +  " is " + age  + " years old"));
+           ...  }
 
 
+      Java 8 way:
 
-		8.3.2 "sorting"
-
-		   
-			 *** Entry.comparingByValue
-
-			 *** Entry.comparingByKey 
+        ageOfFriends.forEach( (friend, age) ->
+        System.out.println(friend +  " is " + age
+        + " years old"));
 
 
-			 ageOfFriends.entrySet()
-			             .stream()
-									 .sorted(Entry.comparingByValue())
-									 .forEachOrdered(System.out::println);
+
+    8.3.2 "sorting"
+
+ 
+       *** Entry.comparingByValue
+
+       *** Entry.comparingByKey 
+
+
+       ageOfFriends.entrySet() .stream()
+       .sorted(Entry.comparingByValue())
+       .forEachOrdered(System.out::println);
 
 
 
     8.3.3  "getOrDefault"
 
 
-		  ageOfFriends.getOrDefault("a", 33);
+      ageOfFriends.getOrDefault("a", 33);
 
 
 
     8.3.4  Computer patterns
 
 
-		  *** computeIfAbsent -- if there is no specified value for the given key (it's absent or null), calculate the "new value" by "using the key" and add it to the map.
+      *** computeIfAbsent -- if there is no
+      specified value for the given key (it's
+      absent or null), calculate the "new value"
+      by "using the key" and add it to the map.
 
-			*** computeIfPresent -- if the specified "eky" is presnet, calculate a new value for it, and add to the map.
+      *** computeIfPresent -- if the specified
+      "eky" is presnet, calculate a new value for
+      it, and add to the map.
 
-			*** computer -- calculates a new value for a given key and stores in the map.
+      *** computer -- calculates a new value for a
+      given key and stores in the map.
 
 
 
-     one of the uses for computeIfAbsent is for "caching information"
+     one of the uses for computeIfAbsent is for
+     "caching information"
 
 
-		 lines.forEach(line -> dataToHash.computeIfAbsent(line, this::calculateDigest));
+     lines.forEach(line ->
+     dataToHash.computeIfAbsent(line,
+     this::calculateDigest));
 
 
    8.3.5  Remove patterns
 
 
-	   favoriteMoviews.remove(key, value);
+     favoriteMoviews.remove(key, value);
 
 
 
    8.3.6  Replacement patterns
 
-	   favoriteMoviews.replaceAll((friend, moview) -> movie.toUpperCase());
+     favoriteMoviews.replaceAll((friend, moview)
+     -> movie.toUpperCase());
 
 
 
-   8.3.7 Merge -- takes a BiFunction to merge values that have a duplicate key.
+   8.3.7 Merge -- takes a BiFunction to merge
+   values that have a duplicate key.
 
-	   Map<String, String> m = new HashMap<>();
+     Map<String, String> m = new HashMap<>();
 
-	   favoriteMovie.ofEntry( (k, v) -> m.merge(k, v, (movie1, movie2) -> movie1 + " & " + movie2));
+     favoriteMovie.ofEntry( (k, v) -> m.merge(k,
+     v, (movie1, movie2) -> movie1 + " & " +
+     movie2));
 
 
 
    8.4 Improved ConcurrentHashMap
 
-	   * forEach
-		 * reduce
-		 * search
+     * forEach reduce search
 
 
-		 Map.Entry,  and (key, value) 
+     Map.Entry,  and (key, value) 
 
 
-		 8.4.2 "Counting"
+     8.4.2 "Counting"
 
-		 8.4.3 "Set views"
+     8.4.3 "Set views"
 
 
 
@@ -877,78 +1014,83 @@ Chapter 9  Refactoring, testing and debugging
 
     https://github.com/iluwatar/java-design-patterns/blob/master/strategy/src/main/java/com/iluwatar/strategy/App.java  
 
-		^^ has conventional way of handling "Strategy Pattern", and the Java 8 way using Lambda expressions
+    ^^ has conventional way of handling "Strategy
+    Pattern", and the Java 8 way using Lambda
+    expressions
 
-		-->  https://java-design-patterns.com/patterns/strategy/   (the diagram and more)
+    -->
+    https://java-design-patterns.com/patterns/strategy/
+    (the diagram and more)
 
 
-  9.1.3  From lambda expression to method references
+  9.1.3  From lambda expression to method
+  references
 
-	  From:
+    From:
 
-		  Map<CaloricLevel, List<Dish>> dishesByCaloricLevel 
-			  = menu.stream()
-				   .collect(
-					   groupingBy(dish -> {
-						   if (dish.getCalories() <= 400) return CaloricLevel.DIET;
-							 else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
-							 else return CaloricLevel.FAT;
-						 }));
+      Map<CaloricLevel, List<Dish>>
+      dishesByCaloricLevel = menu.stream()
+      .collect( groupingBy(dish -> { if
+      (dish.getCalories() <= 400) return
+      CaloricLevel.DIET; else if
+      (dish.getCalories() <= 700) return
+      CaloricLevel.NORMAL; else return
+      CaloricLevel.FAT; }));
 
 
     To:
 
-		   menu.stream()
-			     .collect(groupingBy(Dish::getCaloricLevel));
+       menu.stream()
+       .collect(groupingBy(Dish::getCaloricLevel));
 
-			 where Dish's 
+       where Dish's 
 
-			  CaloricLevel getCaloricLevel(Dish dish) {
-					 if (dish.getCalories() <= 400) return CaloricLevel.DIET;
-					 else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
-					 else return CaloricLevel.FAT;
-				}
+        CaloricLevel getCaloricLevel(Dish dish) {
+        if (dish.getCalories() <= 400) return
+        CaloricLevel.DIET; else if
+        (dish.getCalories() <= 700) return
+        CaloricLevel.NORMAL; else return
+        CaloricLevel.FAT; }
 
 
 
 
-   ===============
-	    another example
+   =============== another example
 
 
     From:
 
-			inventory.sort((Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight()));
+      inventory.sort((Apple a1, Apple a2) ->
+      a1.getWeight().compareTo(a2.getWeight()));
 
 
-		TO:
-				  
-			inventory.sort(Collectors.comparng(Apple::getWeight));
+    TO:
+ 
+      inventory.sort(Collectors.comparng(Apple::getWeight));
 
 
 
 
-	=================
+  =================
 
-	  FROM:
+    FROM:
 
-		  int totalCal = menu.stream()
-			                   .map(Dish::getCalories)
-			                   .reduce(0, (c1, c2) -> c1 + c2);
+      int totalCal = menu.stream()
+      .map(Dish::getCalories) .reduce(0, (c1, c2)
+      -> c1 + c2);
 
     TO:
 
-		    menu.stream().collect(Collectors.summingInt(Dish::getCalories));
+        menu.stream().collect(Collectors.summingInt(Dish::getCalories));
   
 
 
   9.1.4 From Imperative data processing to Streams
 
 
-	  List<String> dishNames 
-		   = menu.stream()
-			       .map(Dish::getName)
-						 .collect(Collectors.toList());
+    List<String> dishNames = menu.stream()
+    .map(Dish::getName)
+    .collect(Collectors.toList());
 
 
   9.1.5 Improving code flexibility
@@ -956,303 +1098,325 @@ Chapter 9  Refactoring, testing and debugging
 
     *** Adopting "Functional Interfaces"
 
-		*** Conditional Deferered Execution
+    *** Conditional Deferered Execution
 
-		in Java 8,
+    in Java 8,
 
-		   logger.log(Level.FINER, Supplier<String msgSupplier);
+       logger.log(Level.FINER, Supplier<String
+       msgSupplier);
 
 
     The Java 8 internal implementation of log
 
-     public void log(Level level, Supplier<String> msgSupplier) {
-		   if (logger.isLoggable(level)) {
-			   log(level, msgSupplier.get());
-			 }
-		 }
+     public void log(Level level, Supplier<String>
+     msgSupplier) { if (logger.isLoggable(level))
+     { log(level, msgSupplier.get()); } }
 
 
   
 
-	  *** Execute Around
+    *** Execute Around
 
-		  String oneLine = processFile((BufferedReader b) -> b.readLine());
+      String oneLine = processFile((BufferedReader
+      b) -> b.readLine());
 
-			String twoLines = processFile(BufferedReader b) -> b.readLine() + b.readLine());
+      String twoLines = processFile(BufferedReader
+      b) -> b.readLine() + b.readLine());
 
-			public static String processFile(BufferedReaderProcessor p) throws IOException {
-			  try (BufferedReader br = new BuffferedReader(new FileReader("myfile.txt"))) {
-				  return p.process(br);
-				}
-			}
+      public static String
+      processFile(BufferedReaderProcessor p)
+      throws IOException { try (BufferedReader br
+      = new BuffferedReader(new
+      FileReader("myfile.txt"))) { return
+      p.process(br); } }
 
-			public interface BufferedReaderProcessor {
-			  String process(BufferedReader b) throws IOException;
-			}
-
-
-
-  9.2 Refactoring object-oriented design patterns with lambdas
-
-	   *** Strategy
-		 *** Template method
-		 *** Observer
-		 *** Chain of responsibility
-		 *** Factory
+      public interface BufferedReaderProcessor {
+      String process(BufferedReader b) throws
+      IOException; }
 
 
 
-==>  From the following examples (source code),  the Observer pattern is very similar to Strategy pattern,  the Observer pattern just went 1-level up by adding a container to hold several "clients"  (observers) in "Subject" ... 
+  9.2 Refactoring object-oriented design patterns
+  with lambdas
+
+     *** Strategy *** Template method *** Observer
+     *** Chain of responsibility *** Factory
 
 
-		 9.1.2 Strategy  -- a family of algorithms and choose them at Runtime  
 
-		       ^^^ Typical polymorphic ...   <-- using Interface ...
-
-		   client -->  Strategy  <---  ConcreteStrategyA
-			                       <---  ConcreteStrategyB
-
-
-		   public interface ValidationStrategy {
-			   boolean execute(String s);
-			 }
-
-			 public class IsAllLowerCase implements ValidationStrategy {
-			   public boolean execute (String s) {
-				   return s.matches("[a-z]+");
-				 }
-			 }
+==>  From the following examples (source code),
+the Observer pattern is very similar to Strategy
+pattern,  the Observer pattern just went 1-level
+up by adding a container to hold several "clients"
+(observers) in "Subject" ... 
 
 
-			 public class IsNumeric implements ValidationStrategy {
-			   public boolean execute (String s) {
-				   return s.matches("\\d+");
-				 }
-			 }
+     9.1.2 Strategy  -- a family of algorithms and
+     choose them at Runtime  
+
+           ^^^ Typical polymorphic ...   <-- using
+           Interface ...
+
+       client -->  Strategy  <---
+       ConcreteStrategyA <---  ConcreteStrategyB
 
 
-			 ========
+       public interface ValidationStrategy {
+       boolean execute(String s); }
 
-			 public class Validator {
-			   private final ValidationStrategy strategy;
-
-				 public Validator (ValidationStrategy v) {
-				   this.strategy = v;
-				 }
-
-				 public boolean validate(String s) {
-				   return strategy.execute(s);
-				 }
-			 }
+       public class IsAllLowerCase implements
+       ValidationStrategy { public boolean execute
+       (String s) { return s.matches("[a-z]+"); }
+       }
 
 
-			 Validator numericValidator = new Validator(new IsNumeric());
-			 boolean b1 = numericValidator.validate("abc");
+       public class IsNumeric implements
+       ValidationStrategy { public boolean execute
+       (String s) { return s.matches("\\d+"); } }
 
-			 Validator lowerCaseValidator = new Validator(new IsAllLowerCase());
-			 boolean b2 = lowerCaseValidator.validate("abc");
+
+       ========
+
+       public class Validator { private final
+       ValidationStrategy strategy;
+
+         public Validator (ValidationStrategy v) {
+         this.strategy = v; }
+
+         public boolean validate(String s) {
+         return strategy.execute(s); } }
+
+
+       Validator numericValidator = new
+       Validator(new IsNumeric()); boolean b1 =
+       numericValidator.validate("abc");
+
+       Validator lowerCaseValidator = new
+       Validator(new IsAllLowerCase()); boolean b2
+       = lowerCaseValidator.validate("abc");
 
 
 
       =========  Now, Java 8 way
 
-			  ValidationStrategy is implicitly a "functional interface", and it has the same "function descriptor" as Predicate<String>
+        ValidationStrategy is implicitly a
+        "functional interface", and it has the
+        same "function descriptor" as
+        Predicate<String>
 
-				Instead of declaring "new classes to implement different strategies, just pass lambda expression directly"
-
-
-			 Validator numValidator = new Validator((String s) -> s.matches("\\d+"));
-			 numValidator.execute("abc");
-
-			 Validator lowerCaseValidator = new Validator(s -> s.matches("[a-z]+"));
-			 lowerCaseValidator.execute("abc");
+        Instead of declaring "new classes to
+        implement different strategies, just pass
+        lambda expression directly"
 
 
+       Validator numValidator = new
+       Validator((String s) -> s.matches("\\d+"));
+       numValidator.execute("abc");
 
-  9.2.2  Template method  -- this design pattern needed to represent outline of an algorithm and flexibility to change certain parts of it.
-
-	      ^^ something like passing "functions" into methods ... 
-
-
-	   abstract class OnlineBanking {
-		   public vid processCustomer(int id) {
-			   Customer c = Database.getCustomerWithId(id);
-				 makeCustomerHappy(c);
-			 }
-
-			 abstract void makeCustomerHappy(Customer c);
-
-		 }
+       Validator lowerCaseValidator = new
+       Validator(s -> s.matches("[a-z]+"));
+       lowerCaseValidator.execute("abc");
 
 
-		 different branches can provider different implementations of makeCustomerHappy method by subclassing the OnlineBanking class.
+
+  9.2.2  Template method  -- this design pattern
+  needed to represent outline of an algorithm and
+  flexibility to change certain parts of it.
+
+        ^^ something like passing "functions" into
+        methods ... 
 
 
-		 ================
+     abstract class OnlineBanking { public vid
+     processCustomer(int id) { Customer c =
+     Database.getCustomerWithId(id);
+     makeCustomerHappy(c); }
 
-		 using lambda expressions
+       abstract void makeCustomerHappy(Customer
+       c);
+
+     }
 
 
-		 public void processCustomer(int id, Consumer<Customer> makeCustomerHappy) {
-		   Customer c = Database.getCustomerWithId(id);
-			 makeCustomerHappy.apply(c);
-		 }
+     different branches can provider different
+     implementations of makeCustomerHappy method
+     by subclassing the OnlineBanking class.
 
-		 new OnlineBankingLambda().processCustomer(12345, (Customer c) -> System.out.println("Hello " + c.getName()));
+
+     ================
+
+     using lambda expressions
+
+
+     public void processCustomer(int id,
+     Consumer<Customer> makeCustomerHappy) {
+     Customer c = Database.getCustomerWithId(id);
+     makeCustomerHappy.apply(c); }
+
+     new
+     OnlineBankingLambda().processCustomer(12345,
+     (Customer c) -> System.out.println("Hello " +
+     c.getName()));
 
 
   9.2.3 Observer
 
 
-	  subject               Observer          concreteObserverB
-                                            concreteObserverA
-		notifyObservers()      notfiy()     
+    subject               Observer
+    concreteObserverB concreteObserverA
+    notifyObservers()      notfiy()     
 
 	  
 
-		interface Observer {
-		  void notify (String s);
-		}
+    interface Observer { void notify (String s); }
 
-		class NYTimes implements Observer {
-		   public void notify(String msg) {
-			   if (StringUtils.isNotBlank(msg) && msg.contains("money")) {
-				   System.out.println("....");
-				 }
-			 }
-		}
+    class NYTimes implements Observer { public
+    void notify(String msg) { if
+    (StringUtils.isNotBlank(msg) &&
+    msg.contains("money")) {
+    System.out.println("...."); } } }
 
-		class Guardian implements Observer {
-		 .
-		 . 
-		 .
-		}
+    class Guardian implements Observer { .  .  .
+    }
 
-		=====
+    =====
 
-		interface Subject {
+    interface Subject {
 
-		  void registerObserver (Observer o);
-			void notifyObservers (String msg);
-	  }
+      void registerObserver (Observer o); void
+      notifyObservers (String msg); }
 
-		class Feed implements Subject {
+    class Feed implements Subject {
 		   
-			 private final List<Observer> obsvrs = new ArrayList<>();
+       private final List<Observer> obsvrs = new
+       ArrayList<>();
 
-			 public void registerObserver(Observer o) {
-			   this.observers.add(o);
-			 }
+       public void registerObserver(Observer o) {
+       this.observers.add(o); }
 
-			 public void notifyObservers(String msg) {
-			   obsvrs.forEach(Observer::notify);
-			 }
-		}
+       public void notifyObservers(String msg) {
+       obsvrs.forEach(Observer::notify); } }
 
 
-		Feed f = new Feed();
-		f.registerObserver(new NYTimes());
-		f.registerObserver(new Guardian());
+    Feed f = new Feed(); f.registerObserver(new
+    NYTimes()); f.registerObserver(new
+    Guardian());
 
-		f.notifyObservers("....");
-
-
-		=========================
-
-		Using Java 8 Lambda ....
-
-		   Instead of instantiaing 3 observer objects explicitly, can pass a lambda expression directly to represent the behavior to execute
+    f.notifyObservers("....");
 
 
-			 f.registerObser((String msg) -> {
-			     if (StringUtils.isNotBlank(msg) && msg.contains("money")) {
-					   System.out.println("....");
-					 });
+    =========================
+
+    Using Java 8 Lambda ....
+
+       Instead of instantiaing 3 observer objects
+       explicitly, can pass a lambda expression
+       directly to represent the behavior to
+       execute
+
+
+       f.registerObser((String msg) -> { if
+       (StringUtils.isNotBlank(msg) &&
+       msg.contains("money")) {
+       System.out.println("...."); });
 			   
-			 f.registerObser((String msg) -> {
-			     if (StringUtils.isNotBlank(msg) && msg.contains("Guardian...")) {
-					   System.out.println("....");
-					 });
+       f.registerObser((String msg) -> { if
+       (StringUtils.isNotBlank(msg) &&
+       msg.contains("Guardian...")) {
+       System.out.println("...."); });
 			   
 		
 
-   9.2.4  Chain of responsibility  -- to create a chain of processing objects (chain of operations);  it's implemented by defining an abstract class representing a processing object that defines a field to keep track of a successor.
+   9.2.4  Chain of responsibility  -- to create a
+   chain of processing objects (chain of
+   operations);  it's implemented by defining an
+   abstract class representing a processing object
+   that defines a field to keep track of a
+   successor.
 
 
-	 public abstract class ProcessingObject<T> {
-	   protected ProcessingObject<T> successor;
+   public abstract class ProcessingObject<T> {
+   protected ProcessingObject<T> successor;
 
-		 public void setSuccessor(ProcessingObject<T> successor) {
-		   this.successor = successor;
-		 }
+     public void setSuccessor(ProcessingObject<T>
+     successor) { this.successor = successor; }
 
-		 public T handle(T input) {
-		   T r = handleWork(input);
+     public T handle(T input) { T r =
+     handleWork(input);
 
-			 if (successor != null) {
-			   return successor.handle(r);
-			 }
-		 }
+       if (successor != null) { return
+       successor.handle(r); } }
 
-		 abstract protected T handleWork(T input);
+     abstract protected T handleWork(T input);
 
-		}
+    }
 
 
 
 
-		public class HeaderTextProcessing extends ProcessingObject<String> {
-		  public String handleWork(String text) {
-			  return "Added Header..."  + text;
-			}
-		}
+    public class HeaderTextProcessing extends
+    ProcessingObject<String> { public String
+    handleWork(String text) { return "Added
+    Header..."  + text; } }
 
-		public class SpellCheckerProcessing extends ProcessingObject<String> {
-		  public String handleWork(String text) {
-			  return text.replaceAll("labda", "lambda");
-			}
-		}
+    public class SpellCheckerProcessing extends
+    ProcessingObject<String> { public String
+    handleWork(String text) { return
+    text.replaceAll("labda", "lambda"); } }
 
 
-		====
+    ====
 
 
-		ProcessingObject<String> p1 = new HeaderTextProcessing();
-		ProcessingObject<String> p2 = new SpellCheckerTextProcessing();
+    ProcessingObject<String> p1 = new
+    HeaderTextProcessing();
+    ProcessingObject<String> p2 = new
+    SpellCheckerTextProcessing();
 
     p1.setSuccessor(p2);
    
-	  String rslt = p1.handle("This labda is new in Java 8");
+    String rslt = p1.handle("This labda is new in
+    Java 8");
 
-		System.out.println(rslt);   // Added Header... This lambda is new in Java 8
+    System.out.println(rslt);   // Added Header...
+    This lambda is new in Java 8
 
 
 
-		===============
+    ===============
 
-		Java 8 way -- Using "Functional Interface" ...
+    Java 8 way -- Using "Functional Interface" ...
 
-    1)  this pattern looks like "chaining" functions;  composing lambda expression.  Use Function<String, String> to represent "ProcessingObject" ...,  or (more precisely) a UnaryOperator<String>.  
+    1)  this pattern looks like "chaining"
+    functions;  composing lambda expression.  Use
+    Function<String, String> to represent
+    "ProcessingObject" ...,  or (more precisely) a
+    UnaryOperator<String>.  
 
-		    UnaryOperator extends Function interface;  BinaryOperator extends BiFunction interface
+        UnaryOperator extends Function interface;
+        BinaryOperator extends BiFunction
+        interface
 
-				a good blog on UnaryOperator and BinaryOperator ...
+        a good blog on UnaryOperator and
+        BinaryOperator ...
 
 
     2)  to "Chain" them,  use "andThen" method 
 
 
-		UnaryOperator<String> headerProcessing = 
-		    (String text) -> "Added Header..." + text;
+    UnaryOperator<String> headerProcessing =
+    (String text) -> "Added Header..." + text;
 
-		UnaryOperator<String> spellCheckerProcessing = 
-		    (String text) -> text.replaceAll("labda", "lambda");
+    UnaryOperator<String> spellCheckerProcessing =
+    (String text) -> text.replaceAll("labda",
+    "lambda");
 
 
-		Function<String, String> pipeline =
-		    headerProcessing.andThen(spellCheckerProcessing);
+    Function<String, String> pipeline =
+    headerProcessing.andThen(spellCheckerProcessing);
 
-		String result = pipeline.apply("This labda is new in Java 8");
+    String result = pipeline.apply("This labda is
+    new in Java 8");
 		    
 
 
@@ -1260,54 +1424,50 @@ Chapter 9  Refactoring, testing and debugging
   9.2.5 Factory
 
 
-	  public class ProductFactory {
-		  public static Product createProduct(String name) {
-			 switch (name) {
-			   case "loan": return new Loan();
-			   case "stock": return new Stock();
-				 default: throw new RuntimeException("no such product " + name);
-			 }
-			}
-		}
+    public class ProductFactory { public static
+    Product createProduct(String name) { switch
+    (name) { case "loan": return new Loan(); case
+    "stock": return new Stock(); default: throw
+    new RuntimeException("no such product " +
+    name); } } }
 
 
-		Product p = ProductFactory.createProduct("loan");
+    Product p =
+    ProductFactory.createProduct("loan");
 
 
-		========
+    ========
 
-		using Java 8
+    using Java 8
 
-		  using "method reference"
-
-
-		Supplier<Product> loanSupplier = Loan::new;
-
-		Loan loan = loanSupplier.get();
+      using "method reference"
 
 
-		Now, rewrite the above factory 
+    Supplier<Product> loanSupplier = Loan::new;
 
-		final static Map<String, Product> products = Map.ofEntries(
-			Map.entry("loan", Loan::new),
-			Map.entry("stock", Stock::new)
-		 );
+    Loan loan = loanSupplier.get();
 
 
-		 public static Product createProduct(String name) {
-		   Supplier<Product> p = map.get(name);
+    Now, rewrite the above factory 
 
-			 if (p != null) {
-			   return p.get();
-			 }
+    final static Map<String, Product> products =
+    Map.ofEntries( Map.entry("loan", Loan::new),
+    Map.entry("stock", Stock::new));
 
-			 throw new IllegalArgumentException("no such product " + name);
-		}
+
+     public static Product createProduct(String
+     name) { Supplier<Product> p = map.get(name);
+
+       if (p != null) { return p.get(); }
+
+       throw new IllegalArgumentException("no such
+       product " + name); }
 
 
 
 
-  9.3 Testing lambdas   <== the book did not give much information here
+  9.3 Testing lambdas   <== the book did not give
+  much information here
 
 
      Unit test ... 
@@ -1317,169 +1477,176 @@ Chapter 9  Refactoring, testing and debugging
   9.4 Debugging 
 
 
-	   logging information
+     logging information
 
 
-		 List<Integer> rslt =
-		     numbers.stream()
-				        .peek(x -> System.out.println("from stream: " + x))
-								.map(x -> x + 17)
-				        .peek(x -> System.out.println("after map: " + x))
-								.collect(Collectors.toList());
+     List<Integer> rslt = numbers.stream() .peek(x
+     -> System.out.println("from stream: " + x))
+     .map(x -> x + 17) .peek(x ->
+     System.out.println("after map: " + x))
+     .collect(Collectors.toList());
 
 
 	   
 
 
-Chapter 10  Domain-specific languages using lambdas
+Chapter 10  Domain-specific languages using
+lambdas
 
 
   1) using inner class
 
-	   Collections.sort(persons, new Comparator<Person>() {
-		   public int compare(Person p1, Person p2) {
-			    return p1.getAge() - p2.getAge();
-			 }
-		 }
+     Collections.sort(persons, new
+     Comparator<Person>() { public int
+     compare(Person p1, Person p2) { return
+     p1.getAge() - p2.getAge(); } }
 
 
-	2) using lambda expression
+  2) using lambda expression
 
 
-	   Collections.sort(persons, 
+     Collections.sort(persons, 
 
-		    (Person p1, Person p2) -> p1.getAge() - p2.getAge());
+        (Person p1, Person p2) -> p1.getAge() -
+        p2.getAge());
 
 
   3) using Collectors.comparing static method
 
 
-	  Collections.sort(persons,
-		     Collectors.comparing(p -> p.getAge()));
+    Collections.sort(persons,
+    Collectors.comparing(p -> p.getAge()));
 
 
     Collections.sort(persons,
-		     Collectors.comparing(Person::getAge));
+    Collectors.comparing(Person::getAge));
 
 
   4) chaining
 
-	   Collections.sort(persons,
-		     Collectors.comparing(Person::getAge).reverse());
+     Collections.sort(persons,
+     Collectors.comparing(Person::getAge).reverse());
 
 
      Collections.sort(persons,
-		     comparing(Person::getAge)
-				    .thenComparing(Person::getName));
+     comparing(Person::getAge)
+     .thenComparing(Person::getName));
 
 
 
   5) streaming
 
-	   List<String> errors = 
-		   Files.lines(Paths.get("myfile.txt"))
-			      .filter(line -> line.startsWith("ERROR"))
-						.limit(40)
-						.collect(toList());
+     List<String> errors =
+     Files.lines(Paths.get("myfile.txt"))
+     .filter(line -> line.startsWith("ERROR"))
+     .limit(40) .collect(toList());
 
 
   6) Collectors as a DSL to aggregate data
 
-     Map<String, Map<Color, List<Car>>> carsByBrandAndColor
-			 = cars.stream()
-			       .collect(groupingBy(Car::getBrand,
-						                      groupingBy(Car::getColor)));
+     Map<String, Map<Color, List<Car>>>
+     carsByBrandAndColor = cars.stream()
+     .collect(groupingBy(Car::getBrand,
+     groupingBy(Car::getColor)));
 
 
      
-		 Comparator<Person> comparator
-		   = comparing(Person::getAge)
-			      .thenComparing(Person::getName);
+     Comparator<Person> comparator =
+     comparing(Person::getAge)
+     .thenComparing(Person::getName);
 
 
 
   7) Grouping collectors BUILDER
 
-	  public class GroupingBuilder<T, D, K> {
-		  private final Collector<? super T, ?, Map<K, D>> collector;
+    public class GroupingBuilder<T, D, K> {
+    private final Collector<? super T, ?, Map<K,
+    D>> collector;
 
-			private GroupingBuilder(Collector<? super T, ?, Map<K, D>> collector) {
-			  this.collector = collector;
-			}
+      private GroupingBuilder(Collector<? super T,
+      ?, Map<K, D>> collector) { this.collector =
+      collector; }
 
-			public Collector<? super T, ?, Map<K, D>> get() {
-			  return collector;
-			}
+      public Collector<? super T, ?, Map<K, D>>
+      get() { return collector; }
 
-			public <J> GroupingBuilder<T, Map<K, D>, J>
-			   after(Function<? super T, ? extends J> classifier) {
+      public <J> GroupingBuilder<T, Map<K, D>, J>
+      after(Function<? super T, ?  extends J>
+      classifier) {
 				   
-				 return new Groupingbuilder<>(groupingBy(classifier, collector));
-			}
+         return new
+         Groupingbuilder<>(groupingBy(classifier,
+         collector)); }
 
-			public static <T, D, K> GroupingBuilder<T, List<T>, K>
-			   groupOn(Function<? super T, ? extends K> classifier) {
+      public static <T, D, K> GroupingBuilder<T,
+      List<T>, K> groupOn(Function<?  super T, ?
+      extends K> classifier) {
 
-				 return new GroupingBuilder<>(groupingBy(classifier));
-			}
-		}
-
-
-		Collector<? super Car, ?, Map<Brand, Map<Color, List<Car>>>>
-		  carGroupingCollector = 
-			   groupOn(Car::getColor)
-				 .after(Car::getBrand)
-				 .get();
+         return new
+         GroupingBuilder<>(groupingBy(classifier));
+         } }
 
 
-  10.3  Patterns and techniques to create DSL in Java
+    Collector<? super Car, ?, Map<Brand,
+    Map<Color, List<Car>>>> carGroupingCollector =
+    groupOn(Car::getColor) .after(Car::getBrand)
+    .get();
 
 
-
-  10.4  JOOQ -- an internal DSL that implements SQL as a type-safe embedded lang in Java
+  10.3  Patterns and techniques to create DSL in
+  Java
 
 
 
-	   SQL :
+  10.4  JOOQ -- an internal DSL that implements
+  SQL as a type-safe embedded lang in Java
 
-		   select * from book
-			 where BOOK.PUBLISHED_IN = 2018
-			 order by BOOK.TITLE
+
+
+     SQL :
+
+       select * from book where BOOK.PUBLISHED_IN
+       = 2018 order by BOOK.TITLE
 
 		 
-		 JOOQ :
+     JOOQ :
 
-		   create.selectFrom(BOOK)
-			       .where(BOOK.PUBLISHED_IN.eq(2018))
-						 .orderBy(BOOK.TITLE)
+       create.selectFrom(BOOK)
+       .where(BOOK.PUBLISHED_IN.eq(2018))
+       .orderBy(BOOK.TITLE)
 
 
      =====
 		   
-			 selecting books from a data by using jooQ DSL
+       selecting books from a data by using jooQ
+       DSL
 
-			 Class.forName("org.h2.Driver");
+       Class.forName("org.h2.Driver");
 
-			 try (Connection c = 
-			       getConnection("jdbc:h:~/sql-goodies-with-mapping", "sa", "")) {
+       try (
+       Connection c =
+       getConnection("jdbc:h:~/sql-goodies-with
+       -mapping",
+       "sa", "")) {
 
-						 DSL.using(c)
-						    .select(BOOK.AUTHOR, BOOK.TITLE)
-								.where(BOOK.PUBLISHED_IN.eq(2018))
-							.orderBy(BOOK.TITLE)
-							.fetch()
-							.stream()
-							.collect(groupingBy(
-							   r -> r.getValue(BOOK.AUTHOR),
-								   LinkedHashMap::new,
-									 mapping(r -> r.getValue(BOOK.TITLE), toList()))
-							.forEach((autho, titles) ->
-							      System.out.println(author = " is author of " + titles));
+             DSL.using(c).select(BOOK.AUTHOR,
+             BOOK.TITLE)
+             .where(BOOK.PUBLISHED_IN.eq(2018))
+             .orderBy(BOOK.TITLE) .fetch()
+             .stream() .collect(groupingBy( r ->
+             r.getValue(BOOK.AUTHOR),
+             LinkedHashMap::new, mapping(r ->
+             r.getValue(BOOK.TITLE), toList()))
+             .forEach((autho, titles) ->
+             System.out.println(author = " is
+             author of " + titles));
 
 
-   10.4.2  Cucumber   -- Behaviro-driven development (BDD)
+   10.4.2  Cucumber   -- Behaviro-driven
+   development (BDD)
 
-	    ^^ the cucumber not used in current projects/comp
+      ^^ the cucumber not used in current
+      projects/comp
 
 
 
@@ -1494,116 +1661,151 @@ Part 4  -- Everyday Java
 
 Chapter 11  Using Optional 
 
-  11.1.1  Reducing NullPointerException with defensive checking
+  11.1.1  Reducing NullPointerException with
+  defensive checking
 
 
   11.3  Patterns for adopting Optionals
 
 	   
-		 *** Creating Optional objects
+     *** Creating Optional objects
 
-		   Optional<Car> optCar = Optional.empty();
+       Optional<Car> optCar = Optional.empty();
 
-		  *** Optional from a non-null value
+      *** Optional from a non-null value
 
-			  Optional<Car> optCar = Optional.of(car);
+        Optional<Car> optCar = Optional.of(car);
 
-		 *** optional from null
+     *** optional from null
 
-		    Optional<Car> optCar = Optional.ofNullable(car);
+        Optional<Car> optCar =
+        Optional.ofNullable(car);
 
 
    
-	 ***  flatMap methods of "Stream" and "Optional"
+   ***  flatMap methods of "Stream" and "Optional"
 
 	    
-			// note the parameter  Optional
-			public String getCarInsuranceName(Optional<Person> person) {
-			  return person.flatMap(Person::getCar)
-				             .flatMap(Car::getInsurance)
-										 .map(Insurance::getName)
-										 .orElse("Unknow");
+      // note the parameter  Optional
+      public String
+      getCarInsuranceName(Optional<Person> person)
+      { return person.flatMap(Person::getCar)
+      .flatMap(Car::getInsurance)
+      .map(Insurance::getName) .orElse("Unknow");
 
 	   
 		  
 
-		Stream<Optional<String>> stream = ....;
+    Stream<Optional<String>> stream = ....;
 
-		Set<String> rslt = stream.filter(Optional::isPresent)
-					.map(Optional::get)
-					.collect(toSet());
-
-
-
-  11.3.5  default actions and unwrapping an optional
+    Set<String> rslt =
+    stream.filter(Optional::isPresent)
+    .map(Optional::get) .collect(toSet());
 
 
-	   1)  get()
-		 2)  orElse(T other)
-		 3)  orElseGet(Supplier<? extends T> other)
-		 4)  or(Supplier<? extends Optional<? extends T>> supplier)
-		 5)  orElseThrow(Supplier<? extends X> exceptionSupplier)
-		 6)  ifPresent(Consume<? super T> consumer)
 
-		 7)  Java 9 introducing:  
+  11.3.5  default actions and unwrapping an
+  optional
 
-		     ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction) -- differsfrom ifPresent by taking a Runnable ... 
+
+     1)  get() 2)  orElse(T other) 3)
+     orElseGet(Supplier<? extends T> other) 4)
+     or(Supplier<? extends Optional<? extends T>>
+     supplier) 5) orElseThrow(Supplier<? extends
+     X> exceptionSupplier) 6) ifPresent(Consume<?
+     super T> consumer)
+
+     7)  Java 9 introducing:  
+
+         ifPresentOrElse(Consumer<? super T>
+         action, Runnable emptyAction) --
+         differsfrom ifPresent by taking a
+         Runnable ... 
 
 
 
   11.3.6 Combining two optionals 
 
 
-	  Using combination of map and flatMap methods, to implement a method in a single statement and without writing any conditional constructs
+    Using combination of map and flatMap methods,
+    to implement a method in a single statement
+    and without writing any conditional constructs
 
 
-		return persons.flatMap(person -> cars.map(car -> findCheapestInsurance(person, car)));
+    return persons.flatMap(person -> cars.map(car
+    -> findCheapestInsurance(person, car)));
 
 
-		Optional<Insurance> optionalInsurance = ...;
+    Optional<Insurance> optionalInsurance = ...;
 
-		optionalInsurance.filter(insurance -> "CambridgeInsurance".equals(insurance.getName()))
-		                 .ifPresent(x -> System.out.println("ok"));
+    optionalInsurance.filter(insurance ->
+    "CambridgeInsurance".equals(insurance.getName()))
+    .ifPresent(x -> System.out.println("ok"));
 
 
 
 
   ***  Methods of Optional class
 
-	  1) empty  -- returns an empty Optional 
+    1) empty  -- returns an empty Optional 
 
-		2) filter -- if value present and matches the given predicate, returns this Optional; otherwise, returns the empty-Optional
+    2) filter -- if value present and matches the
+    given predicate, returns this Optional;
+    otherwise, returns the empty-Optional
 
-		3) flatMap -- if a value if presnet, returns Optional resulting from the application of the provided mapping function to it;  otherwise, returns the empty Optional
+    3) flatMap -- if a value if presnet, returns
+    Optional resulting from the application of the
+    provided mapping function to it;  otherwise,
+    returns the empty Optional
 
-		4) get -- if value present, retunr Optional of the value;  otherwise, throws NoSuchElementException 
+    4) get -- if value present, retunr Optional of
+    the value;  otherwise, throws
+    NoSuchElementException 
 
-		5) ifPresent -- iv value is present, the specified "consumer" is invoked with the value;  otherwise, doing nothing
+    5) ifPresent -- iv value is present, the
+    specified "consumer" is invoked with the
+    value;  otherwise, doing nothing
 
-		6) ifPresentOrElse -- similar to the above, but, when "no value / empty",  do something instead of nothing
+    6) ifPresentOrElse -- similar to the above,
+    but, when "no value / empty", do something
+    instead of nothing
 
     7) isPresent  -- 
 
 
-		8) map  -- if a value is present, applies the provided mapping function to the value
+    8) map  -- if a value is present, applies the
+    provided mapping function to the value
 
-		            what if NOT present?  ...
-
-
-    9) of   -- returns an Optional wrapping the given value;  or throws NullPointerException if value is "null"
+                what if NOT present?  ...
 
 
-		10) ofNullable -- if value present, returns Optional wrapping the value;  otherwise, empty Optional if the value is "null"
+    9) of   -- returns an Optional wrapping the
+    given value;  or throws NullPointerException
+    if value is "null"
 
-		11) or  -- if value present, returns the same Optional;  otherwise, returns another Optional produced by the supplying function
 
-		12) orElse -- returns the value if present;  otherwise, the given default value
+    10) ofNullable -- if value present, returns
+    Optional wrapping the value; otherwise, empty
+    Optional if the value is "null"
 
-		13) orElseGet -- returns the value if present; otherwise, returns the one provided by the gien "Supplier"
+    11) or  -- if value present, returns the same
+    Optional;  otherwise, returns another Optional
+    produced by the supplying function
 
-		14) orElseThrow -- returns the value if present; otherwise, throws the exception created by the given "Supplier"
+    12) orElse -- returns the value if present;
+    otherwise, the given default value
 
-		15) stream -- if a value is present, returns a stream containing only it;  otherwise, returns an "empty stream"
+    13) orElseGet -- returns the value if present;
+    otherwise, returns the one provided by the
+    gien "Supplier"
+
+    14) orElseThrow -- returns the value if
+    present; otherwise, throws the exception
+    created by the given "Supplier"
+
+    15) stream -- if a value is present, returns a
+    stream containing only it; otherwise, returns
+    an "empty stream"
 
 
 
@@ -1611,33 +1813,33 @@ Chapter 11  Using Optional
   11.4 Practical examples of using Optional
 
 
-	  11.4.1 wrapping a potentially null value in an Optional
+    11.4.1 wrapping a potentially null value in an
+    Optional
 
-		  Optional<Object> value = Optional.ofNullable(map.get("key"));
+      Optional<Object> value =
+      Optional.ofNullable(map.get("key"));
 
 
     11.4.2 Exceptions vs Optional
 
 
-		  public static Optional<Integer> stringToInt(String s) {
-			  try {
-				    return Optional.of(Integer.parseInt(s));
-				} catch (NumberFormatException e) {
-				    return Optional.empty();
-				}
-			}
+      public static Optional<Integer>
+      stringToInt(String s) { try { return
+      Optional.of(Integer.parseInt(s)); } catch
+      (NumberFormatException e) { return
+      Optional.empty(); } }
 
 
 
     11.4.4 Putting it all together
 
 
-		  public int readDurationFromProperty(Properties props, String name) {
-			   return Optional.ofNullable(props.getProperty(name))
-				                .flatMap(OptionalUtility::stringToInt)
-												.filter(i -> i > 0)
-												.orElse(0);
-			}
+      public int
+      readDurationFromProperty(Properties props,
+      String name) { return
+      Optional.ofNullable(props.getProperty(name))
+      .flatMap(OptionalUtility::stringToInt)
+      .filter(i -> i > 0) .orElse(0); }
 
 
 
@@ -1650,65 +1852,50 @@ Chapter 12 -- Date and Time API
 
 
 
-12.1  LocalDate, LocalTime, LocalDateTime, 
-      Instant,
-			Duration, and Period
+12.1  LocalDate, LocalTime, LocalDateTime,
+Instant, Duration, and Period
 
 
 
   java.util.Data <====>  LocalDateTime 
 
 	  
-		 Using "Instant"
+     Using "Instant"
 
 
-	java.util.Date now = new Date();
+  java.util.Date now = new Date();
 
-	Instant instant = now.toInstant();
+  Instant instant = now.toInstant();
 
-	instant.plus(1, ChronoUtil.DAYS);
+  instant.plus(1, ChronoUtil.DAYS);
 
-	java.util.Date tomorrow = Date.from(instant);
+  java.util.Date tomorrow = Date.from(instant);
 
 
 
  
-  *** Common methods of date-time classes representing an "interval"
+  *** Common methods of date-time classes
+  representing an "interval"
 
-		Method  static          notes
+    Method  static          notes
 
-	  between  yes
-		from     yes
-		of       yes
-		parse    yes
-		addto    no
-		get      no
-		isNegative no
-		isZero   no
-		minus    no
-		multipliedBy no
-		negated  no
-		plus     no
-		subtractFrom  no
+    between  yes from     yes of       yes parse
+    yes addto    no get      no isNegative no
+    isZero   no minus    no multipliedBy no
+    negated  no plus no subtractFrom  no
 
 
-  *** Common methods of date-time classes representing a "point" in time
+  *** Common methods of date-time classes
+  representing a "point" in time
 
-		Method  static          notes
+    Method  static          notes
 
-    from    yes
-		now     yes
-		of      yes
-		parse   yes
+    from    yes now     yes of      yes parse
+    yes
 
-		atOffset no
-		atZone  no
-		format  no
+    atOffset no atZone  no format  no
 
-		get     no
-		minus   no
-		plus    no
-		with    no
+    get     no minus   no plus    no with    no
 
 
 
@@ -1716,24 +1903,16 @@ Chapter 12 -- Date and Time API
 
     method                  description 
 
-		dayOfWeekInMonth 
-		firstDayOfMonth
-		firstDayOfNextMonth
-		firstDayOfNextYear
-		firstDayOfYear
-		firstInMonth
+    dayOfWeekInMonth firstDayOfMonth
+    firstDayOfNextMonth firstDayOfNextYear
+    firstDayOfYear firstInMonth
 
-		lastDayOfMonth
-		lastDayOfNextMonth
-		lastDayOfNextYear
-		lastDayOfYear
-		lastInMonth
+    lastDayOfMonth lastDayOfNextMonth
+    lastDayOfNextYear lastDayOfYear lastInMonth
 
-		next
-		previous
+    next previous
 
-		nextOrSame
-		prveiousOrSame
+    nextOrSame prveiousOrSame
 
 
 
@@ -1741,32 +1920,36 @@ Chapter 12 -- Date and Time API
 Chapter 13 -- Default methods 
 
 
-  1) "default" methods are for backward compatibility, 
-	    when interface added "default" method,  the existing/old
-			 classes implements this interface, are NOT foreced to recompile.
+  1) "default" methods are for backward
+  compatibility, when interface added "default"
+  method,  the existing/old classes implements
+  this interface, are NOT foreced to recompile.
 
 
 
   2) "static" methods
 
 
-	   a common pattern in Java is to define both an "interface" and a "utility" companion classe
+     a common pattern in Java is to define both an
+     "interface" and a "utility" companion classe
 
 
-		 Collections is a companion class to deal with "Collection" objects
+     Collections is a companion class to deal with
+     "Collection" objects
 
 
-		 Now that "static" methods can exists inside "interface", 
-		     the "companion" class can go away.
+     Now that "static" methods can exists inside
+     "interface", the "companion" class can go
+     away.
 
 
 
   3) Multiple inheritance of behavior
 
 	   
-		 ArrayList is a direct "subtype" of 7 types: 
-		     AbstractList, List, RandomAccess, 
-				 Cloneable, Serializable, Iterable, and Collection
+     ArrayList is a direct "subtype" of 7 types:
+     AbstractList, List, RandomAccess, Cloneable,
+     Serializable, Iterable, and Collection
 
 
 
@@ -1776,59 +1959,56 @@ Chapter 13 -- Default methods
 
   13.4  "Resolution rules"
 
-	   public interface A {
-		    default void hello() {
-				  System.out.println("A");
-				}
-		 }
+     public interface A { default void hello() {
+     System.out.println("A"); } }
 
 
-		 public interface B extends A {
-		     default void hello() {
-				    System.out.println("B");
-				 }
-		 }
+     public interface B extends A { default void
+     hello() { System.out.println("B"); } }
 
-		 public class C implements B, A {
-		   public static void main(String... args) {
-			   new C().hell();  
-			 }
-		 }
+     public class C implements B, A { public
+     static void main(String... args) { new
+     C().hell();  } }
 
 
-		 ??? what's the result ?   <== using "sub-interface" rule, "B", the most specific interface compared to A interface.
+     ??? what's the result ?   <== using
+     "sub-interface" rule, "B", the most specific
+     interface compared to A interface.
 
 
     13.4.1  Three resolution "rules" to know
 
 
-		   1.  Classes always win.  
-			       a method declared in class or superclass, takes priority over any default method declaration.
+       1.  Classes always win.  a method declared
+       in class or superclass, takes priority over
+       any default method declaration.
 
 
-       2.  otherwise, "sub-interface" win:  method with the same signature in the 
-			      most "specific" default-providing interface is selected.   
+       2.  otherwise, "sub-interface" win:  method
+       with the same signature in the most
+       "specific" default-providing interface is
+       selected.   
 
     
-		   3.  Finally, if choice is still ambiguous, 
-			       class inheriting from multiple "interfaces" has to 
-						    "explicitly" select which "default method implementation to us"
-								  by overriding it and calling the desired method Explicitly.
+       3.  Finally, if choice is still ambiguous,
+       class inheriting from multiple "interfaces"
+       has to "explicitly" select which "default
+       method implementation to us" by overriding
+       it and calling the desired method
+       Explicitly.
 
 
 
-   13.4.2 Most specific default-providing interface wins
+   13.4.2 Most specific default-providing
+   interface wins
 
 
 
    13.4.3  Conflicts and explicity disambiguation
 
 
-	    public class D implements B, A {
-			   void hello() {
-				    B.super.hello();
-				 }
-		  }
+      public class D implements B, A { void
+      hello() { B.super.hello(); } }
 
 
 
@@ -1850,16 +2030,17 @@ Chapter 14 -- Java Module System  (Java 9 feature)
 
 
 
-chapter 15 -- Concepts behind CompletableFuture 
-              and Reactive Programming             (Java 9 feature)
+chapter 15 -- Concepts behind CompletableFuture
+and Reactive Programming (Java 9 feature)
 
 
- 1) Threads, Futures, evolutionary forces causing Java to support richer concurrency APIs
- 2) Asynchronous APIs
- 3) The boxes-and-channels view of concurrent computing
- 4) CompletableFuture combinators to connect boxes dynamically
- 5) The publish-subscribe protocol that forms the basis of 
-    Java 9 "Flow API" for "Reactive" programming 
+ 1) Threads, Futures, evolutionary forces causing
+ Java to support richer concurrency APIs 2)
+ Asynchronous APIs 3) The boxes-and-channels view
+ of concurrent computing 4) CompletableFuture
+ combinators to connect boxes dynamically 5) The
+ publish-subscribe protocol that forms the basis
+ of Java 9 "Flow API" for "Reactive" programming 
 
  6) Reactive programming and reactive systems
 
@@ -1867,129 +2048,161 @@ chapter 15 -- Concepts behind CompletableFuture
 
    Trendings:  
 
-	    the first trend related to "hardware" 
-			     Multi-cores --> speed application
-			the second trend concerns how applications are strutured 
+      the first trend related to "hardware"
+      Multi-cores --> speed application the second
+      trend concerns how applications are
+      strutured 
 
-			     (particularly how they interact)
+           (particularly how they interact)
 
    
 
 
-      Split large tasks, make each subtask run in parallel;
+      Split large tasks, make each subtask run in
+      parallel;
 
-			***   "fork/join" framework (since Java 7), and
+      ***   "fork/join" framework (since Java 7),
+      and
 
-			***   "parallel streams"  (snce Java 8)
+      ***   "parallel streams"  (snce Java 8)
 
-			***   adoption of "microservices architecture", 
-			           (instead of building a monolithic app)
+      ***   adoption of "microservices
+      architecture", (instead of building a
+      monolithic app)
 
-						many more internet services are accessible through public APIs, 
-						 made available by Google (localization info),
-						    Facebook (social info), and Twitter (news).
+            many more internet services are
+            accessible through public APIs, made
+            available by Google (localization
+            info), Facebook (social info), and
+            Twitter (news).
 
 
 
 
  7)  Concurrency  vs Parallelism
 
-     *** Concurrency -- multi-tasks running concurrently on 1-core
+     *** Concurrency -- multi-tasks running
+     concurrently on 1-core
 
-		 *** Parallelism -- multi-tasks running concurrently on multi-cores.
+     *** Parallelism -- multi-tasks running
+     concurrently on multi-cores.
 
 
  8)  Java's new CompletableFuture and Flow APIs
 
 
-     starts from:  Java evolution of concurrency, 
-		   including Threads, higher-level abstractions including Thread-Pools and Futures.
+     starts from:  Java evolution of concurrency,
+     including Threads, higher-level abstractions
+     including Thread-Pools and Futures.
 
 
 
-    i.  Initially Java had "locals" vis "synchronized" classes and methods
+    i.  Initially Java had "locals" vis
+    "synchronized" classes and methods
 		    
-				"Runnable" and "Thread"
+        "Runnable" and "Thread"
 
 
-    ii.  2004, Java 5 introduced the java.util.concurrent package
-		     supporting more expressive concurrency,
+    ii.  2004, Java 5 introduced the
+    java.util.concurrent package supporting more
+    expressive concurrency,
 
-				 "ExecutorService" interface -- decoupled tasks "submission" from "execution"
+         "ExecutorService" interface -- decoupled
+         tasks "submission" from "execution"
 
-				 "Callable<T>" and "Future<T>", produced higher-level 
-				    and result-returning varaints of Runnable and Thread,
-						  and using "Generics".
+         "Callable<T>" and "Future<T>", produced
+         higher-level and result-returning
+         varaints of Runnable and Thread, and
+         using "Generics".
 
 
-         ExecutorServices can execute both Runnables and Callables,
+         ExecutorServices can execute both
+         Runnables and Callables,
 				 
 
-				 ^^ These features facilitated parallel programming on "multi-core" CPUs.
+         ^^ These features facilitated parallel
+         programming on "multi-core" CPUs.
 
 
-				 Java 7  java.util.concurrent.RecursiveTask ...
+         Java 7
+         java.util.concurrent.RecursiveTask ...
 
 
-    iii.  Java 8 "CompletableFuture implementation of Future", 
+    iii.  Java 8 "CompletableFuture implementation
+    of Future", 
 
           also the parallel stream
 
-					  sum = Arrays.stream(stats).parallel().sum()
+            sum =
+            Arrays.stream(stats).parallel().sum()
 
 		
-		iv.   Java 9 provided explicit support for "distributed asynchronous programming"
+    iv.   Java 9 provided explicit support for
+    "distributed asynchronous programming"
 
-		      "publish-subscribe" protocol
+          "publish-subscribe" protocol
 
 
 
 
   15.1.2  Executors and thread pools
 
-    1) Java threads access operating-system threads directly.  
+    1) Java threads access operating-system
+    threads directly.  
 
-		2) operating-system threads have "limits", if Java threads 
-		   exceeds it, Java app can crash mysteriously.
-
-
-		3) Java ExecutorService provides an interface, to submit tasks and 
-		   obtain their results later.
-
-			 ExecutorService newFixedThreaddPool(int nThreads);
-
-         here, nThreads, are "worker threads", and stored in a thread pool.
-
-		 *** One great outcome is that it is cheap to "submit" 
-		     thousands of tasks to a thread pool while keeping the 
-				 number of tasks to a hardware-appropriate number.
+    2) operating-system threads have "limits", if
+    Java threads exceeds it, Java app can crash
+    mysteriously.
 
 
-				 Several configurations: size of the queue;  
-				                         rejection policy, and
-																 priority for different tasks
+    3) Java ExecutorService provides an interface,
+    to submit tasks and obtain their results
+    later.
+
+       ExecutorService newFixedThreaddPool(int
+       nThreads);
+
+         here, nThreads, are "worker threads", and
+         stored in a thread pool.
+
+     *** One great outcome is that it is cheap to
+     "submit" thousands of tasks to a thread pool
+     while keeping the number of tasks to a
+     hardware-appropriate number.
 
 
-         Note the wording: Programmer submits "a task (Runnalbe or Callable)"
-				                    which is executed by "a thread"
+         Several configurations: size of the
+         queue;  rejection policy, and priority
+         for different tasks
+
+
+         Note the wording: Programmer submits "a
+         task (Runnalbe or Callable)" which is
+         executed by "a thread"
 	   
-		 *** Thread pools are better than explicity thread manipulation ,
+     *** Thread pools are better than explicity
+     thread manipulation ,
 
-		     but still need to be aware of 2 "gotchas"
+         but still need to be aware of 2 "gotchas"
 
-				 i.  A thread pool with "k" threads, can execute only k tasks concurrently
+         i.  A thread pool with "k" threads, can
+         execute only k tasks concurrently
 
 
-				     also, if there is a task submitted waiting for I/O,
-						    then, the true thread-throughput is lowered.
+             also, if there is a task submitted
+             waiting for I/O, then, the true
+             thread-throughput is lowered.
 
              
-						 also possible to have "deadlock" in thread pool 
-						 if earlier task submissions or already running tasks, 
-						 need to wait for later task submission   <== which is a typical use-pattern for Futures.
+             also possible to have "deadlock" in
+             thread pool if earlier task
+             submissions or already running tasks,
+             need to wait for later task
+             submission   <== which is a typical
+             use-pattern for Futures.
 
 
-				 ii.  
+         ii.  
 
 
 

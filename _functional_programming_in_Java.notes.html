@@ -607,9 +607,35 @@ Specifying Function Types:
     f.apply(g.apply(x));
 
 
+Exercise 2.5 (HARD)
+  write a polymorphic version of "compose"
+	function.
+
+  Java does not have "polymorphic properties", the
+	solution is to store function in a method,
+	interface, instead of in a property.
+
+
+  Java does not handle variance, finding trying to
+	cast Function<Integer, Integer> to
+	Function<Object, Object> which will generate
+	compile error.  Solution is to specify the type
+	for variables.
 
 
 
+"Variance" - describes how parameterized types
+behave in relation to subtyping.  
+
+"covariance" means Matcher<Red> is considered a
+subtype of Matcher<Color>, if Red is subtype of
+Color. 
+
+But, in Java,  all parameterized types are
+"invariant" on their parameters.  That is,
+Matcher<Red> has nothing to do with
+Matcher<Color>, even though Red is subtype of
+Color.    This may be due to "type erasure". 
 
 
 
