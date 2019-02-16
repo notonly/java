@@ -24,5 +24,14 @@ public class FunctionExamples {
     return x -> f1.apply(f2.apply(x));
   }
 
-  public static final 
+  public static final Function<Integer, Integer> composeUsingAnonymousClass(
+          final Function<Integer, Integer> f1, final Function<Integer, Integer> f2) {
+    return new Function<Integer, Integer>() {
+      @Override
+      public Integer apply(Integer arg) {
+        return f1.apply(f2.apply(arg));
+      }
+    };
+  }
+
 }
