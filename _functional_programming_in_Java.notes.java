@@ -797,9 +797,41 @@ andThen()
 
 
 
+*** Method Reference
+
+
+Function<Double, Double> mathSinFunc
+ = Math::sin;
+
+
+ same as
+
+
+ Function<Double, Double> mathSinFuncWithLambda
+  = x -> Math.sin(x);
+
+
+^^^ Now, question:  when to use "anonymous
+function", when to use "method-referenc" (ie,
+  named function) ?
+
+
+ ==>  If the function only needs to write "once",
+ and then, we can use "anonymous function",  but,
+ if want for better code maitenance, and clarity,
+ we can use method-reference
 
 
 
+
+
+
+
+
+
+
+
+===================================================
 
 
 
@@ -906,6 +938,9 @@ me
       V>, Function<T, V>>> compose() {
 
          return x -> y -> y.andThen(x); }
+
+
+
 
 
 

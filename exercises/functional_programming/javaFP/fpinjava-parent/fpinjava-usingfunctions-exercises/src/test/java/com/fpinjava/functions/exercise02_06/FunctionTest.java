@@ -29,4 +29,16 @@ public class FunctionTest {
     );
   }
 
+  @Test
+  public void testMixedTypesWithAnonymousFuncsYetSpecifyTypesForLambda() {
+    MatcherAssert.assertThat(
+      Function.<Integer, Double, Double>higherAndThen()
+                                          .apply((Function<Integer, Double>) x -> 1.0 * x * x )
+                                          .apply((Function<Double, Double>) x -> x * 3)
+                                          .apply(2),
+            Is.is(Double.valueOf("12.0"))
+
+    );
+  }
+
 }
