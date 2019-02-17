@@ -623,6 +623,10 @@ Specifying Function Types:
 
    ^^ honest, not quite get this composing ...
 
+   (updates, yea, had to do the Exercises, and
+    then we can gradually follow high-order FP
+    programming in Java)
+
 
 
    ^^^ The author stated on P35,  
@@ -681,13 +685,15 @@ Specifying Function Types:
 
 2.3.4  Polymorphic higher-order functions 
 
+       (Generics:  
+        
+        static <T, U, V>
+          Function<Function<U, V>, 
+                 Function<Function<T, U>,
+                          Function<T, V>>>
+          higherCompose()
 
-
-
-    <T, U, V> Function<Function<T, U>,
-    Function<Function<V, T>, Function<V, U>>
-    highterCompose = f -> g -> x ->
-    f.apply(g.apply(x));
+             = f -> g -> x -> f.apply(g.apply(x));
 
 
 Exercise 2.5 (HARD)
@@ -758,7 +764,36 @@ higherCompose() {
 
 
 
+ Better yet, just put types to arguments of those
+ passed-in functions
 
+
+ static <T, U, V> 
+  Function<Function<U,V>,
+           Function<Function<T,U>,
+                    Function<T,V>>>
+   higherCompose() 
+     =  (Function<U,V> f)
+          -> (Function<T,U> g)
+            -> (T x)
+             -> f.apply(g.apply(x));
+
+      
+
+
+
+Now, for high-order andThen() function
+
+
+static <T,U,V>
+Function<Function<T,U>,
+         Function<Function<U,V>,
+                  Function<T,V>>>
+andThen() 
+  = (Function<T,U> f)
+    -> (Function<U,V> g)
+     -> (T x) 
+      -> g.apply(f.apply(x));
 
 
 
@@ -834,7 +869,7 @@ me
 
 
 
-3. Function interface
+3. "Function" interface
 
 
   public interface Function<T, U> {
