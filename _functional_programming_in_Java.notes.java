@@ -1123,9 +1123,158 @@ to
    Function<A, Function<B, C>>
 
 
-<A,B,C> Function<
+static <A,B,C> Function<A, Function<B, C>>
+curry(Function<Tuple<A, B>, C> tf) 
+{
+  return a -> b -> tf.apply(new Tuple<>(a, b));
+}
 
 
+
+
+2.3.9  Switching arguments of partially applied
+functions
+
+
+If a function of 2 arguments, you might want to
+apply only the 1st argument to get a "partially
+applied function"
+
+Function<Double, Function<Double, Double>> addTax
+= x -> y -> y + y / 100 * x;
+
+
+You might want to first apply tax to get a new
+function of 1 arguemnt that you can then apply to
+"any price"
+
+Fnction<Double, Double> add9percentTax =
+addTax.apply(9.0);
+
+
+Then, when you want to add tax to a price, you can
+
+  Double priceIncludingTax =
+  add9percentTax.apply(price);
+
+  That is fine; but what if the "inital function"
+  as as following:
+
+  Function<Double, Function<Double, Double>>
+  addTax2 = x -> y -> x + x / 100 * y;
+
+
+  ^^ the order of "arguments" changed compared to
+  the above,
+
+  here, "price" is 1st argument.  Applying the
+  price only is probably "useless",  but how can
+  you apply the tax only?
+
+
+  *** Exercise 2-11 (write a method to swap the
+      arguments of a curried function)
+
+
+static <T,U,V> Function<T, Function<U,V>>
+  swapingArg(Function<U, Function<T, V>> f) 
+{
+  return  t -> u -> f.apply(u).apply(t);
+}
+
+
+
+2.3.10 Recursive function
+
+Function Programming may not like to use recursive
+function, comparing it to GoTo statement.
+
+but the author said, as a function programmer,
+    must master this recursive function, even not
+    to use it.
+
+Java recursion is limited, pushing all
+intermediate computation state to "stack", and
+until termination, popping stack, to get those
+states.  The statck size can be configured, but
+"all threads" use the same configured value:  the
+default stack size 320kb for 32-bit
+implementation, to 1064kb for 64-bit;  
+
+^^ 320kb or 1064kb are small, compared to "heap
+size".   Hence, the number of "recursive steps" is
+limited.
+
+Usually, Java can handle about 5,000 to 6,000
+recursive steps;  but this number depends on "data
+size" that is pushed to stack, and also depends on
+the state of the "stack" when "recursive process
+starts"
+
+
+^^^ Pushing this limit "artificially" is possible
+because Java uses "memoization" internally (some
+dynamci-programming mechanism).  This technique
+consists of "storing results of functions or
+methods in memory to speed up future access".  
+
+In stead of re-evaluating a result, Java can
+retrieve it from "memory" if it has previously
+been stored.  ==> benefits:  speeding up,  and
+also allow to partly avoid recursion by finding a
+terminal state much quicker (note, the author
+    said, avoid recursion)
+
+
+*** Chapter 4, create "heap-based" recursion in
+Java.
+
+
+*** Exercise 2.12 (writing recursive factorial
+    function)
+
+
+// Note, the recursive factorial method
+
+static int factorial(int n) {
+  if (n <= 1) {
+    return 1;
+  }
+
+  return n * factorial(n - 1)
+}
+
+
+
+The recursive "function" --- the "static" field
+
+public static Function<T, R> factorial1;
+static {
+  factorial1 = n -> n <= 1 ? 1 :
+    n * factorial.apply(n - 1);
+}
+
+
+Note that need to put factorial1 definition in the
+block, not the direct definition and assignment
+(this way causes "Illegal Self Reference")
+
+
+========
+Note, for non-static recursive function, need to
+add "this" in function body
+
+public final Function<Integer, Integer> factorial2
+= n -> n <= 1 ? n : n * this.factorial2.apply(n -
+    1);
+
+
+For static version, just need to replace "this"
+with class name
+
+public static final Function<Integer, Integer>
+factorialStatic = n -> n <= 1 ? n : n *
+MyClass.factorialStatic.apply(n - 1);
 
 
 
