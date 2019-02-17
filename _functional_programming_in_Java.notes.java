@@ -1113,7 +1113,17 @@ me
 
 
 
+*** Exercise 2-10  (write a method to curry a
+    function of a Tuple<A, B> to C
 
+
+transform 
+   Function<Tuple<A, B>, C> 
+to
+   Function<A, Function<B, C>>
+
+
+<A,B,C> Function<
 
 
 
