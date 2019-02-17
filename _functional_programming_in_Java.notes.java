@@ -944,7 +944,7 @@ Function<Integer, Function<Double, Double>>
 
 
 
- Exercise 2.8 (partially apply a curried function
+*** Exercise 2.8 (partially apply a curried function
      of 2 arguments to its 2nd argument)
 
  <A, B, C> Function<A, C> paritalB( B b, 
@@ -994,8 +994,19 @@ argument A ;
 
 
 
-Exercise 2.9 (convert following method to a
+*** Exercise 2.9 (convert following method to a
     curried function)
+
+write a curried function for the following method:
+
+<A,B,C,D> String func(A a, B b, C c, D d) 
+{
+  return String.format("%s, %s, %s, %s", a, b, c,
+      d);
+}
+
+
+to following "curried function"
 
 
 
@@ -1008,6 +1019,49 @@ Exercise 2.9 (convert following method to a
           -> String.format("%s, %s, %s, %s",
                                       a, b, c, d); 
 }
+
+
+^^^ thought process:
+
+1. writing the function signature !
+
+1) the method PARAMETERS 
+
+    <A, B, C, D>
+
+2) add return type;  write word Function<
+followed by the 1st parameter type and a comma:
+
+   <A,B,C,D> Function<A, 
+
+3) then do the same thing for 2nd parameter
+
+   <A,B,C,D> Function<A, Function<B,
+
+
+4) continue until no parameters left
+
+  <A,B,C,D> Function<A, Function<B, Function<C,
+    Function<D, 
+
+5) Add the "return type" and close all opened
+brackets:
+
+  <A,B,C,D> Function<A, Function<B, Function<C,
+    Function<D, String>>>>
+  
+
+2. Now the implementation : 
+
+1) list as many parameters as needed, separating
+them with right arrows (ending with an arrow)
+
+  return a -> b -> c -> d ->
+
+2) finally, the implementation, which is the same
+as in the original method: 
+
+  
 
 
 
