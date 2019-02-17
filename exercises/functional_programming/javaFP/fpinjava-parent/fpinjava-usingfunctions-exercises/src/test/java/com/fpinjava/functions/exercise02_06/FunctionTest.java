@@ -24,7 +24,7 @@ public class FunctionTest {
   @Test
   public void testMixedTypes() {
     MatcherAssert.assertThat(
-      Function.<Integer, Double, Double>higherAndThen().apply(x -> 1.0 * x * x).apply(x -> 1.0 * x * 3).apply(2),
+      Function.<Integer, Double, Double>higherAndThen().apply(x -> 1.0 * x * x).apply(x -> x * 3).apply(2),
             Is.is(Double.valueOf("12.0"))
     );
   }
