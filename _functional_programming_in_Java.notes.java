@@ -944,29 +944,75 @@ Function<Integer, Function<Double, Double>>
 
 
 
+ Exercise 2.8 (partially apply a curried function
+     of 2 arguments to its 2nd argument)
+
+ <A, B, C> Function<A, C> paritalB( B b, 
+     Function<A, Function<B, C>> f)
+{
+  return a -> f.apply(a).apply(b);
+}
+
+
+*** Always look for "types" to think of solutions! 
+
+
+^^^ Though Process !!!!
+
+
+1) must return  a function from A to C,  so can
+start the implementation by writing following: 
+
+<A,B,C> Function<A,C> partialB(B b, Function<A,
+    Function<B, C>> f) 
+{
+  return a -> 
+
+
+because of Function<A, C> is a function asking for
+argument A ;  
+
+2) now, must write an expression that is composed
+  of function "f" and the variables a and b;  and
+  it must evaluate to "a function from A to C", so
+  can start by applying "f" to A, get
+
+   return a -> f.apply(a)
+
+
+   ^^ that returns a "function from B to C";  
+
+3) since we need C, and already have B, so just
+  from the "function from B to C",  make it apply
+  B as :
+
+  return a -> f.apply(a).apply(b) 
+
+  that f.apply(a).apply(b) return C,  now
+
+     A -> C  is the Function<A, C>  as required
 
 
 
-
-
-
-
-===================================================
-
+Exercise 2.9 (convert following method to a
+    curried function)
 
 
 
 (type of Function not used before in projects)
 
 <A, B, C, D> Function<A, Function<B, Function<C,
-      Function<D, String>>>> f() { return a -> b
-      -> c -> d -> String.format("%s, %s, %s, %s",
-      a, b, c, d); }
+      Function<D, String>>>> f() 
+{ 
+  return a -> b -> c -> d 
+          -> String.format("%s, %s, %s, %s",
+                                      a, b, c, d); 
+}
 
 
 
 ================= examples to be executed in
-JShell 
+JShell   (can use JUnit to test as well)
 
 import java.util.function.Function;
 
@@ -1010,6 +1056,9 @@ me
 
 
 =======================
+
+
+
 
 
 
