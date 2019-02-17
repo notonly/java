@@ -823,6 +823,126 @@ function", when to use "method-referenc" (ie,
 
 
 
+2.3.6 Local Functions
+
+1) can define functions locally in methods,
+2) but, cannot define methods within methods
+
+3) functions can be defined inside functions
+through lambdas.
+
+*** embedded lambdas shown below
+
+public <T> Result<T> ifElse(List<Boolean>
+    conditions, List<T> ifTrue) 
+{
+  return conditions.zip(ifTrue)
+            .flatMap(x -> x.first(y -> y._1))
+            .map(x -> x._2);
+}
+
+
+^^ flatMap method takes a function as its argument
+(in the form of a lambda), and there is a new
+lambda in the above,  ie
+
+   x -> x.first(y -> y._1)
+
+  where (y -> y._1) is a lambda in the lambda of
+     x -> x.first(....)
+
+
+ Local functions aren't always anonymous, they are
+ generally named when used as "helper functions".
+
+
+
+ The above, is equivalent to the following
+
+ public <T> Result<T> ifElse(List<Boolean>
+     conditions, List<T> ifTrue) 
+{
+  Function<Tuple<Boolean, T>, Boolean> f1 
+    = y -> y._1;
+
+  Function<List<Tuple<Boolean, T>,
+    Result<Tuple<Boolean, T>>> f2
+
+      = x -> x.first(f1);   // note the f1 called
+
+  Function<Tuple<Boolean, T>, T> f3 
+     = x -> x._2;
+
+  return conditions.zip(ifTrue)
+            .flatMap(f2)
+            .map(f3);
+}
+
+
+
+When using "named" functions, it implioes "writing
+types explicitly", it's helpful when compiler
+could not infer types.
+
+
+2.3.7 Closures
+
+Java 8, the variables from enclosing part, can be
+accessed in lambda, as long as they are
+"implicityly final",  that is,  not changed in the
+enclosing part;   not required to explicitly to be
+declared as "final"
+
+
+
+
+2.3.8 Partial function application and automatic
+currying
+
+
+currying and partial application are closely
+related. 
+
+Currying consists of replacing a function of a
+tuple with a new function that you can partially
+apply,  one argument after the other.
+
+
+The main difference between curreied function and
+a function of a tuple:  with a function of a
+tuple, all arguments are evaluated before the
+function is applied.  
+With curried version, all arguments must be know
+before the function is totally applied, but a
+single argument can be evaluated before the
+function is partially applied to tit.
+
+You are not obliged to toally curry the function.  
+
+A function of 3 arguments, can be curreited into a
+function of a tuple that produces a function of a
+single argument.
+
+
+Example (Exercise 2-7)
+
+<A, B, C> Function<B, C> partialA(A a, 
+    Function<A, Function<B, C>> f) 
+{
+  return f.apply(a);
+}
+
+
+^^^ calling as
+
+Function<Integer, Function<Double, Double>> 
+ f = a -> b -> a * (1 + b / 100);
+
+ Function<Double, Double> g = partialA(89, f);
+
+ assertEquals(f.apply(89).apply(33), g.apply(33));
+
+
 
 
 
