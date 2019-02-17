@@ -13,7 +13,11 @@ public class FunctionTest {
   @Test
   public void test() {
     assertEquals(Integer.valueOf(36),
+
 //            Function.higherCompose().apply(square).apply(triple).apply(2); // NOT compile
-            Function.<Integer, Integer, Integer>higherCompose().apply(square).apply(triple).apply(2));
+
+//            Function.<Integer, Integer, Integer>higherCompose().apply(square).apply(triple).apply(2));   // works
+
+            Function.<Integer, Integer, Integer>higherCompose().apply(x -> x * x).apply(x -> x * 3).apply(2));  // using anonymous functions
   }
 }
