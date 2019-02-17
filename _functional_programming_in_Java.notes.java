@@ -1279,11 +1279,9 @@ MyClass.factorialStatic.apply(n - 1);
 
 
 
-
-
-
-
-3. "Function" interface
+2.3. The author's "Function" interface,  adding
+compose, andThen, higherCompose, higherAndThen
+functions
 
 
   public interface Function<T, U> {
@@ -1323,7 +1321,68 @@ MyClass.factorialStatic.apply(n - 1);
 
 
 
+2.4 Java 8 functional interface
 
+1) SAM type - Single Abstract Method
+
+a) java.util.function.Function -- 
+
+b) java.util.function.Supplier -- equivalent to
+function with "no argument"; 
+
+    It can be used to "supply" variable data, such
+    as time or random number (the author said, 
+    not good to use such non-functional thing)
+
+
+    It can also be used in "lazy evaluation".
+
+c) java.util.function.Consumer -- the author said,
+  it isn't for functions (because Java Consumer does
+  not return a value);  but for effect.   
+
+
+d) java.lang.Runnable -- can also be used for
+effects that don't take any parameter.
+
+
+The author said, Java's other functional
+interfaces (from java.util.function package),
+most of them are "useless" for functional
+programming.  Many of them deal with primitives
+and others with functions of 2 arguments, and
+there are special versions for operations.
+
+
+In this book, the author does NOT talke much about
+Java 8 functions.  
+    
+
+2.5 Debugging Lambdas
+
+The author said, "functional programming"
+(specially those pure functions), will not fail
+underterminstically, but "imperative programming"
+can, because imperative-programming does not take
+care of all the cases.
+
+
+
+
+Chapter 3 :  Making Java more functional
+
+
+3.1 making standard control structures functional 
+
+1) Imperitive programming uses extensively "if ..
+else ... switch ... case...  for ... while ..."
+  conditonal structures
+
+2) The author said, functional programming can
+totally avoid those conditional flows.
+
+
+2.3 Abstracting control structures 
 
 
 
