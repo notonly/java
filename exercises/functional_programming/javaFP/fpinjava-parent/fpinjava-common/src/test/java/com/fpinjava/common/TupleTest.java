@@ -121,7 +121,7 @@ public class TupleTest {
         Function<String, Function<Integer, Boolean>> predictFunc = name -> weight -> name.contains("Doe") && weight > 180;
 
         Optional<Tuple<Integer, String>> weightName = nameWeight.optionalSwapIf(nameWeight, predictFunc);
-        
+
         MatcherAssert.assertThat(weightName.isPresent(), Is.is(false));
     }
 

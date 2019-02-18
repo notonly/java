@@ -43,4 +43,5 @@ public class CollectionUtilitiesTest {
     assertEquals("3", list.get(2));
     assertEquals("4", list.get(3));
   }
+
 }
