@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class CaseTest {
 
-  /* Uncomment this these test once the exercise is solved
+//  /* Uncomment this these test once the exercise is solved
   @Test
   public void testMcaseSupplierOfBooleanSupplierOfResultOfT() {
     Case<Integer> c1 = Case.mcase(() -> true, () -> Result.success(4));
@@ -43,6 +43,7 @@ public class CaseTest {
     assertEquals(Integer.valueOf(4), success1.value);
   }
 //*/
+
   @Test
   public void testMatch() {
     Pattern emailPattern =
@@ -78,4 +79,5 @@ public class CaseTest {
   private static class Wrapper<T> {
     public T value;
   }
+
 }
