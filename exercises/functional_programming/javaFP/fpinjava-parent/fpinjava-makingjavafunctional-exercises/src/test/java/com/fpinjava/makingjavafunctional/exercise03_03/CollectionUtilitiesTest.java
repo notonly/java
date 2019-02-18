@@ -3,8 +3,13 @@ package com.fpinjava.makingjavafunctional.exercise03_03;
 import static org.junit.Assert.*;
 import static com.fpinjava.makingjavafunctional.exercise03_03.CollectionUtilities.list;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 
 public class CollectionUtilitiesTest {
@@ -42,6 +47,35 @@ public class CollectionUtilitiesTest {
     assertEquals("2", list.get(1));
     assertEquals("3", list.get(2));
     assertEquals("4", list.get(3));
+  }
+
+  @Test
+  public void javaCollectionsSingletonListThatCheckingNull() {
+
+    System.out.println(Collections.singleton(null));
+
+    List expected = new ArrayList(1);
+    expected.add(null);
+
+    MatcherAssert.assertThat(Collections.singletonList(null), Is.is(expected));
+  }
+
+  @Test
+  public void javaArraysCopy() {
+    String[] orig = {"a", "b", "c"};
+
+    String[] copies = Arrays.copyOf(orig, orig.length);
+
+    System.out.println("orig: " + Arrays.asList(orig));
+    System.out.println("copied: " + Arrays.asList(copies));
+
+    System.out.println("changing 2nd elem in copies, and check original");
+
+    copies[2] = "cc";
+
+    System.out.println("orig: " + Arrays.asList(orig));
+    System.out.println("copied: " + Arrays.asList(copies));
+
   }
 
 }
