@@ -22,7 +22,8 @@ public interface Result<T> {
 
     @Override
     public void bind(Effect<T> success, Effect<String> failure) {
-      throw new RuntimeException("To be implemented.");
+      //throw new RuntimeException("To be implemented.");
+      success.apply(value);
     }
   }
 
@@ -36,7 +37,8 @@ public interface Result<T> {
 
     @Override
     public void bind(Effect<T> success, Effect<String> failure) {
-      throw new RuntimeException("To be implemented.");
+      //throw new RuntimeException("To be implemented.");
+      failure.apply(errorMessage);
     }
   }
 

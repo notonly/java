@@ -1384,6 +1384,111 @@ totally avoid those conditional flows.
 
 2.3 Abstracting control structures 
 
+Page 64, the author mentioned:
+
+   Trust the "types",  not the "names"!
+
+
+public interface Effect<T> 
+{
+  void apply(T t);
+}
+
+
+public interface Result<T> 
+{
+  void bind(Effect<T> success, Effect<String> failure);
+
+  public static <T> Result<T> failure(String msg) {
+    return new Failure<>(msg);
+  }
+
+  public static <T> Result<T> success(T val) {
+    return new Success<>(val);
+  }
+
+  public class Success<T> implements Result<T> {
+    private final T val;
+    private Success(T t) {
+      val = t;
+    }
+    @Override
+    public void bind(Effect<T> success,
+        Effect<String> failure) {
+      success.apply(val);
+    }
+  }
+  public class Failure<T> implements Result<T> {
+    .
+    .
+    .
+  }
+}
+
+
+=============== using the above, with Functional
+Programming:
+
+public class EmailValidation {
+  static Pattern emailPattern =
+    Pattern.compile("^[a-z0-9._%+-]+\\.[a-z]{2,4}$");
+
+
+  static Function<String, Result<String>>
+    emailchecker = 
+      s -> {
+        if (s == null) {
+          return Result.failure("email must not be
+              null");
+        } else if (s.length() == 0) {
+          return Result.failure("....");
+        } else if
+          (emailPattern.matcher(s).matchers()) {
+            return Result.success(s);
+        } else {
+          return Result.failure("email " + s + "
+              is invalid");
+        }
+      };
+
+
+
+3.2.2 An alternative to "if...else"
+
+The most basic "if structure" may be seen as the
+"implementation of a function"  (note, the
+implementation,  not a function itself).
+
+if (x > 0) {
+  return x;
+} else {
+  return -x;
+}
+
+
+We could write this function as:
+
+Function<Integer, Integer> 
+  absolute = x -> {
+    if (x > 0) {
+      return x;
+    } else {
+      return -x;
+    }
+  };
+
+
+
+*** Exercise 3.2 write a Case class representing a
+condition and corresponding result;  the condition
+will be represented by Supplier<Boolean>, where
+Supplier is a functional interface such as:
+
+interface Supplier<T> {
+  T get();
+}
+
+
 
 
 
