@@ -1490,6 +1490,30 @@ interface Supplier<T> {
 
 
 
+3.3 Abstracing Iteration
+
+3.3.2 Creating lists
+
+Exercise 3.3 
+
+ Write methods that create an empty list, a list
+ with one element, and a list from a collection of
+ elements, as well as vararg method that creates a 
+ list from a list of arguments
+
+
+ 3.3.3 using head and tail operations
+
+ Exercise 3.4
+
+ Create 2 methods that return the head and the
+ tail of a list, the list passed as an argument
+ must not be modified. Define a copy of the list,
+ for copying list.  The list resturned by tail
+ should be immutable.
+
+
+
 
 
 
