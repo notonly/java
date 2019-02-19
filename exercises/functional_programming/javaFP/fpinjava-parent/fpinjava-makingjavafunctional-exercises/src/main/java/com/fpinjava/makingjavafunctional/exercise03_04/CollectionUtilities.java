@@ -47,6 +47,17 @@ public class CollectionUtilities {
     return (ts == null) ? Optional.empty() : Optional.of(new ArrayList<>(ts));
   }
 
+  /**
+   * The copied tail list, only has read/retrieval methods, no add/delete methods
+   * that is, Collections.unmodifiableList applied to the tail list return.
+   *
+   * But the elements are still modifiable;
+   * if want to achieve unmodifiable elements, Arrays.copy will need to apply
+   *
+   * @param list
+   * @param <T>
+   * @return
+   */
   public static <T> Optional<List<T>> tail(List<T> list) {
     if (list == null || list.isEmpty() || list.size() <= 1) {
       return Optional.empty();
@@ -54,7 +65,7 @@ public class CollectionUtilities {
     List<T> copies = copy(list).orElse(Collections.emptyList());
     copies.remove(0);
 
-    return Optional.of(copies);
+    return Optional.of(Collections.unmodifiableList(copies));
   }
 
 }

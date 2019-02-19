@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.Ignore;
@@ -64,6 +65,20 @@ public class CollectionUtilitiesTest {
     assertEquals("2", list.orElse(Collections.emptyList()).get(0));
     assertEquals("3", list.orElse(Collections.emptyList()).get(1));
     assertEquals("4", list.orElse(Collections.emptyList()).get(2));
+  }
+
+  @Test
+  public void tailListElementsStillModifiable() {
+    List<StringBuilder> orig =  list(new StringBuilder("a"), new StringBuilder("b"), new StringBuilder("c"));
+    Optional<List<StringBuilder>> tailLst = tail(orig);
+    tailLst.ifPresent(l -> System.out.println("before changing tailLst.get(1) " + l.get(1).toString()));
+
+    // Now updating tailLst element at position 1
+    tailLst.ifPresent(l -> l.get(1).append("_UPDATED"));
+
+    tailLst.ifPresent(l -> System.out.println("before changing tailLst.get(1) " + l.get(1).toString()));
+
+    tailLst.ifPresent(l -> MatcherAssert.assertThat(l.get(1).toString().contains("_UPDATED"), Is.is(true)));
   }
 
   @Test
