@@ -2241,6 +2241,443 @@ ___ when to use getOrThrow
 Chapter 7 Handling Errors and Exceptions
 
 
+-- holding information about "errors" with
+"Either" type
+-- easier error handling with biased Result type
+-- accessing the data inside a Result
+-- applying effects to Result data
+-- lifting functions to operate on Result
+
+
+7.1 problems to solved
+
+7.2 the Either type
+
+7.2.1 Composing Either 
+
+*** Exercise 7-1 define a "map" method to change
+an Either<E, A> into Either<E, B>, given a
+function from A to B; signature:
+
+public abstract <B> Either<E, B> map(Function<A,
+    B> f);
+
+
+*** Exercise 7-2 define "flatMap" to change
+Either<E, A> into Either<E, B>, given a function
+from A to Either<E, B>. signature:
+
+public abstract <B> Either<E, B>
+flatMap(Function<A, Either<E, B>> f);
+
+
+*** Exercise 7-3 define methods getOrElse and
+orElse with following signatures
+
+public A getOrElse(Supplier<A> defaultVal);
+
+public Either<E, A> orElse(Supplier<Either<E, A>>
+    defaultVal);
+
+
+
+7.3 the "Result" type
+
+
+7.3.1 adding methods to Result class
+
+*** Exercise 7-4 define "map", flatMap, getOrElse,
+orElse for Result class. For getOrElse, can
+define 2 methods: one taking a value as its
+argument, the other taking a Supplier.
+
+  Signagures:
+
+abstract V getOrElse(final V defaultVal);
+
+abstract V getOrElse(final Supplier<V>
+    defaultVal);
+
+abstract <U> Result<U> map(Function<V, U> f);
+
+abstract <U> Result<U> flatMap(Function<V,
+    Result<U>> f);
+
+Result<V> orElse(Supplier<Result<V>> defaultVal);
+
+
+7.4 Result patterns
+
+
+7.5 Advanced Result handling
+
+*** Exercise 7-5 write "filter" method taking a
+condition that is represented by a function from T
+to Boolean, and returning a Result<T>, which will
+be Success or Failure depending if condition holds
+for the wrapped value, signature:
+
+filter(Function<T, Boolean> f);
+
+
+*** Exercise 7-6 define an "exists" method taking
+a function from T to Boolean and returning true if
+the wrapped value matches the condition; false
+otherwise, signature:
+
+boolean exists(Function<T, Boolean> predicate);
+
+
+7.5.2 Mapping failures
+
+*** Exercise 7-7 define "mapFailure" method taking
+a String and transform Failure into another
+Failure using the string as its error message. If
+Result is Empty or Success, this  method does
+nothing
+
+
+7.5.3 adding factory methods
+
+
+*** Exercise 7-8 define following static method
+
+static <T> Result<T> of(T val);
+static <T> Result<T> of(T val, String msg);
+
+static <T> Result<T> or(Function<T, Boolean> pred,
+    T val);
+
+static <T> Result<T> or(Function<T, Boolean> pred,
+    T val, String msg);
+
+
+7.5.4 applying effects
+
+
+*** Exercise 7-9 define "forEach" method taking an
+Effect and applyinh it to the wrapped value.
+
+
+*** Exercise 7-10 define forEachOrThrow to handle
+failure, signature:
+
+abstract void forEachOrThrow(Effect<T> eff);
+
+
+
+*** Exercise 7-11 more general use case when
+applying Effect to Result is applying effect if
+it's a success. and handle exception if some way
+if failure.  
+
+define forEachOrException emthod to apply effect
+if value present, and return Result.   Result will
+be Empty if original Result was a Success;  or
+Empty and Success<RuntimeException> if it was a
+Failure.
+
+
+7.6.6 advance result composition
+
+
+*** Exercise 7-12 write "lift" method for Result,
+a static method in Result class with signature:
+
+  static <A, B> Function<Result<A>, Result<B>>
+  lift(final FUnction<A, B> f);
+
+*** Exercise 7-13 define lift2 and lift3 as
+following
+
+
+static <A, B, C> Function<Result<A>,
+  Function<Result<B>, Result<C>>>
+  lift2(Function<A, Function<B, C>> f);
+
+static <A, B, C, D> Function<Result<A>,
+  Function<Result<B>, Function<Result<C>,  
+  Result<D>>> lift3(Function<A, Function<B, C>> f);
+
+*** Exercise 7-14 in chapter 6, defined "map2",
+taking Option<A>, Option<B. and a function from
+A to B to C, and returing Option<C>
+
+let's define map2 for Result
+
+
+7.6 Summary
+
+
+
+Chapter 8 Advanced list handling
+
+
+-- speeding list processing with memoization
+-- composing List and Result
+-- implementing indexed access on lists
+-- unfolding lists
+-- automatic parallel list processing
+
+
+8.1 the problem with length
+
+8.1.1 performance issue
+
+8.1.2 benefit of memoization
+
+8.1.3 drawback of memoization
+
+___ Java 7, Java 8 : size of objects references
+...   http://mng.bz/TjY9  and http://mng.bz/8X0o
+
+
+*** Exercise 8-1create memoizedversion of length
+method, signature:
+
+public abstract int lengthMemoized();
+
+
+8.1.4 actual performance
+
+8.2 composing list and result
+
+8.2.1 methods on list returning Result
+
+*** Exercise 8-2 implementing headOption in
+List<A> returning Result<A>
+
+*** Exercise 8-3 create lastOption returing Result
+of last element in list.
+
+*** Exercise 8-4 replace headOption with a signle
+implementation in List class.  What's benefit, and
+drawback of such implementation?
+
+
+8.2.2 converting from List<Result> to Result<List>
+
+*** Exercise 8-5 define flattenResult taking
+List<Result<A>> and returning List<A> containing
+all success values in the original list, ignoring
+failures and empty values.
+
+static <A> List<A> flattenResult(List<Result<A>>
+    list);
+
+*** Exercise 8-6 write "sequence" combing a
+List<Result<T>> into Result<List<T>>;  it will be
+a Success<List<T>> if all instance values in the
+original list were Success instances; or
+Failure<List<T>> otherwise:  
+
+static <A> Result<List<A>>
+sequence(List<Result<A>> list);
+
+*** Exercise 8-7 define more generictraverse
+methods traversing a list of A while applying a
+function from A to Result<B> and producing a
+Result<List<B>>; signature:
+
+static <A,B> Result<List<B>> traverse(List<A>
+    list, Function<A, Result<B>> f);
+
+
+8.3 Abstracting common list use cases
+
+8.3.1 zipping and unzipping lists
+
+*** Exercise 8-8 write zipWith combining elements
+of two lists of "different" types to produce a new
+list; signature:
+
+static <A,B,C> List<C> zipWith(List<A> lst1,
+    List<B> lst2, Function<A, FUnction<B,C>> f);
+
+*** Exercise 8-9 writing "product" of 2 list;  ie,
+  combining/combination
+
+list("a", "b"),  list("1", "2")
+
+==> list("a1", "a2", "b1", "b2");
+
+
+*** Exercise 8-10 write unzip static method
+
+<A,B> Tuple<List<A>, List<B>>
+unzip(List<Tuple<A,B>> list);
+
+
+*** Exercise 8-11 generalize unzip so it can
+transform a list of any type into type of lists,
+for example, given a list of Payment, should be 
+able to produce a type of lists: one containing 
+credit cards to make payments, and the other 
+containing amounts
+
+<A1,A2> Tuple<List<A1>, List<A2>>
+unzip(Function<A, Tuple<A1,A2>> f);
+
+
+8.3.2 Accessing elements by their index
+
+*** Exercise 8-12 write a getAt method that takes
+an index and returns corresponding element.
+Should not throw exception when out of bound
+
+
+*** Exercise 8-13 (Hard)
+find a solution making fold-based version
+terminate as soon as the result is found.
+
+__ the zero element :
+
+8.3.3 splitting list
+
+*** Exercise 8-14 write splitAt method taking an
+int and returning 2 lists by splitting the list at
+the given position.  Do not throw
+IndexOutOfBoundException.  Instead, index below 0
+will be treated as 0, index above max will be
+treated as max.
+
+*** Exercise 8-15 (not so hard if done exercise
+8-13)
+
+implementing exercise 8-13 using a fold instead of
+explicity recursion.
+
+
+__ when NOT to use fold
+
+
+8.3.4 search for sublists
+
+*** Exercise 8-16 implement hasSubList to check
+whether a list is sublist of another. 
+
+public static <A> boolean hasSubsequence(List<A>
+    list, List<A> sub);
+
+8.3.5 Miscllaneous functions for working with
+Lists
+
+*** Exercise 8-17 create "groupBy" taking a
+function from A to B and returning a Map, where
+keys are the result of the function applied to
+each element of the list and values are lists of
+elements corresponding to each key.
+
+Map<String, List<Payment>> map = list.groupBy(x ->
+    x.name);
+
+
+*** Exercise 8-18 write an unfold method taking a
+starting element S and a function f from S to 
+Result<Tuple<A, S>> and producing List<A> by
+successively applying f to S value as long as the
+result is Success.
+
+List.unfold(0, 
+    i -> i < 10 
+       ? Result.success(new Tuple<>(i, i+1))
+       : Result.empty());
+
+
+*** Exercise 8-19 write "range" taking 2 integers
+and producing a list of all integers greater than
+or equal to the first and less than the second.
+
+*** Exercise 8-20 write "exists" taking a function
+from A to Boolean, returning true if list contains
+at least 1 element satisfying that condition; NOT
+use explicit recursion, but try to build on
+methods already created.
+
+
+*** Exercise 8-21 create "forAll" taking a
+function from A to Boolean, returning true if all
+elements satisfy condition
+
+
+8.4 Automatic parallel processing of lists
+
+8.4.1 not all computations can be parallelized
+
+8.4.2 breaking list into sublists
+
+*** Exercise 8-22 write divide(int depth) to
+divide a list into number of sublists. List
+divided into 2 sublists, and recursively,
+regarding to depth.
+
+List<List<A>> divide(int depth);
+
+8.4.3 processing sublists in parallel
+
+*** Exercise 8-23 write parFoldLeft in List<A>,
+taking same parameters as foldLeft plus an
+ExecutorService, and a function from B to B, and
+returning Result<List<A>>.
+The additional function will be used to assemble
+results from sublists. 
+
+Result<B> parFoldLeft(ExecutorService es, B
+    identity, Function<B, Function<A, B>> func,
+    Function<B, Function<B, B>> additionFunc);
+
+
+*** Exercise 8-24 although mapping can be
+implemented through a fold (thus can benefit from
+automatic parallelization), it can also be
+implemented in parallel without using a fold.  
+
+create parMap to automatically apply a given
+function to all elements of a list in parallel.
+
+<B> Result<List<B>> parMap(ExecutorService es,
+    Function<A, B>> g);
+
+
+8.5 Summary
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
