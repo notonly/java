@@ -1513,6 +1513,282 @@ Exercise 3.3
  should be immutable.
 
 
+ 3.3.4 Functionally appending to a list
+
+
+ 3.3.5 Reducing and folding lists
+
+ transforms a list into a single value --
+ resulting value may be any type. 
+
+ Folding to a result that is the same type as the
+ list elements, is a "specific" case called
+ "reducing".  
+
+ Computing the sum of the elements of the list of
+ "integers" is a simple case of "reducing".
+
+
+ "folding" can be done left-to-right, or
+ right-to-left.
+  -- if operation is "commutative", l-to-r and
+  r-to-l are equivalent;
+  -- if "not commutative", then not equivalent.
+
+
+==> basically, the author is talking about Java's
+"Collectors.reducing", "Collectors.aggregate"? 
+functionality, 
+
+
+ "folding" requires an-initial value, which is
+ called "accumulator".  If this is missing, Java
+ returns "Optional", because "Stream" can be null.
+
+
+
+* Example:  list (1, 2, 3, 4)
+*
+  to fold that list to a sum
+
+  1) from left to right
+
+      (((0+1) + 2) + 3) + 4 = 10
+
+  2) from right to left
+
+      1 + (2 + (3 + (4 + 0))) = 10
+
+
+   ^^ "sum" is "commutative", hence, l-to-r and
+   r-to-l are equivalent.
+
+
+* Example: list ('a', 'b', 'c')
+
+   folding character into String,  "left folding"
+   (when accummulator is on left-side)
+   is not equivalent to "right folding"
+
+
+when "left folding" not communitive to "right
+folding",  to make results the same, it will
+require applying different operations for "left
+folding" and "right folding"
+
+
+foldLeft(list, accumulator, 
+    x -> y -> operation1);
+
+foldRight(reverse(list), accumulator,
+    y -> x -> operation2);
+
+
+
+*** Exercise 3-5 create a method to fold a list of
+integers that can be used, to sum the elements.
+This methods take a list of integers, and an
+integer starting value, and a function as the
+parameters.
+
+public static Integer
+foldingIntegers(List<Integer> list, Integer
+    accumulator, Function<List<Integer>,
+    Function<Integer, Integer>> operator) 
+{
+  Integer rslt = accumulator;
+
+  list.forEach(e -> 
+}
+
+
+
+*** Exercise 3-6 Generalize the "fold" method to
+"foldLeft" so that it can be used to apply a left
+fold to a list of elements of arbitrary types.  To
+test the method correctness, apply it to the
+following parameters,
+
+List<Integer> list = list(1, 2, 3, 4, 5);
+String identity = "0";
+Function<String, Function<Integer, String>> f = x
+-> y -> addSI(x, y);
+
+where method addSI is defined as follows:
+
+String addSI(String s, Integer i) {
+  return "(" + s + " + " + i + ")";
+}
+
+Verify that you get following output:
+
+((((0 + 1) + 2) + 3) + 4) + 5
+
+Note this addSI helps make sure the correct
+folding.  
+
+
+
+Right-folding example:
+
+
+
+*** Exercise 3-7 write an imperative version of
+foldRight method
+
+
+List<Integer> list = list(1, 2, 3, 4, 5);
+String identity = "0";
+Function<String, Function<Integer, String>> f = x
+-> y -> addSI(x, y);
+
+where method addSI is defined as follows:
+
+String addSI(String s, Integer i) {
+  return "(" + s + " + " + i + ")";
+}
+
+Verify that you get following output:
+
+(1 + (2 + (3 + (4 + (5 + 0)))))
+
+
+
+
+*** Exercise 3-8 write a recursive version of
+foldRight. Beware that a naive recurive version
+won't fully work in Java because it uses the
+"statck" to accumulate "intermediate"
+calculations.  In Chapter 4, will learn how to
+make stack-safe recursion available.
+
+
+
+*** Heap-based recursion :  exercise 3-8 isn't
+"tail recursive", so cannot be optimized to use
+the heap instead of stack.  This will be revisited
+in Chapter 5.
+
+
+
+___ Reversing a List
+
+defining a reverse method with an imperative impl
+is easy by iterating "backward" over the list;
+must be careful, not to mess with the indexes.
+
+
+
+*** Exercise 3-9 (HARD) define reverse method
+without-using-loop, instead, use the methods
+you've developed to this point.
+
+
+*** Exercise 3-10 (HARD) define a method to "map"
+a list by applying an operation to each element.
+Rewrite the "map" method in terms of previous
+exercises' "foldLeft" or "foldRight"
+
+
+3.3.6 Composing mappings and mapping
+"compositions" 
+
+==>  to make up
+
+
+3.3.7 Applying effects to lists
+
+
+==>  to make up
+
+
+3.3.8 Approaching functional output
+
+
+==>  to make up
+
+
+3.3.9 Building corecusive lists
+
+
+==>  to make up
+
+
+
+*** Exercise 3-11 Write a method to produce a list
+using a starting value, a limit, and the function
+x -> x + 1;   call this method "range", which will
+have the following signature : 
+
+List<Integer> range(int start, int end)
+
+
+
+*** Exercise 3-12 write a generic "range" whcih
+will work for "any" type and "any" condition. 
+Because notion of "range" mainly works for
+"numbers", let's call the method "unfold" and
+giving following signature : 
+
+List<T> unfold(T seed, Function<T, T> func,
+    Function<T, Boolean predicate)
+
+
+*** Exercise 3-13 Implement "range" method in term
+of "unfold"
+
+
+*** Exercise 3-14 write recursive version of
+"range" method (ex 3-13)
+
+
+___ Danger of statck-based recursion 
+
+
+==>  to make up
+
+
+___ Danger of Strictness
+
+
+==>  to make up
+
+
+
+3.4 Using the right types
+
+
+3.4.1 Problems with standard types
+
+
+
+==>  to make up
+
+
+
+3.4.2 Defining "value" types
+
+
+==>  to make up
+
+
+3.4.3 Future of "value" types in Java
+
+
+==>  to make up
+
+
+3.5 Summary
+
+
+
+
+
+
+
+
+
+
 
 
 
