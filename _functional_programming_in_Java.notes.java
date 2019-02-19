@@ -1784,6 +1784,119 @@ ___ Danger of Strictness
 
 
 
+Chapter 4 - Recursion, Corecursion, and
+Memoization (Dynamic programming)
+
+
+4.1 Understanding corecursion and recursion
+
+
+4.1.1 exploring corecursive and recursive addition
+examples
+
+
+4.1.2 implementing recursion in Java
+
+
+4.1.3 using tail call elimination
+
+
+4.1.4 using tail recursive methods and functions
+
+
+4.1.5 Abstracting recursion
+
+
+4.1.6 Using a drop-in replacement for
+"stack-based" recursive methods
+
+
+4.2 Wroking with recursive "functions"
+
+
+4.2.1 Using locally defined "functions"
+
+
+4.2.2 Making "functions" "tail" recursive
+
+
+4.2.3 Doubly recursive "functions": the Fibonacci
+example 
+
+
+*** Exercise 4-1 Create a tail recursive version
+of Fibonacci "functional" method
+
+
+*** Exercise 4-2 Turn the function into
+"stack-safe" recursive one
+
+
+4.2.4 Making the list methods "stack-safe" and
+recursive
+
+
+*** Exercise 4-3 Create "stack-safe" recursive
+version of "foldLeft" method
+
+
+*** Exercise 4-4 Create a fully recursive version
+of the recursive "range" method
+
+
+*** Exercise 4-5 (HARD) create stack-safe
+recursive version of "foldRight" method
+
+
+4.3 Composing a huge number of functions (avoid
+    stack overflow)
+
+*** Exercise 4-6 Write a function, "composeAll",
+  taking as its argument a list of "functions"
+  from T to T and returning the result of
+  composing all the functions in the list.
+
+
+*** Exercise 4-7 Fix this problem so you can
+compose an (almost) unlimited number of functions.
+
+
+*** Exercise 4-8 The code has 2 problems, you
+fixed only one, can you see another problem and
+fix it?
+
+
+
+4.4 Using Memoization
+
+4.4.1 Memoization in imperative programming
+
+
+4.4.2 Memoization in recursive programming
+
+
+*** Exercise 4-9 write a stack-safe "tail
+recursive" "function" taking an integer n as its
+argument and returning a string representing the
+values of Fibonacci numbers from 0 to n, separated
+by a comma and a space.
+
+
+  Recursive or Corecursive ....
+
+
+4.4.3 Automatic memoization
+
+
+___ Memoization of "multiargument" functions
+
+
+___ Are memoized functions "pure" ? 
+
+
+4.5 Summary
+
+
 
 
 
