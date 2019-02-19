@@ -1899,6 +1899,81 @@ ___ Are memoized functions "pure" ?
 
 
 
+Chapter 5 Data handling with lists
+
+
+5.1 How to classify data collections
+
+5.1.1 Different types of lists
+
+
+ - Access
+
+ - Type of ordering
+
+ - Implementation
+
+
+5.1.2 Relative expected list performance
+
+
+5.1.3 Trading time against memory space, and time
+against complexity
+
+
+5.1.4 In-place mutation
+
+
+5.1.5 Persistent data structures
+
+
+5.2 An immutable, persistent, singly linked list
+implementation
+
+
+5.3 Data Sharing in list operations
+
+
+*** Exercise 5-1 Implement the instance functional
+method "cons", adding an element at the beginning
+of a list (Remember cons stands for construct)
+
+
+*** Exercise 5-2 Implement "setHead", an instance
+method for replacing the first element of a List
+with a new value.
+
+
+*** Exercise 5-3 Write a "toString" method to
+display the content of a list. An empty list will
+be displayed as "[NIL]", and a list containing the
+integer from 1 to 3 will be displayed as "[1, 2,
+3, NIL]".  For a list of arbitrary objects, the
+toString method will be called to display each
+object.
+
+
+5.31 More list operations
+
+
+*** Exercise 5-4 The "tail" method, although it
+doesn't mutate the list in any way, has the same
+effects as removing the first element. Write a
+more general method, "drop", that removes the
+first "n" elements from a list.  This method eon't
+remove the element, but will return a new list
+corresponding to the intended result.  This "new"
+list won't be anything new, because data sharing
+will be used, so nothing will be created. Figure
+5.4 shows how should proceed, the signature of
+this method will be:
+
+public List<A> drop(int n);
+
+
+
+*** Exercise 5-5 Implement a "dropWhile" method 
+
 
 
 
