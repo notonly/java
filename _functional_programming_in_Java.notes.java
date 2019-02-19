@@ -2643,6 +2643,197 @@ function to all elements of a list in parallel.
 
 
 
+Chapter 9 - working with laziness
+
+- importance of laziness
+- implementing laziness in Java
+- creating lazy list data structure: the Stream
+- Optimizing lazy list by memoizing evaluated
+values
+- handling infinite streams
+
+
+9.3 things cannot do without laziness
+
+9.4 why not use Java 8 Stream ?
+
+* defining own structure is far more rewading. In
+  doing so, you'll learn and understand many
+  things that you wouldn't even have thought of if
+  you were using Java 8 Streams.
+
+
+  ^^^ This has been the major points by the author
+  writing this book.  
+
+* Java 8 stream designed for parallelization in
+mind; for this, some compromises were made, and
+many functional methods are missing because they
+would have made automatic parallelization more
+difficult.
+
+* Java 8 Streams are "stateful"; 
+
+* Folding in Java 8 streams is a strict operation
+* that causes evaluation of all elements.
+
+
+9.5 creating a lazy list data structure
+
+9.5.1 Memoizing evaluated values
+
+The idea behind laziness is that you can save time
+by evaluation data only when it's needed.
+
+It implies you must evaluate data when it's first
+accessed. 
+
+"evaluation on demand" == evaluation as needed=
+lazy evaluation
+
+
+*** Exercise 9-1 write headOption to return the
+evaluated head of the stream,  will be declared in
+Stream parent class with signature:
+
+public abstract Result<A> headOption();
+
+9.5.2 manipulating streams
+
+*** Exercise 9-2 create toList to convert a Stream
+into List
+
+
+*** Exercise 9-3 write take(n) to return first n
+elements of a stream, and drop(n) to return
+remaining stream after removing the first n
+elements.  Have to ensure no evaluation occurs
+while calling these methods.
+
+public abstract Stream<A> taken(int n);
+public abstract Stream<A> drop(int n);
+
+
+*** Exercise 9-4 write takeWhile to return a
+Stream containing all starting elements if as long
+as the condition is met.
+
+public abstract Stream<A> takeWhile(Function<A,
+    Boolean> predicate);
+
+
+*** Exercise 9-5 write dropWhile to return a
+stream with front elements removed as long as
+condition met.
+
+public abstract dropWhile(Function<A, Boolean>
+    predicate);
+
+
+9.6 the true essence of laziness
+
+*** Exercise 9-6 write exists method for Stream;
+should cause elements to be evaluated only until
+the condition is met.  If the condition is never
+met, all elements will be evaluated.
+
+
+9.6.1 folding streams
+
+*** Exercise 9-7 create foldRight for streams,
+will be similar to List.foldRight method, but
+should take care of laziness
+
+
+*** Exercise 9-8 create takeWhile in terms of
+foldRight, verify how it behave on long lists.
+
+*** Exercise 9-9 implement headOption using
+foldRight
+
+
+*** Exercise 9-10 write map in terms of foldRight,
+verify this method doesn't evaluate any of
+the stream elements.
+
+*** Exercise 9-11 write filter in terms of foldRight,
+verify this method doesn't evaluate any of
+the stream elements.
+
+*** Exercise 9-12 implement append in terms of
+foldRight, should be non-strict in its argument
+
+
+*** Exercise 9-13 implement flatMap in terms of
+foldRight
+
+
+*** Exercise 9-14 write find method that takes a
+predicate (a function from A to Boolean), returns
+Result<A>.  This will be a Success if an element
+is found to match the predicate; or Empty
+otherwise.
+
+
+9.7 Hanlding infinite streams
+
+*** Exercise 9-15 write repeat method taking an
+object as parameter, and retuing an infinite
+stream of the same object
+
+
+*** Exercise 9-16 generalize "from" and "repeat"
+methods by writing an "iterate" method that takes
+2 params: a seed which will be used for the first
+value, and a function that will compute the next
+one. 
+
+static <A> Stream<A> iterate(A seed, Function<A,
+    A> f);
+
+
+*** Exercise 9-17 write "fibs" that generates
+infinite stream of Fibonacci numbers: 0, 1, 1, 2,
+3, 5, 8, ...
+
+*** Exercise 9-18 generalize "iterate" method;
+write an "unfold" method taking a starting type S
+and a function from S to Result<Tuple<A, S>>,
+returning a stream of A.
+
+
+Returning a Result makes it possible to indicate
+whether the stream should stop or continue.
+
+
+Using a state S means that the source of data
+generations doesn't have to be of the same type as
+the generated data. To apply this new method,
+write new versions of "fibs" and "from" in
+terms of "unfold", 
+
+public static <A, S> Stream<A> unfold(S z,
+    Function<S, Result<Tuple<A, S>>> f);
+
+
+9.8 Avoiding null references and mutable fields
+
+
+*** Exercise 9-19 Using foldRight to implement
+various methods is asmart tech. Unfortunately, it
+doesn't really work for filter.  If you test this
+method with a predicate that is not matched by
+more than 1,000 or 2,000 consecutive elements, it
+will overflow the statck.
+
+Using the new Stream class without null or mutable
+fields, write a stack-safe filter method.
+
+
+9.9 Summary
+
+
+
 
 
 
