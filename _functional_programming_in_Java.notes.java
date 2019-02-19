@@ -1972,7 +1972,274 @@ public List<A> drop(int n);
 
 
 
-*** Exercise 5-5 Implement a "dropWhile" method 
+*** Exercise 5-5 Implement a "dropWhile" method to
+remove elements from the head of the List as long
+as a condition holds true. Signature to add to the
+"List" abstract class
+
+public abstract List<A> dropWhile(Function<A,
+    Boolean> func);
+
+
+__ Concatenating lists
+
+__ Dropping from the end of the list
+
+*** Exercise 5-6 Write a method to remove the last
+element from a list. It should return the
+resulting list. Signature:
+
+List<A> init()
+
+
+5.4 Using recursion to fold lists with
+higher-order functions
+
+
+*** Exercise 5-7 Write a functional method to
+compute the "sum" of all elements of a list of
+integers using simple stack-based recursion
+
+
+
+*** Exercise 5-8 Write a functional method to
+compute the product of all elements of a list of
+doubles using simple stack-based recursion
+
+
+
+*** Exercise 5-9 Write a method to compute the
+length of a list. It will use "foldRight" method
+
+
+
+*** Exercise 5-10 The "foldRight" method uses
+recurion, but not "tail recursive", so it will
+rapidly overflow the stack.  Java "stack size" is
+configurable;  but it's shared for "all threads",
+hence if configured large size, may waste
+memory.
+
+
+Instead of "foldRight", create a "foldLeft" method
+that is "tail recursive" and can be made
+stack-safe. the signature:
+
+public abstract<B> B foldLeft(B identity,
+    Function<B, Function<A, B>> func) ;
+
+
+*** Exercise 5-11 Use your new "foldLeft" method
+to create a new stack-safe versions of sum,
+product, and length
+
+
+*** Exercise 5-12 Use "foldLeft" to write a static
+functional method for reversing a list
+
+
+*** Exercise 5-13 (HARD) 
+  write foldRight in terms of foldLeft
+
+
+5.4.1 Heap-based recursive version of "foldRight"
+
+
+*** Exercise 5-14 use what's learned from Chapter
+4, to write a heap-based recursive instance
+version of the "foldRight" method.
+
+
+*** Exercise 5-15 Implement "concat" in terms of
+either foldLef or foldRight
+
+
+*** Exercise 5-16 Write a method for flattening a
+list of lists into a list containing all elements
+of each contained list.
+
+^^^ this can help understand the Java flatMap
+method
+
+
+
+5.4.2 Mapping and filtering lists
+
+
+*** Exercise 5-17 write a functional method taking
+a list of integers and multiplies each of them by
+3.
+
+
+*** Exercise 5-18 write a function returning each
+value in a List<Double> into a String
+
+
+*** Exercise 5-19 write a general function method
+"ma" allowing to modify each element of a list by
+applying a specified function to it.  This time,
+make it an instance method of List. add
+following to book's List class:
+
+  public abstract <B> List<B> map(Function<A, B>
+      func);
+
+*** Exercise 5-20 write a filter method removing
+from a list the elements that don't satify a given
+predicate. Implementing it as an instance method
+with signature
+
+  public List<A> filter(Function<A, Boolean> func)
+
+*** Exercise 5-21 Write a "flatMap" method
+applying to each melement of List<A> a function
+from A to List<B> and returns List<B>,  signature:
+
+public <B> List<B> flatMap(Function<A, List<B>>
+    func);
+
+
+*** Exercise 5-22 create a new version of filter
+based on flatMap
+
+
+5.5 Summary
+
+
+
+
+
+Chapter 6 Dealing with Optional Data
+
+
+- developing "option" data type for optional data
+- applying functions to optional values
+- composing optional values
+- option use cases
+
+
+6.3 The Option data type  
+
+
+6.3.1 Getting a value from an option
+
+*** Exercise 6-1 Implement a getOrElse method
+return either contained value if exists, or
+provideed-default value otherwise.  Signature
+
+A getOrElse(A defaultValue);
+
+
+*** Exercise 6-2 Fix previous problem by using
+"lazy evaluation" for "getOrElse" method
+parameter.
+
+
+6.3.2 Applying functions to optional values
+
+*** Exercise 6-3 Create a map method to change
+Option<A> into Option<B> by applying a function
+from A to B
+
+
+6.3.3 Dealing with Option composition
+
+*** Exercise 6-4 create a "flatMap" instance
+method taking an argument of a function from A to
+Option<B> and returns an Option<B>
+
+
+*** Exercise 6-5 create "orElse" method with
+following signature
+
+Option<A> orElse(Supplier<Option<A>> defaultValue)
+
+
+*** Exercise 6-6 in chapter 5, "filter" method
+removing from a list all elements that didn't
+satisfy a condition expressed in the form of
+predicate (in other words, it was a function
+returning a Boolean).  Create same method for
+Option, the signature:
+
+Option<A> filter(Function<A, Boolean> f);
+
+
+6.3.4 Option Use Cases
+
+
+*** Exercise 6-7 implement "variance" function in
+terms of flatMap.  the variance of a series of
+values represents how those values are distributed
+around the mean.  If all values are very near to
+the mean, the variance is low. 
+The variance of a series is the mean of Math.pow(x
+    - m, 2) for each element x in the seriers, m
+being the mean, signature:
+
+Function<List<Double>, Option<Double>> variance =
+...;
+
+
+6.3.5 other ways to combine options
+
+
+*** Exercise 6-8 Define a "lift" method taking a
+function from A to B as its argument and returning
+a function from Option<A> to Option<B>. As usual,
+use the methods already defined.
+
+
+*** Exercise 6-9 Such solutions are useless for
+methods that throw exceptions. Write a "lift"
+method that works with methods that throw
+exception.
+
+
+*** Exercise 6-10 write a method (map2) taking
+arguments Option<A>, Option<B>, and a function
+from (A, B) to C in curried form, and returning
+Option<C>
+
+
+6.3.6 Composing List with Option
+
+*** Exercise 6-11 write a function "sequence"
+combining List<Option<T>> into an Option<List<T>>.
+It will be a Some<List<T>> if all values in the
+original list were Some instance, or None<List<T>>
+otherwise.  Signature:
+
+Option<List<A>> sequence(List<OptionA>> list)
+
+
+*** Exercise 6-12 define a traverse method
+producing the same result but invokes "foldRight"
+only once.  signature:
+
+Option<List<B>> traverse(List<A> list, Function<A,
+    Option<B>> func);
+
+6.4 Miscellaneous untilities for Option
+
+
+6.4.1 testing for Some or None
+
+
+6.4.2 equals and hashcode
+
+6.5 How and when to use Option
+
+
+___ when to use getOrThrow
+
+
+6.6 Summary
+
+
+
+Chapter 7 Handling Errors and Exceptions
+
 
 
 
