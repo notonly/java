@@ -2835,6 +2835,249 @@ fields, write a stack-safe filter method.
 
 
 
+Chapter 10 - More data handling with trees
+
+- understanding relationships between size,
+  height, and depth in a tree structure
+- relationship between insertion order and binary
+  search tree structure
+- traversing trees in various orders
+- implementing binary search tree
+- merging, folding, balancing trees.
+
+
+10.1 The binary tree
+
+- node (including terminal nodes)
+- link
+- branched
+- subtree
+- 
+
+10.1.1 Balanced and unbalanced trees
+
+- perfectly balanced tree
+- imperfectly balanced tree
+- totally unbalanced tree
+
+
+10.1.2 Size, height, depth
+
+
+10.1.3 Leafy trees
+
+binary trees are sometimes represented in a
+different way; 
+
+
+terminal nodes are called "leaves", hence, the
+name "leafy trees"
+
+
+10.1.4 Ordered binary trees or binary search trees
+(BST)
+
+- ordered binary tree
+- all elements in one branch have a lower value
+than the root element, while all elements in the
+other branch have a higher value than the root.
+-by convention, elements with lower values than
+root are on "left" branch, 
+
+*** One very important consequence of the
+definition of ordered binary tree is that they can
+"never" contain "duplicates"
+
+- allowing fast retrieveal or elements.
+
+
+
+10.1.5 insertion order
+
+
+
+10.1.6 Tree traversal order
+
+
+__ Recursive traversal orders
+
+__ non-recursive traversal orders
+
+
+10.2 Implementing the binary search tree
+
+
+*** Exercise 10-1  define an "insert" method to
+insert a value into a tree. 
+
+__ Tree structure is immutable and persistent, so
+a new tree with the inserted value must be
+constructed, leaving the original tree untouched.  
+
+__ if the value is equal to the root, you must
+return a new tree with the inserted value as the
+root and the two roginal branches left unchanged.
+Otherwise, a value lower than the root is inserted
+in the "left" branch, and a value higher than the
+root is inserted in the "right" branch.
+
+Declare the method in the parent "Tree" class, and
+implement it in both subclasses.  Signature:
+
+public abstract Tree<A> insert(A a);
+
+
+** Exercise 10-2  implement "member" method
+checking if a specific element is in tree
+
+
+start with T subclass
+implemenation. have to compare the parameter with
+the tree value (which means the value at the root
+    of the tree).  
+
+*** Exercise 10-3 write a static method takes a
+vararg and insert all elements into an empty tree
+
+public static <A extends Comparable<A>> Tree<A>
+tree(A... elements);
+
+
+*** Exercise 10-4 wirte "size", "height" method to
+check attributes for a tree
+
+public abstract int size();
+public abstract int height();
+
+
+*** Exercise 10-5 write "max", "min" methods for a
+BST
+
+
+10.3 Removing elements from a BST tree
+
+*** Exercise 10-6 wirte "remove" .  this method
+will take an element as parameter, if it presents
+in tree, will be removed, and method returns a new
+Tree without this element.
+
+
+10.4 Merging arbitrary trees
+
+*** Exercise 10-7 (HARD)
+write "merge" signature as;
+
+public abstract Tree<A> merge(Tree<A> a);
+
+
+^^ the book has 7 pages for this.
+
+
+10.5 Folding trees
+
+10.5.1 folding with 2 functions:
+
+*** Exercise 10-8 write foldLeft as
+
+public abstract<B> B foldLeft(B identity, 
+     Function<B, Function<A, B>> f,
+     Function<B, Function<B, B>> g);
+
+
+10.5.2 folding with 1 function
+
+*** Exercise 10-9 write 3 methods to fold a tree:
+foldInOrder, foldPreOrder, foldPostOrder.  Applied
+to the tree in figurer 10.18, that is
+
+1, 2, 3, 4, 5, 6, 7
+
+==> 
+
+- In Order:   1 2 3 4 5 6 7 
+- pre order:  4 2 1 3 6 5 7
+- post order: 1 3 2 5 7 6 4
+
+
+10.5.3 which fold implementation to choose
+
+*** Exercise 10-10 (HARD)
+create a method to combine 2 BST trees and a root
+to create a new tree.
+
+Tree<A> tree(Tree<A> left, A a, Tree<A> right);
+
+
+10.6 Mapping trees
+
+*** Exercise 10-11
+define "map" for BSTs; try to preserve the tree
+structure if possible. for example, mapping a tree
+of integers by squaring values might produce a
+tree with a different structure; but mapping by
+adding a constrant should not.
+
+
+10.7 Balancing trees
+
+
+10.7.1 Rotating trees
+
+*** Exercise 10-12 
+write rotateRight and rotateLeft to rotate tree in
+both directions.
+
+Be careful to preserve the branch order: left
+elements must always be lower than the root; right
+branch must always larger than the root.
+
+Declare abstract methods in the parent class, make
+them protected, because they will only be used
+from inside of Tree class.
+
+protected abstract Tree<A> rotateLeft();
+protected abstract Tree<A> rotateRight();
+
+
+*** Exercise 10-13
+to balance the tree, need methods to transform a
+tree into an ordered list.  write a method to
+change a tree into an in-order list from "right"
+to "left" (which means in descending order);  
+
+for more practices, can also try "in-order left to
+right), as well as methods for pre-order, and
+post-order.
+
+public List<A> toListInOrderRight();
+
+
+10.7.2 Balancing trees using the Day-Stout-Warren
+algorithm
+
+*** Exercise 10-14
+implement "balance" method to fully blaance any
+tree. will be a static method taking the tree to
+be balanced as its parameter.
+
+
+10.7.3 Automatically blaancing trees
+
+
+*** Exercise 10-15
+transform the tree you've developed to make it
+auto-balancing on insertions, merges, and
+removals.
+
+
+10.7.4 Solving the right problem
+
+10.8 Summary
+
+
+
+
+
 
 
 
