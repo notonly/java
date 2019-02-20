@@ -3257,7 +3257,143 @@ Chapter 13 (functional input/output)
 ********************************************
 
 
+
 Chapter 12 and 13 are good, need to make them up.
+
+
+
+Chapter 12 - Handling state mutation in a
+functional way
+
+
+- creating functional random number generator
+- designing a generic API for handling state
+mutation
+- handling and composing state operations
+- using recursive state operations
+- generic state handling
+- building a state machine
+
+12.1 A functional random number generator
+
+12.1.1 the random number generator interface
+
+12.1.2 implementing the generator
+
+*** Exercise 12-1
+write a method in "Generator" class to return a
+random positive integer lower than a value passed
+as a parameter, but greater than or equal to 0.
+
+public static Tuple<Integer, RNG> integer(RNG rng,
+    int limit);
+
+*** Exercise 12-2
+write a method to return a list of n random
+integers, it will also have to return the current
+state, which translates to last RNG, so it can
+generate the next integer:
+
+Tuple<List<Integer>, RNG> integers(RNG rng, int
+    length);
+
+
+12.2 A generic API for handling state
+
+12.2.1 working with state operations
+
+*** Exercise 12-3
+Use the "map" method to generate a random Boolean;
+do this by creating a function in Random
+interface:
+
+
+*** Exercise 12-4
+Implement a function to return a randomly
+generated Double
+
+
+12.2.2 Composing state operations
+
+
+*** Exercise 12-5
+Implement a function that takes an RNG and returns
+a piar of integers.
+
+
+static<A, B, C> Random<C> map2(Random<A> ra,
+    Random<B> rb, Function<A, Function<B, C>> f);
+
+
+*** Exercise 12-6 
+Implement a function taking an RNG and returning a
+list randomly generated integers
+
+static <A> Random<List<A>> sequence(List<Random<A>
+    rs);
+
+
+12.2.3 Recursive state operations
+
+*** Exercise 12-7
+write "faltMap" method to implement
+notMultipleOfFiveRnd function:
+
+static <A, B> Random<B> flatMap(Random<A> s,
+    Function<A, Random<B>> f);
+
+
+*** Exercise 12-8 
+implement map and map2 interms of flatMap
+
+
+12.3 Generic state handling
+
+*** Exercise 12-9
+complete the "State" class by re-implementing the
+methods of Random interface in a generic way.
+
+
+12.3.1 State patterns
+
+12.3.2 Building a state machine
+
+*** Exercise 12-10
+write an Atm class that simulates an automated
+teller machine.  The inputs will be represented by
+following interfaces:
+
+public interface Input {
+   Type type();
+   boolean isDeposit();
+   boolean isWithdraw();
+   int getAmount();
+   enum type { DEPOSIT, WITHDRAW) }
+}
+
+2 implementations 
+
+public class Deposit implments Input {
+  .
+    .
+    .
+}
+
+and Withdraw implements Input ....
+
+
+*** Exercise 12-11
+Modify the previous program so that errors such as
+trying to widthdraw more than the account balance
+are reported.
+
+
+12.3.3 when to use state and the state machine
+
+12.4 Summary
+
+
+
 
 
 
