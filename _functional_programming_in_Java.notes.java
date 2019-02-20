@@ -3244,8 +3244,358 @@ it and fix it.
 
 
 
+**** Skipping for now: 
+
+Chapter 12 (handling state mutation in a
+    functional way)
+and
+
+Chapter 13 (functional input/output)
+
+********************************************
 
 
+
+Chapter 14 - Sharing mutable state with actors
+
+(no exercises) <-- would these be the author's old
+projects that he worked on, years ago? 
+
+- actor model
+- asynchronous messaging
+- build actor framework
+- apply/use the framework
+- optimizing actor performance
+
+
+14.1 Actor model
+
+
+14.1.1 asynchronous messaging
+
+14.1.2 handling parallelization
+
+14.1.3 handling actor state mutation
+
+
+14.2 build Actor Framework
+
+14.2.1 limitation of this framework
+
+14.2.2 design the framework interfaces
+
+14.2.3 AbstractActor implementation
+
+
+14.3  use the actor framework
+
+14.3.1 implementing ping-pong example
+
+14.3.2 more serious exmaple: running a computation
+in parallel
+
+14.3.3 reordering the results
+
+
+14.3.4 fixing the performance problem
+
+14.4 Summary 
+
+
+
+Chapter 15 - Solving common problems functionally
+
+- using assertions
+- reading property files
+- adapting imprerative libraries
+
+
+15.1 using assertions to validate data
+
+
+15.2 reading properties from file
+
+
+15.2.1 loading the property file
+
+15.2.2 reading properties as strings
+
+
+15.2.3 producing better error message
+
+
+15.2.4 reading properties as lists
+
+
+15.2.5 reading enum values
+
+
+15.2.6 reading properties of arbitrary types
+
+
+15.3 converting an imperative program: the XML
+Reader
+
+^^^^  good projects for practicing FP in Java,
+because of the familiar topic
+
+
+15.3.1 listing the necessary functions
+
+
+15.3.2 composing the functions and applying an
+effect
+
+
+15.3.3 implementing the functions
+
+15.3.4 making the program even more functional
+
+
+15.3.5 fixing the argument type problem
+
+
+15.3.6 make element-processing function a
+parameter
+
+15.3.7  handle errors on element name
+
+15.4 Summary
+
+
+
+
+Appendix B: Monads
+
+Explain monads in simple terms.
+
+
+- do not define it, just learn the concepts
+
+
+The author gave the following to describe the
+concepts in monads (in Java FP context)
+
+  g(x, y) = x / y
+
+
+Not "pure function", due to Div/0 exception;
+
+how to make it "total function".
+
+2 ways to make g total function:  1) change the
+domain, making it a function of (integer, non-null
+integer),
+
+or, 2) change the co-domain, making it a function of
+(integer, integer), to (integer | exception)
+
+
+==> to implement 1st option, have to create a new
+type: NonNullInteger, which is possible
+
+==> to implement 2nd option, have to create a new
+type: IntegerOrException.
+
+
+Functional programmers prefer the 2nd approach.
+
+
+But, if you change function g to return
+IntegerOrException, you can no longer compose it
+with f.  
+
+More precisely, f.g(x), or f(g(x) if you prefer
+this notation, will no longer compile because the
+types no longer match.
+
+"The solution" is to create a computational
+context in which the functions can be safely
+executioed.  In metaphors, can think of the
+"context" as a safe box.
+
+So, what you need is:
+
+- a safe box
+- a way to put the paratmeter value inside the box
+- a way to put modified function inside the box so
+that it can be applied to the parameter value.
+
+
+That is it, the result will be a box containing
+the result of the function.
+
+
+Because Java doesn't offer such a safe box, need
+slight modify the above requirements.
+
+^^ the type of "safe box" you can use for
+returning a result or nothing is "Option" you
+developed in Chapter 6, or (better) the "Result"
+type from Chapter 7.  
+
+In standard Java 8, it could be "Optional" type.
+
+*******************************************
+  In functional programming, the "method" that
+  will put a value into the "box" is generally
+  named "unit" or "return", but you name it "of"
+  for "Option" and "Result", as Java 8 designeers
+  did for "Optional".  That doesn't change
+  anything.
+*******************************************
+
+
+The method allows you to apply the
+"modified function" to the value inside the "box"
+is called "flagMap")
+
+
+For example, normal method could look like
+following:
+
+public static char firstChar(String a) {
+  if (a == null || a.length() == 0) {
+    throw new IllegalArgumentException();
+  } else {
+    return a.charAt(0);
+  }
+}
+
+
+to make that fucntion return either the first
+character or nothing, you must change it into
+following:
+
+public static Optional<Character> firstChar(String
+    a) {
+  return a == null || a.length == 0 
+    ? Optional.empty()
+    : Optional.of(a.charAt(0));
+}
+
+
+To use the tools, you need to put a String in
+context:
+
+Optional<String> data = Optional.of("hello");
+
+
+Optional<Character> character =
+data.flatMap(thisClass::firstChar);
+
+
+**************************************************
+*******  The "unit" ("of" method) and "flagMap"
+emthods are all that is needed to make Optional a
+monad.
+**************************************************
+
+
+The author gave some good examples on why Java
+Optional class not good enough for Functional
+Programming.
+
+
+At the end, he said: lots of other methods could
+have been added to Optional, and are missing, and
+you cannot add them because Optional is "final".
+That is why the author develped "Option" "monad"
+(the safe box);  
+
+at the same time, Optional is almost useless
+because it cannot carry the reason for the
+"abscence of data".  This is why the author
+created another "monad", "Result", which is
+roughly corresponding to Scala's "Try" class.
+
+
+
+
+
+Appendix C: where to go from here
+
+
+C.1 Choosing a new language: Haskell,  Scala
+(GitHub has more activities on Scala than
+Haskell, but Scala seems like losing to Kotlin),
+and Kotlin (or possibly a forth, Frege).
+
+
+^^^ Note, obviously, the autho chose "Kotlin",  in
+his book  "The Joy of Kotlin" (he said, the
+concept 80% overlapping "Functional Programming
+in Java")
+
+
+C.1.2 Haskell
+
+Using Haskell, you will have to fight against it
+to write imperative programs.
+
+Learning Haskell will "train" your mind into
+functional thinking like no other languages can
+do.
+
+Even if you continue using Java, prototyping
+functions with Haskell is really rewarding.
+
+
+*** The main problem with Haskell (for Java
+programmer) is that everything is "new".  You
+won't be able to use any of your regular Java
+tools or any of the numerious libraries you have
+been used to in Java.  
+
+^^^ Time consuming;  also, "no projects on daily
+basis, and then no progress on Haskell"!
+
+
+C.1.2 Scala
+
+Some people already doing these in current
+project...
+
+
+Scala is NOT a strictly functional language. you
+can write both imperative and functional styles.  
+
+
+Writing functional problems in Scala is a
+discipline (same for JavaScript, right?  JS was
+modeled from Scheme another type of Lisp,
+functional programming;  but many people
+writing JS imperative ways);
+
+
+But, Scala may be good for Java programmers to
+write FP.
+
+
+However, the Kotlin is a new black horse.
+
+
+C.1.3 Kotlin
+
+
+Kotlin has many "functional-friendly features",
+such as "function types" (allowing following): 
+
+
+    (A) -> (B) -> C  instead of 
+
+    Function<A, Function<B, C>>> (in Java)
+
+data classes (automatically generating
+constructors, accessors, and equals, hashCode
+methods)
+
+and implicit method calls -- allowing to call
+function as f(x) instead of more verbose Java
+syntax f.apply(x).
+
+Kotlin is fully compatbile with Java, and possible
+to mix Java and Kotlin in the same project.
 
 
 
