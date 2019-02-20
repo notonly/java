@@ -15,6 +15,23 @@ Lisp
 
 
 
+*********************
+
+Autho's preface mentioned: 
+
+Chapter 12 (handling state mutation in functional
+    way), 
+Chapter 13 (function Input/Output) 
+
+are advanced topics, good to study
+
+but may be skipped and straightly go to Chapter
+14, 15...
+
+*********************
+
+
+
 Functional Programming:
 
 1) First-class function
@@ -3074,6 +3091,156 @@ removals.
 
 10.8 Summary
 
+
+
+
+Chapter 11 - Solving real problems with advanced
+trees
+
+
+- avoiding stack overflow with self-balancing
+trees
+- red-black trees
+- creating functional maps
+- designing a functional priority queue
+
+
+Red-black tree is a binary search tree (BST) with
+some additions to its structure and a modified
+"insertion" algorithm, which also balances the
+result.
+
+
+in 1978, Guibas and Sedgewich invented Red-Black
+tree.
+
+in 1999, Chris Okasaki published a "functional"
+version of red-black tree algorithm in his book
+"Purely Functional Data Structure"   (his Ph.D
+thesis with the same title online, but not
+programming stuff of course)
+
+in 2014, Kimball Germane and Matthew Might,
+   "Functional Pearl, Deletion: the curse of the
+   red-black tree"  (online)
+
+Unfortunately, Okasaki didn't describe "removal",
+  which happens to be a far more complex process.  
+
+
+11.1.2 inserting an element into the RB Tree
+
+five pages for this
+
+
+*** Exercise 11-1 
+write "insert", balance, blacken methods for
+implementing insertion into the RBT.
+
+Unfortunately, Java doesn't implement "pattern
+matching", so you'll have to use "conditional
+instructions" instead
+
+
+___ Removing elements from a Red-Black Tree
+
+The implementation in Java is "too long" to
+include in the book;  but it's included in the
+accompanying code
+(http://github.com/fpinjava/fpinjava), and it will
+be used in the next exercise.
+
+
+11.2 A use case for red-black tree: "maps"
+
+(note, in Java, when pairs are large, the
+"TreeMap" may be used for efficiency?  (need to
+check hte source code of HashMap, TreeMap, etc)
+
+
+11.2.1 Implementing Map
+
+*** Exercise 11-2
+complete "Map" class by implementing all methods
+
+
+11.2.2 Extending maps
+
+*** Exercise 11-3 
+write "values" method in Map class that returns a
+list of the values contained in the map in
+"ascending key order"
+
+
+11.2.3 Using Map with noncomparable keys
+
+*** Exercise 11-4
+implment a version of "Map" that works with
+noncomparable keys.
+
+
+11.3 Implementing a functional priority queue
+
+
+11.3.1 the priority queue access protocol
+
+
+11.3.2 priority queue use cases
+
+
+11.3.3 implementaiton requirements
+
+
+11.3.4 leftist heap data structure
+
+
+11.3.5 implementing leftist heap
+
+
+*** Exercise 11-5 
+defined "add" method , make it instance method in
+Heap class
+
+public Heap<T> add(T element);
+
+
+11.3.6 implementing queue-like interface
+
+*** Exercise 11-6 
+define "tail" method that returns what's left
+after removing the head.
+
+Result<Heap<A>> tail();
+
+
+*** Exercise 11-7
+implement "get" method taking an int param and
+returing the nth element by priority order.
+
+public abstract Result<A> get(int index);
+
+
+11.4  a priority queue for noncomparable elements
+
+*** Exercise 11-8
+modify Heap class so that it can be used either
+with Comparable elements or with a separate
+Comparator.
+
+
+*** Exercise 11-9 
+implement "insert" method adding an element
+without resorting to merge.
+
+public abstract Heap<A> insert(A a);
+
+
+*** Exercise 11-10
+the above 11-9 author's solution has a bug, find
+it and fix it.
+
+
+11.5 Summary
 
 
 
