@@ -3394,6 +3394,151 @@ are reported.
 
 
 
+Chapter 13 Functional Input/Output
+
+
+- applying effects safely from inside contexts
+- adding effect application to Result and List 
+- combining effects for Success and Failure
+- reading data safely from Console, file, memory
+with Reader abstraction
+- handling input/output with IO type
+
+
+13.1 Applying effects in context
+
+13.1.1 what are effects?
+
+13.1.2 implementing effects
+
+*** Exercise 13-1
+write forEach method in List class to take an
+effect and apply it to all the elements of the
+list
+
+
+13.1.3 more-powerful effects for failures
+
+
+___ Why logging is dangerous?  In FP, won't see
+much logging. Because FP makes logging mostly
+"useless".  FP are build by "composing" "pure"
+functions, meaning fucntions that always return
+the same value given the same argument.  So there
+can't be any surprise.  
+
+On the other hand, logging is ubiquitous in
+"imperative programming" because imperative cannot
+predict the output for a given input.  
+
+
+"Logging" is like saying "I don't know what the
+program might produce at this point, so I'll write
+it to a log file.  If everything goes well, I
+won't need this log file, but if sth goes wrong,
+I'll be able to look at the logs to see what the
+program's state was at that point."
+
+
+In FP, logging not needed. If all functions are
+correct, whcih can generally be proved, you don't
+need to know the intermediate states.  
+
+
+^^^ Note, the author was talking about those
+"debug logging";   but clicks-recording/logging
+are business data, not intermediate states, hence
+still need :)
+
+
+*** Exercise 13-2
+in chapter 7, wrote forEachOrException method in
+Result type that worked like forEach in Empty and
+Success;  with the addition that it would return a
+worked Result.Empty, and that returned a
+Result.Success<Exception> in Failure .
+
+Write forEachOrFail method to return
+Result<String> with the exception message, instead
+of exception itself.
+
+
+13.2 Reading data
+
+13.2.1 Reading data from console
+
+*** Exercise 13-3
+write a program that keeps asking user to input an
+integer ID, first name, last name, and later
+displays the list of people to console.
+
+Data input stops as soon as users enter a blank
+ID.
+
+
+*** Exercise 13-4
+Write ReadFile program, similar to ReadConsole,
+but that reads from a file containing the
+entries, each one on separate line.  An
+example file from
+http://github.com/fpinjava/fpinjava
+
+
+13.2.3 Testing with input
+
+
+13.3 Really functional Input/Output
+
+
+13.3.1 how can input/output be made fully
+functions?
+
+13.3.2 implementing purely functional input/output
+
+13.3.3 Combining IO
+
+*** Exercise 13-5
+create a method in IO interface to allow group 2
+IO instances into one.  This method will be called
+"add", and will have a default implementation.
+
+default IO add(IO io);
+
+
+13.3.4 Handling input with IO interface
+
+*** Exercise 13-6 
+define map method in IO<A> to take a function from
+A to B and return IO<B>;  make a default
+implementation in IO interface.
+
+
+*** Exercise 13-7
+write a flatMap emthod to take a function from A
+to IO<B>, and return IO<B>
+
+
+13.3.5 Extending the IO type
+
+*** Exercise 13-8
+implement "repeat" method, in IO interface
+
+static <A> IO<List<A>> repeat(int n, IO<A> io);
+
+
+13.3.6 making IO type stack-safe
+
+*** Exercise 13-9 
+in order to experiment with blowing stack;  create
+a forever method taking an IO and returning a new
+IO executing the argument in an endless loop
+
+static <A, B> IO<B> forever(IO<A> ioa);
+
+
+13.4 Summary
+
+
 
 
 
