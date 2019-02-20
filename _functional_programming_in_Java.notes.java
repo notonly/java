@@ -3244,6 +3244,8 @@ it and fix it.
 
 
 
+********************************************
+
 **** Skipping for now: 
 
 Chapter 12 (handling state mutation in a
@@ -3253,6 +3255,9 @@ and
 Chapter 13 (functional input/output)
 
 ********************************************
+
+
+Chapter 12 and 13 are good, need to make them up.
 
 
 
@@ -3598,9 +3603,95 @@ Kotlin is fully compatbile with Java, and possible
 to mix Java and Kotlin in the same project.
 
 
+But, Kotlin does not have functional collections,
+it just uses Java collections
 
 
 
+C.1.4 Frege
+
+Not matured yet,
+
+    it's "Haskell on JVM",  close to Haskell, can
+    mix with Java , like Scala cna.
+
+
+if you decide to learn Haskell or Kotlin, why not
+Frege.
+
+
+
+
+
+My commits notes:  from the study from the above: 
+
+
+*********************************
+
+> FP in Java
+>
+> 2 important Appendex:
+>
+> 1) Monad -- explained in Java examples
+>
+>    a unit method ("of") and "flatMap" method --
+>
+>    the Option type, and the Result type (modeled 
+        by Scala'"'"'s Try type), by the author
+>    in previous chapters exercises
+>
+>
+> 2) What languages to use for Fucntional Programming?
+>
+>    Looks like the Kotlin is the one to go
+>
+>    but still something to learn, Kotlin,  however, 
+  >    Android uses Kotlin as well.
+>
+>
+> Anyway, for both Scala, Kotlin,
+>
+>     it'"'"'s a displine to write Functional 
+>     Programming, because both Scala and Kotlin
+> allow "imperative" and "functional" style.
+>
+>     Just like the JavaScript.
+>
+>
+> Now, Haskell is "pure functional language", but 
+> a lot "new stuff" to learn, and then,
+> totally give up the existing Java libraries and 
+> other stuff
+>
+>
+> it says, using Haskell to Model "functions" is 
+> really rewarding.
+>
+>
+> so,  all boiled down to
+>
+> 1) MASTER 1 thing FIRST
+>
+> 2) Focus, Concentrate
+>
+>
+> 3) LIMITED TIME  (and also limited resource)
+>
+>
+> KNOW the BEST WHAT you Know!
+> 
+>
+
+*************************************************
+
+
+
+
+^^^ What is the BENEFIT to SCAN the Books !!!!
+
+
+(sometimes, the author(s) put stuff at the end,
+ should you study it or not )
 
 
 
