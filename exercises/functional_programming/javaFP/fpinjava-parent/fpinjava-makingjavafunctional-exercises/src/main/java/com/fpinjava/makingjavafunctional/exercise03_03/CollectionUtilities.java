@@ -15,7 +15,7 @@ public class CollectionUtilities {
     return Collections.singletonList(t);
   }
   public static <T> List<T > list(List<T> ts) {
-    // it may be redundent, Collections.unmodifiableList will check "null" as well.
+    // it may be redundant, Collections.unmodifiableList will check "null" as well.
     Objects.requireNonNull(ts);
 
     // Java Collections.unmodifiableList is for the "List",  not to modify (add/delete),  can only read elements

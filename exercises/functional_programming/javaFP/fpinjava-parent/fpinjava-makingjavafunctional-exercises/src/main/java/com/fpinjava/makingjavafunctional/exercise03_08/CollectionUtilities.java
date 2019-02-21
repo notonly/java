@@ -2,10 +2,7 @@ package com.fpinjava.makingjavafunctional.exercise03_08;
 
 import com.fpinjava.common.Function;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CollectionUtilities {
 
@@ -56,9 +53,29 @@ public class CollectionUtilities {
     return result;
   }
 
-  public static <T, U> U foldRight(List<T> ts, U identity,
-                                   Function<T, Function<U, U>> f) {
-    throw new RuntimeException("To be implemented");
+  public static <T, U> U foldRightRecursively(List<T> ts, U identity,
+                                              Function<T, Function<U, U>> f) {
+    // this throws NPE, not good functional programming
+    // Objects.requireNonNull(ts);
+
+    // terminator
+    if (ts == null || ts.isEmpty()) {
+      return identity;
+    }
+
+    // applying function on the list, from the last element
+    U newIdentity = f.apply(ts.get(ts.size() - 1)).apply(identity);
+
+    // the Optional here, need some
+    List<T> withoutLastElement = new ArrayList<>(ts);
+    withoutLastElement.remove(withoutLastElement.size() - 1);
+    return foldRightRecursively(withoutLastElement, newIdentity, f);
+  }
+
+  public static <T, U> U foldRightBookVersion(List<T> ts, U identity, Function<T, Function<U, U>> f) {
+    return (ts == null || ts.isEmpty())
+            ? identity
+            : f.apply(head(ts)).apply(foldRightBookVersion(tail(ts), identity, f));
   }
 
   public static <T> List<T> append(List<T> list, T t) {

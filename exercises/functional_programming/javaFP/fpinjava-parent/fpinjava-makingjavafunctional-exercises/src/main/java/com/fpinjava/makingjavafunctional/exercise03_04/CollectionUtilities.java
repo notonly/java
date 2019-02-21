@@ -28,6 +28,8 @@ public class CollectionUtilities {
 
   /**
    * Going to test the edge case, what if vararg is null?
+   * (the Java vararg - array like stuff, cannot be null itself;
+   *  of course its elements can be null)
    *
    * @param t
    * @param <T>
