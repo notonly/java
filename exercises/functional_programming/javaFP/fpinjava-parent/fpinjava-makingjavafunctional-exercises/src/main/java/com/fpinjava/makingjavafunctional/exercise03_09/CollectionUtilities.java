@@ -2,10 +2,7 @@ package com.fpinjava.makingjavafunctional.exercise03_09;
 
 import com.fpinjava.common.Function;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CollectionUtilities {
 
@@ -27,18 +24,25 @@ public class CollectionUtilities {
   }
 
   public static <T> T head(List<T> list) {
-    if (list.size() == 0) {
+    if (list == null || list.isEmpty()) {
       throw new IllegalStateException("head of empty list");
     }
     return list.get(0);
   }
 
+  /**
+   * shallow copy. Elements are still the same in the lists
+   *
+   * @param ts
+   * @param <T>
+   * @return
+   */
   private static <T> List<T > copy(List<T> ts) {
     return new ArrayList<>(ts);
   }
 
   public static <T> List<T> tail(List<T> list) {
-    if (list.size() == 0) {
+    if (list == null || list.isEmpty()) {
       throw new IllegalStateException("tail of empty list");
     }
     List<T> workList = copy(list);
@@ -56,6 +60,16 @@ public class CollectionUtilities {
     return result;
   }
 
+  /**
+   * Recursively foldRight
+   *
+   * @param ts
+   * @param identity
+   * @param f
+   * @param <T>
+   * @param <U>
+   * @return
+   */
   public static <T, U> U foldRight(List<T> ts, U identity,
                                    Function<T, Function<U, U>> f) {
     return ts.isEmpty()
@@ -64,16 +78,38 @@ public class CollectionUtilities {
   }
 
   public static <T> List<T> append(List<T> list, T t) {
+    // the reason copying here, is to make unmodifiableList for the returned list
     List<T> ts = copy(list);
     ts.add(t);
+    // making unmodifiableList to stick to the immutable.
     return Collections.unmodifiableList(ts);
   }
 
   public static <T> List<T> prepend(T t, List<T> list) {
-    throw new RuntimeException("To be implemented");
+    Objects.requireNonNull(list);
+
+    List<T> result = new ArrayList<>(list.size() + 1);
+    result.add(t);
+    result.addAll(copy(list));
+
+    return Collections.unmodifiableList(result);
   }
 
+  /**
+   * reverse a list without using loop
+   *
+   * @param list
+   * @param <T>
+   * @return
+   */
   public static <T> List<T> reverse(List<T> list) {
-    throw new RuntimeException("To be implemented");
+    if (list == null || list.size() <= 1) {
+      return list;
+    }
+
+    T headElem = head(list);
+    List<T> tailList = tail(list);
+
+    return append(reverse(tailList), headElem);
   }
 }
