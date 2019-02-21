@@ -114,7 +114,7 @@ public class CollectionUtilities {
   }
 
 
-  public static <T, U> List<T> reverseUsingPrependfoldLeft(List<T> list) {
+  public static <T> List<T> reverseUsingPrependfoldLeft(List<T> list) {
     /*
             <T, U>             U foldLeft(List<T> ts, U identity,        Function<U, Function<T, U>> f)
 
@@ -135,6 +135,33 @@ public class CollectionUtilities {
 
     return result;
 
+  }
+
+  /**
+   * The author's way making it functional
+   *
+   * @param t
+   * @param olist
+   * @param <T>
+   * @return
+   */
+  public static <T> List<T> prependAuthors(T t, List<T> olist) {
+  /*
+  foldLeft(List<T> ts, U identity, Function<U, Function<T, U>> f)
+   */
+
+    return foldLeft(olist, list(t), lst -> e -> append(lst, e));
+  }
+
+  /**
+   * The author's solution is truly concise, Functional Way  <== What to do;  and then, how to do
+   *
+   * @param olist
+   * @param <T>
+   * @return
+   */
+  public static <T> List<T> reverseAuthors(List<T> olist) {
+    return foldLeft(olist, list(), lst -> elem -> prependAuthors(elem, lst));
   }
 
 }
