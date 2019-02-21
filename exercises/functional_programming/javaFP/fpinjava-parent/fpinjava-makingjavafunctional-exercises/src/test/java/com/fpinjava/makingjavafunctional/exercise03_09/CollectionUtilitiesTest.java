@@ -52,8 +52,8 @@ public class CollectionUtilitiesTest {
 
   @Test
   public void testReverseAuthorsThatOverflow() {
-    List<Integer> ints = new ArrayList<>(5_000);
-    IntStream.rangeClosed(1, 5_000).forEach(i -> ints.add(i));
+    List<Integer> ints = new ArrayList<>(8_000);
+    IntStream.rangeClosed(1, 8_000).forEach(i -> ints.add(i));
 
     System.out.println(reverseAuthors(ints).toString());
   }
