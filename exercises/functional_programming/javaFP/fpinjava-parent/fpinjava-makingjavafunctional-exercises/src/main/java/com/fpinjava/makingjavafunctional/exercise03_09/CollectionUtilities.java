@@ -112,4 +112,29 @@ public class CollectionUtilities {
 
     return append(reverse(tailList), headElem);
   }
+
+
+  public static <T, U> List<T> reverseUsingPrependfoldLeft(List<T> list) {
+    /*
+            <T, U>             U foldLeft(List<T> ts, U identity,        Function<U, Function<T, U>> f)
+
+            <T, List<T>> List<T> foldLeft(List<T> ts, List<T> identity,  Function<List<T>, Function<T, List<T>> f)
+
+     */
+
+    // ^^
+    // the trick is to think of U as List<T>  as the the function to be passed to foldLeft
+    //
+    Function<List<T>, Function<T, List<T>>> lastElemFirstFunc = lst -> t -> prepend(t, lst);
+
+    List<T> result = new ArrayList<>(list.size());
+
+    // note, the assignment is required, otherwise, the return will still be empty
+    // the reason for the assignment is that foldLeft applies to foldLeft for each element of list,
+    result = foldLeft(list, result, lastElemFirstFunc);
+
+    return result;
+
+  }
+
 }

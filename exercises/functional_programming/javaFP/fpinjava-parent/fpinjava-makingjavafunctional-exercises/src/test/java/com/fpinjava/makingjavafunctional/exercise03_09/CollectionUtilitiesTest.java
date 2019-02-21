@@ -18,6 +18,15 @@ public class CollectionUtilitiesTest {
     assertEquals("[]", reverse(list()).toString());
     assertEquals("[1]", reverse(list(1)).toString());
     assertEquals("[3, 2, 1]", reverse(list(1, 2, 3)).toString());
+    assertEquals("[6, 5, 4, 3, 2, 1]", reverse(list(1, 2, 3, 4, 5, 6)).toString());
+  }
+
+  @Test
+  public void testReverseUsingPrependfoldLeft() {
+    assertEquals("[]", reverseUsingPrependfoldLeft(list()).toString());
+    assertEquals("[1]", reverseUsingPrependfoldLeft(list(1)).toString());
+    assertEquals("[3, 2, 1]", reverseUsingPrependfoldLeft(list(1, 2, 3)).toString());
+    assertEquals("[6, 5, 4, 3, 2, 1]", reverseUsingPrependfoldLeft(list(1, 2, 3, 4, 5, 6)).toString());
   }
 
 }
