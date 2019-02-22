@@ -82,10 +82,19 @@ public class CollectionUtilities {
   }
 
   public static <T, U> List<U> mapViaFoldLeft(List<T> list, Function<T, U> f) {
-    throw new RuntimeException("To be implemented");
+    // foldLeft(List<T>, U identity, Function<U, Function<U, Function<T, U>> f)
+    return foldLeft(list, new ArrayList<>(list.size()), lst -> elem -> {
+      lst.add(f.apply(elem));
+      return lst;
+    });
   }
 
   public static <T, U> List<U> mapViaFoldRight(List<T> list, Function<T, U> f) {
-    throw new RuntimeException("To be implemented");
+    List<T> copies = new ArrayList<>(list);
+    Collections.reverse(copies);
+    return foldRight(copies, new ArrayList<>(list.size()), elem -> lst -> {
+      lst.add(f.apply(elem));
+      return lst;
+    });
   }
 }
