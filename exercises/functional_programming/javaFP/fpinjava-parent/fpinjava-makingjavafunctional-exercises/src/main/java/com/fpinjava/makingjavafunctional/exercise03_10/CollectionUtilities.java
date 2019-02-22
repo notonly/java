@@ -97,4 +97,14 @@ public class CollectionUtilities {
       return lst;
     });
   }
+
+
+  public static <T, U> List<U> mapFoldLeftAuthors(List<T> list, Function<T, U> f) {
+    return foldLeft(list, list(), lst -> elem -> append(lst, f.apply(elem)));
+  }
+
+  public static <T, U> List<U> mapFoldRightAuthors(List<T> list, Function<T, U> f) {
+    return foldRight(list, list(), elem -> lst -> prepend(f.apply(elem), lst));
+  }
+
 }

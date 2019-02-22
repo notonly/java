@@ -17,4 +17,14 @@ public class CollectionUtilitiesTest {
     assertEquals("[1, 4, 9]", mapViaFoldRight(list(1, 2, 3), x -> x * x).toString());
   }
 
+  @Test
+  public void testMapViaFoldLeftAutor() {
+    assertEquals("[1, 4, 9]", mapFoldLeftAuthors(list(1, 2, 3), x -> x * x).toString());
+  }
+
+  @Test
+  public void testMapViaFoldRightAuthor() {
+    assertEquals("[1, 4, 9]", mapFoldRightAuthors(list(1, 2, 3), x -> x * x).toString());
+  }
+
 }
