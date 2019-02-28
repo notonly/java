@@ -14,6 +14,10 @@ Lisp
 (https://markkarpov.com/post/lisp-and-haskell.html)
 
 
+the book online "learn you a Haskell" 
+http://learnyouahaskell.com/starting-out
+
+
 
 *********************
 
